@@ -4,9 +4,10 @@
     <v-btn
       small
       fab
-      to='/manage-data/add-questions/create'
+      to='/manage-data/questions/create'
       :color="baseColor"
       title="Add New Question"
+      :dark="darkStatus"
     >
       <v-icon>
         add

@@ -24,8 +24,8 @@ module.exports = {
   */
   loading: { 
     continuous: 'true',
-    color: 'orange',
-    height: '3px'
+    color: 'red',
+    height: '4px'
   },
 
   /*
@@ -38,7 +38,8 @@ module.exports = {
   router: {
     middleware: [
       'clearValidationErrors',
-      'auth'
+      'auth',
+      'organization'
     ]
   },
 
@@ -50,7 +51,7 @@ module.exports = {
     '@/plugins/mixins/validation',
     '@/plugins/mixins/auth',
     '@/plugins/mixins/settings',
-    '@/plugins/axios',
+    '@/plugins/axios'
   ],
 
   auth: {

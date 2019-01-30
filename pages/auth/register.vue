@@ -3,7 +3,7 @@
     <v-layout align-center justify-center>
       <v-flex xs12 sm8 md6>
         <v-card class="elevation-12">
-          <v-toolbar :height="baseHeight" :color="baseColor">
+          <v-toolbar :dark="darkStatus" :height="baseHeight" :color="baseColor">
             <v-toolbar-title>Register</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
@@ -43,12 +43,24 @@
                 name="password_confirmation" 
                 label="Confirm Password" 
                 v-model="form.password_confirmation"
-                type="password_confirmation"></v-text-field>
+                type="password"></v-text-field>
+              <v-select
+                :error-messages="errors.role_id"
+                v-model="form.role_id"
+                :items="roles"
+                label="Role"
+              ></v-select>
+              <v-select
+                :error-messages="errors.organization_id"
+                v-model="form.organization_id"
+                :items="organizations"
+                label="Organization"
+              ></v-select>
             </v-form>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn @click="register" :color="baseColor">Register</v-btn>
+            <v-btn :dark="darkStatus" @click="register" :color="baseColor">Register</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -60,16 +72,49 @@
 export default {
   middleware: 'guest',
   auth: false,
+  name: 'Register',
+  async asyncData({$axios}) {
+    let organizations = await $axios.get('/organizations');
+    organizations = organizations.data.data.map(organization => ({
+      'text': organization.name,
+      'value': organization.id 
+    }));
+    let roles = await $axios.get('/roles');
+    roles = roles.data.data.map(role => ({
+      'text': role.name,
+      'value': role.id 
+    }));
+    return {
+      organizations: organizations,
+      roles: roles
+    }
+  },
   data: () => ({
     form: {
       name: '',
       email: '',
-      password: ''
+      password: '',
+      role_id: '',
+      organization_id: ''
     }
   }),
   methods: {
     async register() {
       await this.$axios.post('/register', this.form)
+      await this.$auth.login({data: this.form})
+      // Assign Role
+      let role_payload = {
+        user_id: this.user.id,
+        role_id: this.form.role_id
+      }
+      await this.$axios.post('/assign_roles', role_payload)
+      // Assign Organization
+      let organization_payload = {
+        user_id: this.user.id,
+        organization_id: this.form.organization_id
+      }
+      await this.$axios.post('/assign_organizations', organization_payload)
+      // Logged in again to get role and organization in the user json
       await this.$auth.login({data: this.form})
       this.$router.push({name: 'dashboard'})
     }

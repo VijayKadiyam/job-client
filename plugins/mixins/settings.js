@@ -9,6 +9,8 @@ const Settings = {
         ...mapGetters({
           baseColor: 'settings/baseColor',
           baseHeight: 'settings/baseHeight',
+          darkStatus: 'settings/darkStatus',
+          organization: 'settings/organization'
         })
       }
     })

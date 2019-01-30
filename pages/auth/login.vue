@@ -3,8 +3,8 @@
     <v-layout align-center justify-center>
       <v-flex xs12 sm8 md6>
         <v-card class="elevation-12">
-          <v-toolbar :height="baseHeight" :color="baseColor">
-            <v-toolbar-title>Login</v-toolbar-title>
+          <v-toolbar :dark="darkStatus" :height="baseHeight" :color="baseColor">
+            <v-toolbar-title >Login</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
             <v-form>
@@ -27,7 +27,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn @click="login" :color="baseColor">Login</v-btn>
+            <v-btn :dark="darkStatus" @click="login" :color="baseColor">Login</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -48,7 +48,6 @@ export default {
   methods: {
     async login() {
       await this.$axios.post('/login', this.form)
-        .then(()  =>  {})
       await this.$auth.login({data: this.form})
       this.$router.push({name: 'dashboard'})
     }

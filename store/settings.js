@@ -1,6 +1,11 @@
 export const state = () => ({
-  baseColor: '#D3D3D3',
-  baseHeight: "50px"
+  baseColor: 'blue',
+  baseHeight: "50px",
+  darkStatus: true,
+  organization: {
+    value: '',
+    text: ''
+  }
 })
 
 export const getters = {
@@ -9,5 +14,23 @@ export const getters = {
   },
   baseHeight(state) {
     return state.baseHeight;
+  },
+  darkStatus(state) {
+    return state.darkStatus;
+  },
+  organization(state) {
+    return state.organization;
+  }
+}
+
+export const mutations = {
+  SET_ORGANIZATION(state, organization) {
+    state.organization = organization
+  }
+}
+
+export const actions = {
+  setOrganization({commit}, organization) {
+    commit('SET_ORGANIZATION', organization);
   }
 }

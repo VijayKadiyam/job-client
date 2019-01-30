@@ -1,7 +1,8 @@
 <template>
   <section>
     <h1>Dashboard</h1>
-    Role: {{ !user.roles || user.roles[0] }}
+    {{ user }}
+    <!-- Role: {{ !user.roles || user.roles[0] }} -->
   </section>
 </template>
 

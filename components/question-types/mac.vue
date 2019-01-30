@@ -1,5 +1,5 @@
 <template>
   <section>
-    <span class="title">Plan Test</span>
+    mac
   </section>
 </template>
