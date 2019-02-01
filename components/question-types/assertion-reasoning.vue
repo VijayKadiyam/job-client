@@ -77,7 +77,6 @@
 
 <script type="text/javascript">
 import Vue from 'vue'
-import {VueMathjax} from 'vue-mathjax'
 
 export default {
   name: 'AssertionReasoning',
@@ -89,12 +88,10 @@ export default {
     question_solutions: '',
     editor: '',
     editorConfig: {
+      color: 'red',
       ckfinder: {
-        uploadUrl: require('@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter.js')
-      },
-      extraPlugins: '',
-      // MathJax config
-      mathJaxLib: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML'
+        uploadUrl: 'http://localhost:8080/ckfinder/connector?command=QuickUpload&type=Images&responseType=json'
+      }
     },
     maxOptions: false
   }),
@@ -131,13 +128,26 @@ export default {
     this.question_solutions = this.updatedForm.questions[0].question_solutions
 
     var CKEDITOR = require("@ckeditor/ckeditor5-vue");
-    var ClassicEditor = require('@ckeditor/ckeditor5-build-classic');
-    this.editor = ClassicEditor
     Vue.use(CKEDITOR);
 
-    console.log(CKEDITOR)
+    var MathpreviewPlugin = require('ckeditor5-math-preview/src/mathpreview');
 
-    this.extraPlugins = require('@ckeditor/mathjax/plugin.js');
+    var ClassicEditor = require('@ckeditor/ckeditor5-build-classic');
+    this.editor = ClassicEditor
+
+
+    // this.editorConfig.plugins = MathpreviewPlugin;
+    // this.editorConfig.toolbar = {
+    //   items: [
+    //     'mathpreview',
+    //   ]
+    // },
+    // this.editorConfig.MathPreview = {
+    //   //configuration options for the math-preview plugin
+    //   engine: 'mathjax'
+    // }
+    
+    
   },
   methods: {
     addMoreOptions() {
