@@ -34,10 +34,14 @@
                 v-model="form.phone"
                 type="number"></v-text-field>
               <v-select
-                :error-messages="errors.batch_id"
-                v-model="form.batch_id"
+                :error-messages="errors.batch_ids"
+                v-model="form.batch_ids"
                 :items="batches"
+                attach
+                chips
                 label="Batch"
+                multiple
+                :color="baseColor"
               ></v-select>
             </v-form>
           </v-card-text>
@@ -71,9 +75,9 @@ export default {
       name: '',
       email: '',
       phone: '',
-      batch_id: '',
       role_id: '',
-      organization_id: ''
+      organization_id: '',
+      batch_ids: []
     }
   }),
   components: {
@@ -91,7 +95,7 @@ export default {
       // Assign Batch
       let batch_payload = {
         user_id: student.data.data.id,
-        batch_id: this.form.batch_id
+        batch_ids: this.form.batch_ids
       }
       await this.$axios.post('/assign_batches', batch_payload)
       // Assign Role

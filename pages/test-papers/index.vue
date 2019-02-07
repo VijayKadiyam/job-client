@@ -1,6 +1,6 @@
 <template>
   <section>
-    <span class="title">Scheduled Tests</span>
+    <span class="title">Tests</span>
     <br><br>
     <v-data-table
       :headers="headers"
@@ -13,7 +13,7 @@
         <td class="text-xs-left">
           <nuxt-link
             class="links"
-            :to="`schedule-tests/${props.item.testId}/schedule/${props.item.id}`"
+            :to="`test-papers/${props.item.id}/instructions`"
           >
             {{ props.item.name }}
           </nuxt-link>
@@ -25,9 +25,19 @@
         <td class="text-xs-left">{{ props.item.start_date_time }}</td>
         <td class="text-xs-left">{{ props.item.end_date_time }}</td>
         <td class="text-xs-left">
-          <nuxt-link :to="`schedule-tests/${props.item.testId}/schedule/${props.item.id}`">
-            <v-icon>edit</v-icon>
-          </nuxt-link>
+          <v-tooltip top>
+            <v-btn small
+              slot="activator"
+              :color="baseColor"
+              :dark="darkStatus"
+              :to="`test-papers/${props.item.id}/instructions`"
+              title="Best of Luck"
+            >
+              Take Test &nbsp;
+              <v-icon>play_circle_outline</v-icon>
+            </v-btn>
+            <span>Best of Luck</span>
+          </v-tooltip>
         </td>
       </template>
     </v-data-table>
@@ -36,11 +46,11 @@
 
 <script type="text/javascript">
 export default {
-  name: 'ManageTests',
+  name: 'ManageTestPapers',
   async asyncData({$axios}) { 
-    let scheduled_tests = await $axios.get('/scheduled_tests');
+    let test_papers = await $axios.get('/scheduled_tests');
     return {
-      scheduled_tests: scheduled_tests.data.data
+      test_papers: test_papers.data.data
     }
   },
   data:() =>  ({
@@ -61,7 +71,7 @@ export default {
     items: []
   }),
   mounted() {
-    this.scheduled_tests.forEach(item => {
+    this.test_papers.forEach(item => {
       this.items.push({
         id: item.id,
         testId: item.test.id,

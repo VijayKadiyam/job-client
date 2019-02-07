@@ -58,7 +58,17 @@
             {{ props.item.parents[0].email }}
           </span>
         </td>
-        <td class="text-xs-left">{{ !props.item.batches || props.item.batches[0].name  }}</td>
+        <td class="text-xs-left" v-if="props.item.batches.length !=0"
+        >
+          <span
+            v-for="(batch, b) in props.item.batches"
+            :key="`batch${b}`"
+          >
+            {{ batch.name }}
+            <br>
+          </span>
+        </td>
+        <td v-else></td>
         <td class="text-xs-left">
           Student: 
           <span v-if="props.item.active == 0" style="color: red;">Inactive</span>

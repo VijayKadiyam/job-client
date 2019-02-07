@@ -98,34 +98,44 @@ export default {
   props: ['form'],
   created() {
     this.updatedForm =  this.form
-    this.updatedForm.questions = [
-      {
-        detail: '',
-        question_options: [
-          {name: 'A', option: '', position: 1}, 
-          {name: 'B', option: '', position: 2}, 
-          {name: 'C', option: '', position: 3}, 
-          {name: 'D', option: '', position: 4}
-        ],
-        question_option_answers: [
-          {
-            option_position: ''
-          }
-        ],
-        question_solutions: [
-          {solution: ''}
-        ],
-        question_subjective_answers: [],
-        question_matrix_left_columns: [],
-        question_matrix_right_columns: [],
-        question_matrix_answers: []
-      }
-    ];
+    // When creating new question
+    if(!this.form.questions.length || !this.form.questions[0].id) {
+      this.updatedForm.questions = [
+        {
+          detail: '',
+          question_options: [
+            {name: 'A', option: '', position: 1}, 
+            {name: 'B', option: '', position: 2}, 
+            {name: 'C', option: '', position: 3}, 
+            {name: 'D', option: '', position: 4}
+          ],
+          question_option_answers: [
+            {
+              option_position: ''
+            }
+          ],
+          question_subjective_answers: [],
+          question_solutions: [
+            {solution: ''}
+          ],
+          question_matrix_left_columns: [],
+          question_matrix_right_columns: [],
+          question_matrix_answers: []
+        }
+      ];
+    }
 
     this.question = this.updatedForm.questions[0];
     this.options = this.updatedForm.questions[0].question_options
     this.question_option_answers = this.updatedForm.questions[0].question_option_answers
     this.question_solutions = this.updatedForm.questions[0].question_solutions
+
+    // Only for editing the question. To assign option position to option_position
+    if(this.form.questions[0].id) {
+      let option = this.options.filter(o => o.id == this.question_option_answers[0].option_id)
+      if(option.length)
+        this.question_option_answers[0].option_position = option[0].position
+    }
 
     var CKEDITOR = require("@ckeditor/ckeditor5-vue");
     Vue.use(CKEDITOR);
@@ -134,20 +144,6 @@ export default {
 
     var ClassicEditor = require('@ckeditor/ckeditor5-build-classic');
     this.editor = ClassicEditor
-
-
-    // this.editorConfig.plugins = MathpreviewPlugin;
-    // this.editorConfig.toolbar = {
-    //   items: [
-    //     'mathpreview',
-    //   ]
-    // },
-    // this.editorConfig.MathPreview = {
-    //   //configuration options for the math-preview plugin
-    //   engine: 'mathjax'
-    // }
-    
-    
   },
   methods: {
     addMoreOptions() {

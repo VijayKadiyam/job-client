@@ -45,7 +45,7 @@
 import Vue from 'vue'
 
 export default {
-  name: 'AssertionReasoning',
+  name: 'Integer',
   data: () => ({
     updatedForm: {},
     question: '',
@@ -59,19 +59,27 @@ export default {
   props: ['form'],
   created() {
     this.updatedForm =  this.form
-    this.updatedForm.questions = [
-      {
-        detail: '',
-        question_subjective_answers: [
-          {
-            answer: ''
-          }
-        ],
-        question_solutions: [
-          {solution: ''}
-        ]
-      }
-    ];
+    // When creating new question
+    if(!this.form.questions.length || !this.form.questions[0].id) {
+      this.updatedForm.questions = [
+        {
+          detail: '',
+          question_options: [],
+          question_option_answers: [],
+          question_subjective_answers: [
+            {
+              answer: ''
+            }
+          ],
+          question_solutions: [
+            {solution: ''}
+          ],
+          question_matrix_left_columns: [],
+          question_matrix_right_columns: [],
+          question_matrix_answers: []
+        }
+      ];
+    }
 
     this.question = this.updatedForm.questions[0];
     this.subjective_answers = this.updatedForm.questions[0].question_subjective_answers

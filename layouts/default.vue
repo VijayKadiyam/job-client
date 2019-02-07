@@ -6,9 +6,10 @@
       :value="drawer"
       fixed
       app
-      width=200
+      width=225
     >
       <v-list>
+        <!-- Without dropdowns -->
         <v-list-tile
           v-for="(item, i) in items"
           :to="item.to"
@@ -23,6 +24,29 @@
             <v-list-tile-title v-text="item.title" />
           </v-list-tile-content>
         </v-list-tile>
+
+        <!-- With dropdowns -->
+        <v-list-group
+          v-for="(dropdown, d) in dropdownItems"
+          :key="`D${d}`"
+          :prepend-icon="dropdown.icon"
+          no-action
+        >
+          <v-list-tile slot="activator">
+            <v-list-tile-title>{{ dropdown.name }}</v-list-tile-title>
+          </v-list-tile>
+
+          <v-list-tile
+            v-for="(item, i) in dropdown.items"
+            :key="i"
+            :to="item.to"
+          >
+            <v-list-tile-action>
+              <v-icon v-text="item.icon"></v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content v-text="item.title"></v-list-tile-content>
+          </v-list-tile>
+        </v-list-group>
       </v-list>
     </v-navigation-drawer>
     <v-toolbar
@@ -86,7 +110,9 @@ export default {
   },
   computed: {
     drawer() {
-      return this.authenticated
+      if(this.$route.name != "test-papers-id" && this.$route.name != "test-papers-id-instructions" && this.$route.name != "tests-testId-questions")
+        return this.authenticated
+      return false;
     },
     title() {
       return this.$auth.$state.user ? 
@@ -104,8 +130,11 @@ export default {
         items.push({ icon: 'perm_data_setting', title: 'Manage Data', to: '/manage-data/questions' })
       if(this.permissions.indexOf(2)!= -1)
         items.push({ icon: 'fast_forward', title: 'Plan Tests', to: '/tests' })
-      items.push({ icon: 'alarm_add', title: 'Schedule Tests', to: '/schedule-tests' })
-      items.push({ icon: 'alarm', title: 'Scheduled Tests', to: '/scheduled-tests' })
+      if(this.permissions.indexOf(10)!= -1) {
+        items.push({ icon: 'alarm_add', title: 'Schedule Tests', to: '/schedule-tests' })
+        items.push({ icon: 'alarm', title: 'Scheduled Tests', to: '/scheduled-tests' })  
+      }
+      items.push({ icon: 'play_circle_outline', title: 'Tests', to: '/test-papers' })  
       if(this.permissions.indexOf(3)!= -1)
         items.push({ icon: 'group', title: 'Manage Students', to: '/students' })
       if(this.permissions.indexOf(4)!= -1)
@@ -114,12 +143,29 @@ export default {
         items.push({ icon: 'public', title: 'Organizations', to: '/organizations' })
       if(this.permissions.indexOf(6)!= -1)
         items.push({ icon: 'account_circle', title: 'Profile', to: '/profile' })
-      items.push({ icon: 'notifications_active', title: 'Manage Logins', to: '/logins' })
+      if(this.permissions.indexOf(9)!= -1)
+        items.push({ icon: 'notifications_active', title: 'Manage Logins', to: '/logins' })
       if(this.permissions.indexOf(8)!= -1)
         items.push({ icon: 'lock_open', title: 'Manage Permissions', to: '/permissions' })
       if(this.permissions.indexOf(7)!= -1)
         items.push({ icon: 'brightness_7', title: 'Super Admin Settings', to: '/settings' })
+      items.push({ title: 'Report Charts', to: '/charts/simple' })
       return items;
+    },
+    dropdownItems() {
+      let dropdownItems = [
+        { name: 'Reports', icon: 'pie_chart', items: [] },
+        { name: 'Master', icon: 'build', items: [] },
+      ];
+      if(this.permissions.indexOf(11)!= -1)
+        dropdownItems[0].items.push({ icon: 'fast_forward', title: 'Testwise', to: '/reports/test-wise'})
+      if(this.permissions.indexOf(12)!= -1)
+        dropdownItems[0].items.push({ icon: 'group', title: 'Cumulative', to: '/reports/cumulative'})
+      if(this.permissions.indexOf(13)!= -1)
+        dropdownItems[0].items.push({ icon: 'face', title: 'Student', to: '/reports/student-wise'})
+        dropdownItems[1].items.push({ icon: 'group_work', title: 'Batches', to: '/batches'})
+        dropdownItems[1].items.push({ icon: 'dns', title: 'Test Patterns', to: '/test_patterns'})
+      return dropdownItems;
     }
   },
   created() {

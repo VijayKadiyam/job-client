@@ -1,5 +1,5 @@
 export default function({store, redirect, route}) {
-  if(route.name == 'auth-login' || route.name == 'auth-register' || route.name == 'organizations' || route.name == 'profile' || route.name == 'settings' || route.name == 'permissions')
+  if(route.name == 'auth-login' || route.name == 'auth-register' || route.name == 'organizations'  || route.name == 'organizations-create' || route.name == 'organizations-id' || route.name == 'profile' || route.name == 'settings' || route.name == 'permissions')
     return;
   
   let user = store.getters['auth/user'];

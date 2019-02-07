@@ -2,7 +2,7 @@
   <v-container fluid fill-height>
     <back-button 
       title="Go Back To Tests"
-      link="/schedule-tests"
+      link="/scheduled-tests"
     ></back-button>
     <v-layout align-center justify-center>
       <v-flex xs12 sm8 md6>
@@ -145,6 +145,16 @@
                   <v-btn flat color="primary" @click="$refs.endTimeMenu.save(form.end_time)">OK</v-btn>
                 </v-time-picker>
               </v-menu>
+              <v-select
+                :error-messages="errors.batch_ids"
+                v-model="form.batch_ids"
+                :items="batches"
+                attach
+                chips
+                label="Batch"
+                multiple
+                :color="baseColor"
+              ></v-select>
             </v-form>
           </v-card-text>
           <v-card-actions>
@@ -165,9 +175,16 @@ export default {
   async asyncData({$axios, params}) {
     let test = await $axios.get(`/tests/${params.testId}`);
     let scheduled_test = await $axios.get(`/tests/${params.testId}/scheduled_tests/${params.id}`);
+    scheduled_test.data.data.batch_ids = scheduled_test.data.data.batches.map(batch => batch.id)
+    let batches = await $axios.get('/batches')
+    batches = batches.data.data.map(batch => ({
+      'text': batch.name,
+      'value': batch.id 
+    }));
     return {
       test: test.data.data,
-      form: scheduled_test.data.data
+      form: scheduled_test.data.data,
+      batches: batches
     }
   },
   data: () => ({
@@ -184,7 +201,14 @@ export default {
   },
   methods: {
     async store() {
-      await this.$axios.patch(`/tests/${this.$route.params.testId}/scheduled_tests/${this.$route.params.id}`, this.form);
+      let test = await this.$axios.patch(`/tests/${this.$route.params.testId}/scheduled_tests/${this.$route.params.id}`, this.form);
+      test = test.data.data
+      // Assign Batch
+      let batch_payload = {
+        scheduled_test_id: test.id,
+        batch_ids: this.form.batch_ids
+      }
+      await this.$axios.post('/assign_batch_to_scheduled_tests', batch_payload)
       this.$router.push('/scheduled-tests');
     }
   }

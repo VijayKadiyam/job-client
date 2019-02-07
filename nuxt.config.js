@@ -55,7 +55,8 @@ module.exports = {
     '@/plugins/mixins/validation',
     '@/plugins/mixins/auth',
     '@/plugins/mixins/settings',
-    '@/plugins/axios'
+    '@/plugins/axios',
+    '@/plugins/charts'
   ],
 
   auth: {

@@ -156,12 +156,13 @@ export default {
       subject_id: 1,
       subject_chapter_id: '',
       subject_chapter_topic_id: 1,
-      difficulty_level_id: ''
+      difficulty_level_id: '',
+      questions: []
     }
   }),
   computed: {
     subject_chapters() {
-      this.form.subject_chapter_id = ""
+      // this.form.subject_chapter_id = ""
       return this.all_chapters.filter(chapter => chapter.subject_id == this.form.subject_id)
     }
   },

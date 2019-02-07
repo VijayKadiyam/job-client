@@ -62,7 +62,8 @@ export default {
     staff = staff.data.data
     staff.role_id = staff.roles ?  staff.roles[0].id : ''
     let roles = await $axios.get('/roles');
-    roles = roles.data.data.map(batch => ({
+    roles = roles.data.data.filter(staff => staff.name != 'Student')
+    roles = roles.map(batch => ({
       'text': batch.name,
       'value': batch.id 
     }));

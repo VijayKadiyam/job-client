@@ -100,23 +100,24 @@ export default {
   }),
   methods: {
     async register() {
-      await this.$axios.post('/register', this.form)
-      await this.$auth.login({data: this.form})
+      let user  = await this.$axios.post('/register', this.form)
+      user = user.data.data
+      // await this.$auth.login({data: this.form})
       // Assign Role
       let role_payload = {
-        user_id: this.user.id,
+        user_id: user.id,
         role_id: this.form.role_id
       }
       await this.$axios.post('/assign_roles', role_payload)
       // Assign Organization
       let organization_payload = {
-        user_id: this.user.id,
+        user_id: user.id,
         organization_id: this.form.organization_id
       }
       await this.$axios.post('/assign_organizations', organization_payload)
       // Logged in again to get role and organization in the user json
-      await this.$auth.login({data: this.form})
-      this.$router.push({name: 'dashboard'})
+      // await this.$auth.login({data: this.form})
+      this.$router.push('/auth/login')
     }
   }
 }

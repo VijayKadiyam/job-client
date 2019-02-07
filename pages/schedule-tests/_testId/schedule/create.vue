@@ -145,6 +145,16 @@
                   <v-btn flat color="primary" @click="$refs.endTimeMenu.save(form.end_time)">OK</v-btn>
                 </v-time-picker>
               </v-menu>
+              <v-select
+                :error-messages="errors.batch_ids"
+                v-model="form.batch_ids"
+                :items="batches"
+                attach
+                chips
+                label="Batch"
+                multiple
+                :color="baseColor"
+              ></v-select>
             </v-form>
           </v-card-text>
           <v-card-actions>
@@ -164,8 +174,14 @@ export default {
   name: 'ScheduleTest',
   async asyncData({$axios, params}) {
     let test = await $axios.get(`/tests/${params.testId}`);
+    let batches = await $axios.get('/batches')
+    batches = batches.data.data.map(batch => ({
+      'text': batch.name,
+      'value': batch.id 
+    }));
     return {
-      test: test.data.data
+      test: test.data.data,
+      batches: batches
     }
   },
   data: () => ({
@@ -174,7 +190,8 @@ export default {
       start_date: new Date().toISOString().substr(0, 10),
       start_time: '',
       end_date: '',
-      end_time: ''
+      end_time: '',
+      batch_ids: []
     },
     startDateMenu: false,
     startTimeMenu: false,
@@ -188,8 +205,15 @@ export default {
   },
   methods: {
     async store() {
-      await this.$axios.post(`/tests/${this.$route.params.testId}/scheduled_tests`, this.form);
-      this.$router.push('/scheduled_tests');
+      let test = await this.$axios.post(`/tests/${this.$route.params.testId}/scheduled_tests`, this.form);
+      test = test.data.data
+      // Assign Batch
+      let batch_payload = {
+        scheduled_test_id: test.id,
+        batch_ids: this.form.batch_ids
+      }
+      await this.$axios.post('/assign_batch_to_scheduled_tests', batch_payload)
+      this.$router.push('/scheduled-tests');
     }
   }
 }

@@ -19,6 +19,7 @@
     "ckeditor5-math-preview": "^1.0.3",
     "cross-env": "^5.2.0",
     "nuxt": "^2.0.0",
+    "vue-google-charts": "^0.3.2",
     "vue-mathjax": "0.0.6",
     "vuetify": "^1.2.4"
   },

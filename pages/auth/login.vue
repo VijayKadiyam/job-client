@@ -37,6 +37,7 @@
 
 <script type="text/javascript">
 export default {
+  name: 'Login',
   middleware: 'guest',
   auth: false,
   data: () => ({

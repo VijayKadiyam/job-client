@@ -35,10 +35,14 @@
                 v-model="form.phone"
                 type="number"></v-text-field>
               <v-select
-                :error-messages="errors.batch_id"
-                v-model="form.batch_id"
+                :error-messages="errors.batch_ids"
+                v-model="form.batch_ids"
                 :items="batches"
+                attach
+                chips
                 label="Batch"
+                multiple
+                :color="baseColor"
               ></v-select>
             </v-form>
           </v-card-text>
@@ -60,7 +64,10 @@ export default {
   async asyncData({$axios, params}) {
     let student = await $axios.get(`/students/${params.id}`)
     student = student.data.data
-    student.batch_id = student.batches ?  student.batches[0].id : ''
+    student.batch_ids = []
+    student.batches.forEach(batch => {
+      student.batch_ids.push(batch.id)
+    })
     let batches = await $axios.get('/batches');
     batches = batches.data.data.map(batch => ({
       'text': batch.name,
@@ -79,8 +86,9 @@ export default {
       let student = await this.$axios.patch(`/students/${this.$route.params.id}`, this.form)
       let batch_payload = {
         user_id: student.data.data.id,
-        batch_id: this.form.batch_id
+        batch_ids: this.form.batch_ids
       }
+      console.log(batch_payload)
       await this.$axios.post('/assign_batches', batch_payload)
       this.$router.push('/students')
     }

@@ -19,7 +19,7 @@
             Name: {{ test.name }}
           </v-flex>
           <v-flex xs4 md4 sm4>
-            Test Pattern: {{ test.test_pattern_id }}
+            Test Pattern: {{ test.test_pattern.name }}
           </v-flex>
           <v-flex xs4 md4 sm4>
             Duration: {{ test.duration }} minutes
@@ -102,7 +102,7 @@
           class="elevation-1"
         >
           <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
-          <template slot="items" slot-scope="props">
+          <template slot="items" slot-scope="props" class="scroll-y">
             <td>{{ props.item.unique_id }}</td>
             <td class="text-xs-left">{{ props.item.question_type }}</td>
             <td class="text-xs-left">{{ props.item.subject }} {{ props.item.chapter }}</td>

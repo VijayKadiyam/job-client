@@ -31,9 +31,9 @@
         </td>
         <td>{{ props.item.test_pattern }}</td>
         <td class="text-xs-left">{{ props.item.duration }}</td>
-        <td class="text-xs-left">{{ props.item.description }}</td>
+<!--         <td class="text-xs-left">{{ props.item.description }}</td>
         <td class="text-xs-left">{{ props.item.instructions }}</td>
-        <td class="text-xs-left">{{ props.item.created_at }}</td>
+ -->        <td class="text-xs-left">{{ props.item.created_at }}</td>
         <td class="text-xs-left">
           <v-btn small
             :color="baseColor"
@@ -68,8 +68,8 @@ export default {
       },
       { text: 'Test Pattern', value: 'test_pattern' },
       { text: 'Duration', value: 'duration' },
-      { text: "Test Description", value: 'description' },
-      { text: "Test Instructions", value: 'instructions' },
+      // { text: "Test Description", value: 'description' },
+      // { text: "Test Instructions", value: 'instructions' },
       { text: 'Created Date', value: 'created_at' },
       { text: 'Action', value: '' }
     ],
