@@ -1,20 +1,20 @@
 <template>
   <v-container fluid fill-height>
     <back-button 
-      title="Go Back To Organizations"
-      link="/organizations"
+      title="Go Back To Supervisors"
+      :link="`/organizations/${organization.value}/supervisors`"
     ></back-button>
     <v-layout align-center justify-center>
-      <v-flex xs12 sm8 md8>
+      <v-flex xs12 sm8 md6>
         <v-card class="elevation-12">
           <v-toolbar :dark="darkStatus" :height="baseHeight" :color="baseColor">
-            <v-toolbar-title>Add admin details of {{ org.name }}</v-toolbar-title>
+            <v-toolbar-title>Create Supervisor</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
             <v-form>
               <v-text-field 
                 :error-messages="errors.name"
-                prepend-icon="person" 
+                prepend-icon="public" 
                 name="name" 
                 label="Name"
                 v-model="form.name" 
@@ -94,11 +94,47 @@
                 :items="company_designations"
                 label="Designation"
               ></v-select>
+              <v-select
+                v-model="form.company_state_id"
+                :items="states"
+                label="State"
+                @input="changeBranch"
+              ></v-select>
+              <v-select
+                v-model="form.company_state_branch_id"
+                :items="branches"
+                label="Branches"
+                @input="changeBranch"
+              ></v-select>
+              <v-text-field 
+                :error-messages="errors.pf_no"
+                prepend-icon="done" 
+                name="pf_no" 
+                label="PF NO"
+                v-model="form.pf_no" 
+                type="text"
+              ></v-text-field>
+              <v-text-field 
+                :error-messages="errors.uan_no"
+                prepend-icon="done_all" 
+                name="uan_no" 
+                label="UAN NO"
+                v-model="form.uan_no" 
+                type="text"
+              ></v-text-field>
+              <v-text-field 
+                :error-messages="errors.esi_no"
+                prepend-icon="done_outline" 
+                name="esi_no" 
+                label="ESI NO"
+                v-model="form.esi_no" 
+                type="text"
+              ></v-text-field>
             </v-form>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn :dark="darkStatus" @click="store" :color="baseColor">Create Admin</v-btn>
+            <v-btn :dark="darkStatus" @click="store" :color="baseColor">Create Supervisor</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -110,17 +146,25 @@
 import BackButton from '@/components/back-button.vue'
 
 export default {
-  name: 'CreateAdmin',
+  name: 'CreateEmployee',
   async asyncData({$axios, params}) {
-    let organization = await $axios.get(`/companies/${params.organizationId}`)
+    let company_states = await $axios.get(`/company_states`);
+    let states = []
+    company_states.data.data.forEach(state => {
+      states.push({
+        'text': state.name,
+        'value': state.id
+      })
+    })
     let company_designations = await $axios.get(`/companies/${params.organizationId}/company_designations`)
     company_designations = company_designations.data.data.map(role => ({
       'text': role.name,
       'value': role.id 
-    }));
+    }))
     return {
-      org: organization.data.data,
-      company_designations: company_designations
+      company_designations: company_designations,
+      states: states,
+      company_states: company_states.data.data
     }
   },
   data: () => ({
@@ -131,35 +175,48 @@ export default {
       doj: '',
       dob: '',
       company_designation_id: '',
+      company_state_id: '',
+      company_state_branch_id: '',
       active: 1,
-      role_id: ''
+      role_id: 4,
+      pf_no: '',
+      uan_no: '',
+      esi_no: ''
     },
     dojDateMenu: false,
     dobDateMenu: false,
+    branches: []
   }),
-  mounted() {
-    this.form.role_id = 2;
-  },
   components: {
     BackButton
   },
   methods: {
     async store() {
-      let admin = await this.$axios.post(`/users`, this.form)
-      // Assign Role
-      let role_payload = {
-        user_id: admin.data.data.id,
+      let employee = await this.$axios.post(`/users`, this.form)
+      // RoleUser
+      let role_user = {
+        user_id: employee.data.data.id,
         role_id: this.form.role_id
       }
-      await this.$axios.post('/role_user', role_payload)
-      // Assign Organization
-      let organization_payload = {
-        user_id: admin.data.data.id,
-        company_id: this.$route.params.organizationId
+      await this.$axios.post('/role_user', role_user)
+      // Company User
+      let company_user = {
+        user_id: employee.data.data.id,
+        company_id: this.organization.value
       }
-      await this.$axios.post('/company_user', organization_payload)
-      this.$router.push('/organizations')
+      await this.$axios.post('/company_user', company_user)
+      this.$router.push(`/organizations/${this.organization.value}/supervisors`);
+    },
+    changeBranch() {
+      let state = this.company_states.find(state => state.id == this.form.company_state_id)
+      this.branches = []
+      state.company_state_branches.forEach(branch => {
+        this.branches.push({
+          text: branch.name,
+          value: branch.id
+        })
+      })
     }
   }
 }
-</script>
+</script> 

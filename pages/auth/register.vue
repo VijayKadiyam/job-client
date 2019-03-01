@@ -74,7 +74,7 @@ export default {
   auth: false,
   name: 'Register',
   async asyncData({$axios}) {
-    let organizations = await $axios.get('/organizations');
+    let organizations = await $axios.get('/companies');
     organizations = organizations.data.data.map(organization => ({
       'text': organization.name,
       'value': organization.id 

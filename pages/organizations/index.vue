@@ -59,9 +59,9 @@
 
 <script type="text/javascript">
 export default {
-  name: 'ManageStudents',
+  name: 'ManageOrganizations',
   async asyncData({$axios}) { 
-    let organizations = await $axios.get('/organizations');
+    let organizations = await $axios.get('/companies');
     return {
       organizations: organizations.data.data
     }

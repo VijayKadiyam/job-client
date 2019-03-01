@@ -110,15 +110,20 @@ export default {
   },
   computed: {
     drawer() {
-      if(this.$route.name != "test-papers-id" && this.$route.name != "test-papers-id-instructions" && this.$route.name != "tests-testId-questions")
-        return this.authenticated
-      return false;
+      return this.authenticated
     },
     title() {
       return this.$auth.$state.user ? 
-        (this.$auth.$state.user.organizations.length ? 
-          this.$auth.$state.user.organizations[0].name + ' [' +this.$auth.$state.user.roles[0].name + ']' 
+        (this.$auth.$state.user.companies.length ? 
+          this.$auth.$state.user.companies[0].name + ' [' +this.$auth.$state.user.roles[0].name + ']' 
           : this.$store.getters['settings/organization'].text + ' [By Super Admin]') 
+        : ''
+    },
+    organizationId() {
+      return this.$auth.$state.user ? 
+        (this.$auth.$state.user.companies.length ? 
+          this.$auth.$state.user.companies[0].id
+          : this.$store.getters['settings/organization'].value)
         : ''
     },
     permissions() {
@@ -126,51 +131,72 @@ export default {
     },
     items() {
       let items = [];
-      if(this.permissions.indexOf(1)!= -1)
-        items.push({ icon: 'perm_data_setting', title: 'Manage Data', to: '/manage-data/questions' })
-      if(this.permissions.indexOf(2)!= -1)
-        items.push({ icon: 'fast_forward', title: 'Plan Tests', to: '/tests' })
-      if(this.permissions.indexOf(10)!= -1) {
-        items.push({ icon: 'alarm_add', title: 'Schedule Tests', to: '/schedule-tests' })
-        items.push({ icon: 'alarm', title: 'Scheduled Tests', to: '/scheduled-tests' })  
-      }
-      items.push({ icon: 'play_circle_outline', title: 'Tests', to: '/test-papers' })  
-      if(this.permissions.indexOf(3)!= -1)
-        items.push({ icon: 'group', title: 'Manage Students', to: '/students' })
-      if(this.permissions.indexOf(4)!= -1)
-        items.push({ icon: 'group_add', title: 'Manage Staffs', to: '/staffs' })
       if(this.permissions.indexOf(5)!= -1)
         items.push({ icon: 'public', title: 'Organizations', to: '/organizations' })
-      if(this.permissions.indexOf(6)!= -1)
+      if(this.permissions.indexOf(4)!= -1)
         items.push({ icon: 'account_circle', title: 'Profile', to: '/profile' })
-      if(this.permissions.indexOf(9)!= -1)
-        items.push({ icon: 'notifications_active', title: 'Manage Logins', to: '/logins' })
-      if(this.permissions.indexOf(8)!= -1)
+      if(this.permissions.indexOf(2)!= -1)
         items.push({ icon: 'lock_open', title: 'Manage Permissions', to: '/permissions' })
-      if(this.permissions.indexOf(7)!= -1)
-        items.push({ icon: 'brightness_7', title: 'Super Admin Settings', to: '/settings' })
-      items.push({ title: 'Report Charts', to: '/charts/simple' })
+      // Master
+      if(this.permissions.indexOf(3)!= -1)
+        items.push({ icon: 'work_off', title: 'Holidays', to: '/holidays'})
+      if(this.permissions.indexOf(1)!= -1)
+        items.push({ icon: 'brightness_7', title: 'Settings', to: '/settings'})
+
+      // if(this.permissions.indexOf(1)!= -1)
+      //   items.push({ icon: 'perm_data_setting', title: 'Manage Data', to: '/manage-data/questions' })
+      // if(this.permissions.indexOf(2)!= -1)
+      //   items.push({ icon: 'fast_forward', title: 'Plan Tests', to: '/tests' })
+      // if(this.permissions.indexOf(10)!= -1) {
+      //   items.push({ icon: 'alarm_add', title: 'Schedule Tests', to: '/schedule-tests' })
+      //   items.push({ icon: 'alarm', title: 'Scheduled Tests', to: '/scheduled-tests' })  
+      // }
+      // items.push({ icon: 'play_circle_outline', title: 'Tests', to: '/test-papers' })  
+      // if(this.permissions.indexOf(3)!= -1)
+      //   items.push({ icon: 'group', title: 'Manage Students', to: '/students' })
+      // if(this.permissions.indexOf(4)!= -1)
+      //   items.push({ icon: 'group_add', title: 'Manage Staffs', to: '/staffs' })
+      // if(this.permissions.indexOf(5)!= -1)
+      //   items.push({ icon: 'public', title: 'Organizations', to: '/organizations' })
+      // if(this.permissions.indexOf(6)!= -1)
+      // if(this.permissions.indexOf(9)!= -1)
+      //   items.push({ icon: 'notifications_active', title: 'Manage Logins', to: '/logins' })
+      // if(this.permissions.indexOf(8)!= -1)
+      //   items.push({ icon: 'lock_open', title: 'Manage Permissions', to: '/permissions' })
+      // if(this.permissions.indexOf(7)!= -1)
+      //   items.push({ icon: 'brightness_7', title: 'Super Admin Settings', to: '/settings' })
+      // items.push({ title: 'Report Charts', to: '/charts/simple' })
       return items;
     },
     dropdownItems() {
+      // if(this.permissions.indexOf(3)!= -1 && this.permissions.indexOf(1)!= -1)
       let dropdownItems = [
-        { name: 'Reports', icon: 'pie_chart', items: [] },
-        { name: 'Master', icon: 'build', items: [] },
+        { name: 'Company', icon: 'account_balance', items: [] },
+        { name: 'Users', icon: 'group', items: [] },
+        { name: 'Leaves', icon: 'beach_access', items: [] },
+        { name: 'Applications', icon: 'bookmark_border', items: [] },
       ];
+      
+      // Company
+      if(this.permissions.indexOf(6)!= -1)
+        dropdownItems[0].items.push({ icon: 'school', title: 'Designations', to: `/organizations/${this.organizationId}/designations`})
+      if(this.permissions.indexOf(7)!= -1)
+        dropdownItems[0].items.push({ icon: 'location_on', title: 'States', to: `/organizations/${this.organizationId}/states`})
+      if(this.permissions.indexOf(8)!= -1)
+        dropdownItems[0].items.push({ icon: 'work_off', title: 'Holidays', to: `/organizations/${this.organizationId}/state_holidays`})
+      // Users
+      if(this.permissions.indexOf(10)!= -1)
+        dropdownItems[1].items.push({ icon: 'my_location', title: 'Supervisors', to: `/organizations/${this.organizationId}/supervisors`})
+      if(this.permissions.indexOf(9)!= -1)
+        dropdownItems[1].items.push({ icon: 'person', title: 'Employees', to: `/organizations/${this.organizationId}/employees`})
+      // Leaves
       if(this.permissions.indexOf(11)!= -1)
-        dropdownItems[0].items.push({ icon: 'fast_forward', title: 'Testwise', to: '/reports/test-wise'})
+        dropdownItems[2].items.push({ icon: 'beach_access', title: 'Leaves', to: `/organizations/${this.organizationId}/leaves`})
+      // Applications
       if(this.permissions.indexOf(12)!= -1)
-        dropdownItems[0].items.push({ icon: 'group', title: 'Cumulative', to: '/reports/cumulative'})
-      if(this.permissions.indexOf(13)!= -1)
-        dropdownItems[0].items.push({ icon: 'face', title: 'Student', to: '/reports/student-wise'})
-        dropdownItems[1].items.push({ icon: 'group_work', title: 'Batches', to: '/batches'})
-        dropdownItems[1].items.push({ icon: 'dns', title: 'Test Patterns', to: '/test_patterns'})
+        dropdownItems[3].items.push({ icon: 'bookmark_border', title: 'Leave Applications', to: `/organizations/${this.organizationId}/leave-applications`})
       return dropdownItems;
     }
-  },
-  created() {
-            // { icon: 'notifications_active', title: 'Approve Logins', to: '/approve-logins' }
-
   },
   methods: {
     logout() {

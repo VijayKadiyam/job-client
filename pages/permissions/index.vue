@@ -56,7 +56,7 @@ export default {
       })
     });
     this.updateSelected(this.roles);
-    // this.permissions = this.restrictPermissions(this.permissions)
+    this.permissions = this.restrictPermissions(this.permissions)
     this.permissions.forEach(item => {
       this.items.push({
         id: item.id,
@@ -73,9 +73,9 @@ export default {
         permission_id: rowId,
       }
       if(this.selected.indexOf(rowId + '' + columnId) == -1)
-        await this.$axios.post('/assign_permissions', permission_payload)
+        await this.$axios.post('/permission_role?op=assign', permission_payload)
       else
-        await this.$axios.post('/unassign_permissions', permission_payload)
+        await this.$axios.post('/permission_role?op=unassign', permission_payload)
       this.updateSelected();
     },
     async updateSelected() {
@@ -95,8 +95,10 @@ export default {
       return roles;
     },
     restrictPermissions(permissions) {
+      permissions = permissions.filter(permission => permission.name != 'Manage Holidays')
+      permissions = permissions.filter(permission => permission.name != 'Manage Permissions')
       permissions = permissions.filter(permission => permission.name != 'Manage Organizations')
-      permissions = permissions.filter(permission => permission.name != 'Super Admin Settings')
+      permissions = permissions.filter(permission => permission.name != 'Settings')
       return permissions;
     }
   }
