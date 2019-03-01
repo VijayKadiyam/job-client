@@ -6,7 +6,6 @@
           <v-toolbar :dark="darkStatus" :height="baseHeight" :color="baseColor">
             <v-toolbar-title >Login</v-toolbar-title>
           </v-toolbar>
-          
           <v-card-text>
             <v-form>
               <v-text-field 
