@@ -63,7 +63,7 @@
       </nuxt-link>
       <v-spacer></v-spacer>
       <v-toolbar-items>
-        <!-- <template v-if="authenticated">
+        <template v-if="authenticated">
           <v-btn flat to="/dashboard">
             Dashboard
             <v-icon dark right>dashboard</v-icon>
@@ -82,7 +82,7 @@
             Login
             <v-icon dark right>forward</v-icon>
           </v-btn>
-        </template> -->
+        </template>
       </v-toolbar-items>
     </v-toolbar>
     <v-content>
