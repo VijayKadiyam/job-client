@@ -87,7 +87,7 @@
     </v-toolbar>
     <v-content>
       <v-container px-0>
-        <nuxt />
+        <nuxt></nuxt>
       </v-container>
     </v-content>
     <!-- <v-footer
