@@ -32,9 +32,6 @@
           :prepend-icon="dropdown.icon"
           no-action
         >
-          <v-list-tile slot="activator">
-            <v-list-tile-title>{{ dropdown.name }}</v-list-tile-title>
-          </v-list-tile>
         </v-list-group>
       </v-list>
     </v-navigation-drawer>
