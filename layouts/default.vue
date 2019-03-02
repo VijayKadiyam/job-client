@@ -33,7 +33,7 @@
           no-action
         >
           <template v-slot:activator>
-            <v-list-tile slot="activator">
+            <v-list-tile>
               <v-list-tile-title>{{ dropdown.name }}</v-list-tile-title>
             </v-list-tile>
           </template>
