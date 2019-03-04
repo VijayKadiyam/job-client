@@ -24,7 +24,6 @@
             <v-list-tile-title v-text="item.title" />
           </v-list-tile-content>
         </v-list-tile>
-
         <!-- With dropdowns -->
       </v-list>
     </v-navigation-drawer>
@@ -42,12 +41,22 @@
       </nuxt-link>
       <v-spacer></v-spacer>
       <v-toolbar-items>
-        <template>
-          <v-btn flat to="/dashboard">
-            Dashboard
-            <v-icon dark right>dashboard</v-icon>
-          </v-btn>
-        </template>
+        <v-btn flat to="/dashboard" v-if="authenticated">
+          Dashboard
+          <v-icon dark right>dashboard</v-icon>
+        </v-btn>
+        <v-btn flat @click="logout" v-if="authenticated">
+          Logout
+          <v-icon dark right>cancel_presentation</v-icon>
+        </v-btn>
+        <v-btn flat to="/auth/register" v-if="!authenticated">
+          Register
+          <v-icon dark right>add_circle</v-icon>
+        </v-btn>
+        <v-btn flat to="/auth/login" v-if="!authenticated">
+          Login
+          <v-icon dark right>forward</v-icon>
+        </v-btn>
       </v-toolbar-items>
     </v-toolbar>
     <v-content>
