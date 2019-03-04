@@ -28,7 +28,7 @@
         <!-- With dropdowns -->
         <v-list-group
           v-for="(dropdown, d) in dropdownItems"
-          :key="`D${d}`"
+          :key="d"
           :prepend-icon="dropdown.icon"
           no-action
         >
