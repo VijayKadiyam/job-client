@@ -65,7 +65,7 @@
       <v-toolbar-items>
         <template v-if="authenticated">
           <v-btn flat to="/dashboard">
-            Dashboard
+            Dashboards
             <v-icon dark right>dashboard</v-icon>
           </v-btn>
           <v-btn flat @click="logout" >
