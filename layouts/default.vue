@@ -1,5 +1,41 @@
 <template>
   <v-app light>
+    <v-toolbar
+      :clipped-left="clipped"
+      fixed
+      app
+      :height="baseHeight"
+      :color="baseColor"
+      :dark="darkStatus"
+    >
+      <nuxt-link to="/">
+        <v-icon large right>account_balance</v-icon>
+        <span style="color: white"> {{ title }}</span>
+      </nuxt-link>
+      <v-spacer></v-spacer>
+      <v-toolbar-items>
+        <template v-if="authenticated">
+          <v-btn flat to="/dashboard">
+            Dashboard
+            <v-icon dark right>dashboard</v-icon>
+          </v-btn>
+          <v-btn flat @click="logout" >
+            Logout
+            <v-icon dark right>cancel_presentation</v-icon>
+          </v-btn>
+        </template>
+        <template v-else>
+          <v-btn flat to="/auth/register">
+            Register
+            <v-icon dark right>add_circle</v-icon>
+          </v-btn>
+          <v-btn flat to="/auth/login">
+            Login
+            <v-icon dark right>forward</v-icon>
+          </v-btn>
+        </template>
+      </v-toolbar-items>
+    </v-toolbar>
     <v-content>
       <v-container px-0>
         HI
