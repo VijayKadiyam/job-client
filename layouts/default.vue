@@ -41,19 +41,19 @@
       </nuxt-link>
       <v-spacer></v-spacer>
       <v-toolbar-items>
-        <v-btn flat to="/dashboard" v-if="authenticated">
+        <v-btn flat to="/dashboard">
           Dashboard
           <v-icon dark right>dashboard</v-icon>
         </v-btn>
-        <v-btn flat @click="logout" v-if="authenticated">
+        <v-btn flat @click="logout">
           Logout
           <v-icon dark right>cancel_presentation</v-icon>
         </v-btn>
-        <v-btn flat to="/auth/register" v-if="!authenticated">
+        <v-btn flat to="/auth/register">
           Register
           <v-icon dark right>add_circle</v-icon>
         </v-btn>
-        <v-btn flat to="/auth/login" v-if="!authenticated">
+        <v-btn flat to="/auth/login">
           Login
           <v-icon dark right>forward</v-icon>
         </v-btn>
