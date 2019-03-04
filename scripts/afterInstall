@@ -1,8 +1,7 @@
 #!/bin/bash
 cd /var/www/html/ems/client 
 
-#npm install
+#npm install.
 
-sudo su
-sudo npm run build
+npm run build
  
