@@ -26,12 +26,6 @@
         </v-list-tile>
 
         <!-- With dropdowns -->
-        <v-list-group
-          :prepend-icon="dropdownItems[0].icon"
-          no-action
-        >
-          
-        </v-list-group>
       </v-list>
     </v-navigation-drawer>
     <v-toolbar
