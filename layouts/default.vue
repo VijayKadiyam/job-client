@@ -41,7 +41,7 @@
       </nuxt-link>
       <v-spacer></v-spacer>
       <v-toolbar-items>
-        <v-btn flat to="/dashboard" v-if="authenticated || false">
+        <v-btn flat to="/dashboard" v-if="test">
           Dashboard
           <v-icon dark right>dashboard</v-icon>
         </v-btn>
@@ -83,7 +83,8 @@ export default {
         ['Delete', 'delete']
       ],
       clipped: true,
-      fixed: false
+      fixed: false,
+      test: true
     }
   },
   computed: {
