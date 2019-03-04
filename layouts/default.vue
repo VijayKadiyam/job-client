@@ -14,7 +14,7 @@
       </nuxt-link>
       <v-spacer></v-spacer>
       <v-toolbar-items>
-        <div v-if="authenticated">
+        <div>
           <v-btn flat to="/dashboard">
             Dashboard
             <v-icon dark right>dashboard</v-icon>
