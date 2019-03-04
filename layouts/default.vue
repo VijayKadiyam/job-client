@@ -27,11 +27,14 @@
 
         <!-- With dropdowns -->
         <v-list-group
-          v-for="(dropdown, d) in dropdownItems"
-          :key="d"
-          :prepend-icon="dropdown.icon"
+          :prepend-icon="dropdownItems[0].icon"
           no-action
         >
+          <template slot="activator">
+            <v-list-tile>
+              <v-list-tile-title>{{ dropdownItems[0].name }}</v-list-tile-title>
+            </v-list-tile>
+          </template>
         </v-list-group>
       </v-list>
     </v-navigation-drawer>
