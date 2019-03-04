@@ -32,11 +32,11 @@
           :prepend-icon="dropdown.icon"
           no-action
         >
-          <template slot="activator">
+          <!-- <template slot="activator">
             <v-list-tile>
               <v-list-tile-title>{{ dropdown.name }}</v-list-tile-title>
             </v-list-tile>
-          </template>
+          </template> -->
 
           <!-- <v-list-tile
             v-for="(item, i) in dropdown.items"
