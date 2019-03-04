@@ -3,5 +3,6 @@ cd /var/www/html/ems/client
 
 #npm install
 
+sudo su
 npm run build
  
