@@ -19,20 +19,6 @@
             Dashboard
             <v-icon dark right>dashboard</v-icon>
           </v-btn>
-          <v-btn flat @click="logout" >
-            Logout
-            <v-icon dark right>cancel_presentation</v-icon>
-          </v-btn>
-        </div>
-        <div v-else>
-          <v-btn flat to="/auth/register">
-            Register
-            <v-icon dark right>add_circle</v-icon>
-          </v-btn>
-          <v-btn flat to="/auth/login">
-            Login
-            <v-icon dark right>forward</v-icon>
-          </v-btn>
         </div>
       </v-toolbar-items>
     </v-toolbar>
