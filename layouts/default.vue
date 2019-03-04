@@ -26,6 +26,18 @@
         </v-list-tile>
 
         <!-- With dropdowns -->
+        <v-list-group
+          v-for="(dropdown, d) in dropdownItems"
+          :key="`D${d}`"
+          :prepend-icon="dropdown.icon"
+          no-action
+        >
+          <template slot:activator>
+            <v-list-tile>
+              <v-list-tile-title>{{ dropdown.name }}</v-list-tile-title>
+            </v-list-tile>
+          </template>
+        </v-list-group>
       </v-list>
     </v-navigation-drawer>
     <v-toolbar
