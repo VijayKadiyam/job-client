@@ -147,7 +147,7 @@ export default {
     }
   },
   async mounted() {
-    this.form.date = moment(new Date()).format("DD-MM-YYYY")
+    this.form.date = moment(new Date()).format("YYYY-MM-DD")
     this.user_attendances = await this.$axios.get(`user_attendances?date=${this.form.date}`)
     this.user_attendances = this.user_attendances.data.data
     if(this.user_attendances.length) {
@@ -162,7 +162,7 @@ export default {
   methods: {
     async saveStart() {
       console.log('Session Started');
-      this.form.date = moment(new Date()).format("DD-MM-YYYY")
+      this.form.date = moment(new Date()).format("YYYY-MM-DD")
       this.form.login_time = moment(new Date()).format("HH:mm:ss")
       if(this.user_attendances.length)
       {
