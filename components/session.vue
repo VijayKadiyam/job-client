@@ -103,7 +103,7 @@ export default {
       login_time: '',
       logout_time: ''
     },
-    user_attendances: []
+    user_attendances: {}
   }),
   computed: {
     sessionText() {
@@ -170,11 +170,13 @@ export default {
     async getUserAttendances() {
       this.form.date = moment(new Date()).format("YYYY-MM-DD")
       this.user_attendances = await this.$axios.get(`user_attendances?date=${this.form.date}`)
-      this.user_attendances = this.user_attendances.data.data
+      this.user_attendances = this.user_attendances.data.data ? this.user_attendances.data.data : {} 
       this.form = this.user_attendances
-      this.switchSessionStart = true
-      if(this.user_attendances.logout_time)
-        this.switchSessionEnd = true
+      if(this.user_attendances.login_time) {
+        this.switchSessionStart = true
+        if(this.user_attendances.logout_time)
+          this.switchSessionEnd = true
+      }
     
       this.loading = false
     }
