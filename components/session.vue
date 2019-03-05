@@ -83,7 +83,6 @@ import moment from 'moment'
 export default {
   name: 'ManageSession',
   data: () => ({
-    switch1: false,
     switchSessionStart: false,
     switchSessionBreak: false,
     switchSessionResume: false,
@@ -131,63 +130,54 @@ export default {
     },
     actions() {
       let actions = []
-      this.user_attendances.forEach((att, i) => {
-        if(i == 0) {
-          actions.push({
-            'action': 'Started the session',
-            'time': att.login_time
-          })
-          actions.push({
-            'action': 'Ended the session',
-            'time': att.logout_time
-          })
-        }
+      actions.push({
+        'action': 'Started the session',
+        'time': this.user_attendances.login_time
+      })
+      actions.push({
+        'action': 'Ended the session',
+        'time': this.user_attendances.logout_time
       })
       return actions
     }
   },
   async mounted() {
-    this.form.date = moment(new Date()).format("YYYY-MM-DD")
-    this.user_attendances = await this.$axios.get(`user_attendances?date=${this.form.date}`)
-    this.user_attendances = this.user_attendances.data.data
-    if(this.user_attendances.length) {
-      this.form = this.user_attendances[0]
-      this.switchSessionStart = true
-      if(this.user_attendances[0].logout_time)
-        this.switchSessionEnd = true
-    }
-
-    this.loading = false
+    this.getUserAttendances()
   },
   methods: {
     async saveStart() {
       console.log('Session Started');
       this.form.date = moment(new Date()).format("YYYY-MM-DD")
       this.form.login_time = moment(new Date()).format("HH:mm:ss")
-      if(this.user_attendances.length)
-      {
-      }
-      else  
-        this.$axios.post('/user_attendances', this.form)
+      this.$axios.post('/user_attendances', this.form)
+      this.getUserAttendances()
     },
     saveBreak() {
-      this.switchSessionResume = false
       console.log('Save Break')
+      this.switchSessionResume = false
     },
     saveResume() {
-      this.switchSessionBreak = false
       console.log('Save Resume')
+      this.switchSessionBreak = false
     },
     saveEnd() {
       if(this.switchSessionEnd)
         this.form.logout_time = moment(new Date()).format("HH:mm:ss")
       else
         this.form.logout_time = ''
-      if(this.user_attendances.length)
-      {
-        this.$axios.patch(`/user_attendances/${this.form.id}`, this.form)
-      }
+      this.$axios.patch(`/user_attendances/${this.form.id}`, this.form)
     },
+    async getUserAttendances() {
+      this.form.date = moment(new Date()).format("YYYY-MM-DD")
+      this.user_attendances = await this.$axios.get(`user_attendances?date=${this.form.date}`)
+      this.user_attendances = this.user_attendances.data.data
+      this.form = this.user_attendances
+      this.switchSessionStart = true
+      if(this.user_attendances.logout_time)
+        this.switchSessionEnd = true
+    
+      this.loading = false
+    }
   }
 }
 </script>

@@ -142,6 +142,7 @@ export default {
         items.push({ icon: 'work_off', title: 'Holidays', to: '/holidays'})
       if(this.permissions.indexOf(1)!= -1)
         items.push({ icon: 'brightness_7', title: 'Settings', to: '/settings'})
+      items.push({ icon: 'attach_money', title: 'Sales', to: '/sales'})
       return items;
     },
     dropdownItems() {
