@@ -21,7 +21,7 @@
     >
       <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
       <template slot="items" slot-scope="props">
-        <td>{{ props.item.id }}</td>
+        <td>{{ props.index + 1 }}</td>
         <td>{{ props.item.name }}</td>
         <td class="text-xs-left">
           <nuxt-link :to="`/organizations/${organization.value}/designations/${props.item.id}`">
