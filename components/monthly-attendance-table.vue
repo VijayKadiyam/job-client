@@ -17,3 +17,19 @@
     </v-card>
   </section>
 </template>
+
+<script type="text/javascript">
+import moment from 'moment'
+
+export default {
+  name: 'MonthlyAttendance',
+  async asyncData({$axios, params}) {
+
+  },
+  async mounted() {
+    let month = moment(new Date()).format("MM")
+    console.log(month);
+    // await let $user_attendances = this.$route.
+  }
+}  
+</script>

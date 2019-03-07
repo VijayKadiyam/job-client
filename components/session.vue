@@ -149,7 +149,7 @@ export default {
       console.log('Session Started');
       this.form.date = moment(new Date()).format("YYYY-MM-DD")
       this.form.login_time = moment(new Date()).format("HH:mm:ss")
-      this.$axios.post('/user_attendances', this.form)
+      await this.$axios.post('/user_attendances', this.form)
       this.getUserAttendances()
     },
     saveBreak() {
