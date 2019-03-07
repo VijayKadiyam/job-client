@@ -74,7 +74,7 @@
           </v-btn>
         </template>
         <template v-else>
-          <v-btn flat to="/auth/register">
+          <v-btn flat to="/register">
             Register
             <v-icon dark right>add_circle</v-icon>
           </v-btn>
@@ -143,6 +143,7 @@ export default {
       if(this.permissions.indexOf(1)!= -1)
         items.push({ icon: 'brightness_7', title: 'Settings', to: '/settings'})
       items.push({ icon: 'attach_money', title: 'Sales', to: '/sales'})
+      items.push({ icon: 'security', title: "Reset Password", to: '/auth/reset-password'})
       return items;
     },
     dropdownItems() {

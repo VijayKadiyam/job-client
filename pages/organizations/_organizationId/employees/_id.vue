@@ -209,7 +209,8 @@ export default {
         user_id: employee.data.data.id,
         supervisor_id: this.form.supervisor_id
       }
-      await this.$axios.post('/supervisor_user', supervisor_user)
+      if(this.form.supervisor_id)
+        await this.$axios.post('/supervisor_user', supervisor_user)
       this.$router.push(`/organizations/${this.organization.value}/employees`);
     },
     changeBranch() {
