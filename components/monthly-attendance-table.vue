@@ -29,6 +29,7 @@ export default {
   async mounted() {
     let month = moment(new Date()).format("MM")
     console.log(month);
+    
     // await let $user_attendances = this.$route.
   }
 }  
