@@ -54,6 +54,7 @@ export default {
       { text: 'End', value: 'phone' }
     ],
     loading: true,
+    monthly_user_attendances: []
   }),
   async created() {
     let month = moment(new Date()).format("MM")

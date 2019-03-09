@@ -161,6 +161,7 @@ export default {
         dropdownItems[0].items.push({ icon: 'location_on', title: 'States', to: `/organizations/${this.organizationId}/states`})
       if(this.permissions.indexOf(8)!= -1)
         dropdownItems[0].items.push({ icon: 'work_off', title: 'Holidays', to: `/organizations/${this.organizationId}/state_holidays`})
+      dropdownItems[0].items.push({ icon: 'free_breakfast', title: 'Break Types', to: `/organizations/${this.organizationId}/break-types`})
       // Users
       if(this.permissions.indexOf(10)!= -1)
         dropdownItems[1].items.push({ icon: 'my_location', title: 'Supervisors', to: `/organizations/${this.organizationId}/supervisors`})

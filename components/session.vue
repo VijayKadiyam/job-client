@@ -10,37 +10,75 @@
           <v-flex xs4 px-3>
             <v-switch
               :color="baseColor"
-              v-model="switchSessionStart"
+              v-model="disableSessionStart"
               label="Start Session"
-              :disabled="switchSessionStart==true"
+              :disabled="disableSessionStart==true"
               @change="saveStart"
             ></v-switch>
           </v-flex>
-          <!-- <v-flex xs4 px-3>
+          <v-flex xs4 px-3>
+            <v-dialog
+              v-model="breakDialog"
+              max-width="290"
+              persistent
+            >
+              <v-card>
+                <v-card-title class="headline">Break Type?</v-card-title>
+
+                <v-card-text>
+                  <v-radio-group v-model="formBreak.break_type_id" column
+                  >
+                    <v-radio
+                      v-for="(type, i) in break_types"
+                      :key="`type${i}`"
+                      :label="type.text"
+                      :value="type.value"
+                    ></v-radio>
+                  </v-radio-group>
+                </v-card-text>
+
+                  <v-btn
+                    color="green darken-1"
+                    flat="flat"
+                    @click="closeBreak"
+                  >
+                    Cancel
+                  </v-btn>
+
+                  <v-btn
+                    color="green darken-1"
+                    flat="flat"
+                    @click="saveBreak"
+                  >
+                    Save
+                  </v-btn>
+              </v-card>
+            </v-dialog>
+
             <v-switch
               :color="baseColor"
-              v-model="switchSessionBreak"
+              v-model="disableSessionBreak"
               label="Take Break"
-              @change="saveBreak"
-              :disabled="switchSessionBreak==true || switchSessionStart==false || switchSessionEnd==true"
+              @change="openBreak"
+              :disabled="disableSessionBreak==true || disableSessionStart==false || disableSessionEnd==true"
             ></v-switch>
           </v-flex>
           <v-flex xs4 px-3>
             <v-switch
               :color="baseColor"
-              v-model="switchSessionResume"
+              v-model="disableSessionResume"
               label="Resume Session"
               @change="saveResume"
-              :disabled="switchSessionBreak==false || switchSessionResume==true || switchSessionStart==false || switchSessionEnd==true"
+              :disabled="disableSessionBreak==false || disableSessionResume==true || disableSessionStart==false || disableSessionEnd==true"
             ></v-switch>
-          </v-flex> -->
+          </v-flex>
           <v-flex xs4 px-3>
             <v-switch
               :color="'red'"
-              v-model="switchSessionEnd"
+              v-model="disableSessionEnd"
               label="End Session"
               @change="saveEnd"
-              :disabled="switchSessionStart==false"
+              :disabled="disableSessionStart==false"
             ></v-switch>
           </v-flex>
         </v-layout>
@@ -83,10 +121,10 @@ import moment from 'moment'
 export default {
   name: 'ManageSession',
   data: () => ({
-    switchSessionStart: false,
-    switchSessionBreak: false,
-    switchSessionResume: false,
-    switchSessionEnd: false,
+    disableSessionStart: false,
+    disableSessionBreak: false,
+    disableSessionResume: false,
+    disableSessionEnd: false,
     headers: [
       { text: 'Sr No', value: 'sr_no' },
       {
@@ -103,28 +141,38 @@ export default {
       login_time: '',
       logout_time: ''
     },
-    user_attendances: {}
+    formBreak: {
+      user_attendance_id: '',
+      break_type_id: '',
+      start_time: '',
+      end_time: ''
+    },
+    user_attendances: {
+      user_attendance_breaks: []
+    },
+    breakDialog: false,
+    break_types: []
   }),
   computed: {
     sessionText() {
-      if(this.switchSessionEnd)
+      if(this.disableSessionEnd)
         return 'Thank you. That was worth your time. Be on time tomorrow'
-      if(this.switchSessionResume)
+      if(this.disableSessionResume)
         return 'Great!!! You resumed the session'
-      if(this.switchSessionBreak)
+      if(this.disableSessionBreak)
         return 'You are on break. Come fast. Too much Work!!!'
-      if(this.switchSessionStart)
+      if(this.disableSessionStart)
         return 'Session Started';
       return 'Start your day by clicking "start session"';
     },
     sessionTextColor() {
-      if(this.switchSessionEnd)
+      if(this.disableSessionEnd)
         return 'light-blue'
-      if(this.switchSessionResume)
+      if(this.disableSessionResume)
         return 'green'
-      if(this.switchSessionBreak)
+      if(this.disableSessionBreak)
         return 'orange'
-      if(this.switchSessionStart)
+      if(this.disableSessionStart)
         return 'green'
       return 'blue';
     },
@@ -134,6 +182,12 @@ export default {
         'action': 'Started the session',
         'time': this.user_attendances.login_time
       })
+      this.user_attendances.user_attendance_breaks.forEach(user_break => {
+        actions.push({
+          'action': user_break.break_type.name + ' BREAK',
+          'time'  : user_break.start_time + (user_break.end_time ? ' - ' + user_break.end_time : '')
+        })
+      })
       actions.push({
         'action': 'Ended the session',
         'time': this.user_attendances.logout_time
@@ -142,7 +196,17 @@ export default {
     }
   },
   async mounted() {
-    this.getUserAttendances()
+    await this.getUserAttendances()
+
+    this.formBreak.user_attendance_id = this.form.id
+
+    let types = await this.$axios.get('/break_types')
+    types.data.data.forEach(type => {
+      this.break_types.push({
+        'text': type.name,
+        'value': type.id
+      })
+    })
   },
   methods: {
     async saveStart() {
@@ -152,30 +216,70 @@ export default {
       await this.$axios.post('/user_attendances', this.form)
       this.getUserAttendances()
     },
-    saveBreak() {
+    openBreak() {
+      console.log('Open Break')
+      this.formBreak = {
+        user_attendance_id: '',
+        break_type_id: '',
+        start_time: '',
+        end_time: ''
+      }
+      this.disableSessionResume = false
+      this.breakDialog = true
+    },
+    closeBreak() {
+      console.log('Close Break')
+      this.disableSessionBreak = false
+      this.breakDialog = false
+    },
+    async saveBreak() {
       console.log('Save Break')
-      this.switchSessionResume = false
+      if(this.formBreak.break_type_id) {
+        this.breakDialog = false
+        this.formBreak.start_time = moment(new Date()).format("HH:mm:ss")
+        this.formBreak.end_time = null
+        await this.$axios.post(`/user_attendances/${this.form.id}/user_attendance_breaks`, this.formBreak)
+        this.getUserAttendances()
+      }
+      else
+        alert('No break type selected')
     },
-    saveResume() {
+    async saveResume() {
       console.log('Save Resume')
-      this.switchSessionBreak = false
+      this.disableSessionBreak = false
+      this.formBreak.end_time = moment(new Date()).format("HH:mm:ss")
+      await this.$axios.patch(`/user_attendances/${this.form.id}/user_attendance_breaks/${this.formBreak.id}`, this.formBreak)
+      this.getUserAttendances()
     },
-    saveEnd() {
-      if(this.switchSessionEnd)
+    async saveEnd() {
+      if(this.disableSessionEnd)
         this.form.logout_time = moment(new Date()).format("HH:mm:ss")
       else
         this.form.logout_time = ''
-      this.$axios.patch(`/user_attendances/${this.form.id}`, this.form)
+      await this.$axios.patch(`/user_attendances/${this.form.id}`, this.form)
     },
     async getUserAttendances() {
       this.form.date = moment(new Date()).format("YYYY-MM-DD")
       this.user_attendances = await this.$axios.get(`user_attendances?date=${this.form.date}`)
-      this.user_attendances = this.user_attendances.data.data ? this.user_attendances.data.data : {} 
+      this.user_attendances = this.user_attendances.data.data ? 
+                              this.user_attendances.data.data : 
+                              {
+                                user_attendance_breaks: []
+                              } 
       this.form = this.user_attendances
       if(this.user_attendances.login_time) {
-        this.switchSessionStart = true
+        this.disableSessionStart = true
+        if(this.user_attendances.user_attendance_breaks.length) {
+          // TO check if the user is still on break
+          let user_break = this.user_attendances.user_attendance_breaks.find(user_break => user_break.end_time == null)
+          if(user_break) {
+            // Latest form break whose end time is not defined
+            this.formBreak = user_break
+            this.disableSessionBreak = true
+          }
+        }
         if(this.user_attendances.logout_time)
-          this.switchSessionEnd = true
+          this.disableSessionEnd = true
       }
     
       this.loading = false
