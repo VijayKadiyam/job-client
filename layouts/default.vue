@@ -126,11 +126,15 @@ export default {
           : this.$store.getters['settings/organization'].value)
         : ''
     },
+    role() {
+      return this.user ? this.user.roles[0].name : '';
+    },
     permissions() {
       return this.user ? this.user.roles[0].permissions.map(p => p.id) : ''
     },
     items() {
       let items = [];
+      items.push({ icon: 'accessible', title: 'User Logins', to: '/user-logins' })
       if(this.permissions.indexOf(5)!= -1)
         items.push({ icon: 'public', title: 'Organizations', to: '/organizations' })
       if(this.permissions.indexOf(4)!= -1)

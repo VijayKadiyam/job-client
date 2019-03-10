@@ -252,6 +252,13 @@ export default {
       this.getUserAttendances()
     },
     async saveEnd() {
+      // If the user has not resumed the session
+      // let user_break = this.checkUserBreak()
+      // if(user_break) {
+      //   // Latest form break whose end time is not defined
+      //   this.formBreak = user_break
+      //   this.saveResume()
+      // }
       if(this.disableSessionEnd)
         this.form.logout_time = moment(new Date()).format("HH:mm:ss")
       else
@@ -271,7 +278,7 @@ export default {
         this.disableSessionStart = true
         if(this.user_attendances.user_attendance_breaks.length) {
           // TO check if the user is still on break
-          let user_break = this.user_attendances.user_attendance_breaks.find(user_break => user_break.end_time == null)
+          let user_break = this.checkUserBreak()
           if(user_break) {
             // Latest form break whose end time is not defined
             this.formBreak = user_break
@@ -281,8 +288,10 @@ export default {
         if(this.user_attendances.logout_time)
           this.disableSessionEnd = true
       }
-    
       this.loading = false
+    },
+    checkUserBreak() {
+      return this.user_attendances.user_attendance_breaks.find(user_break => user_break.end_time == null)
     }
   }
 }
