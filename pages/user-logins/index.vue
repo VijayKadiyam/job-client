@@ -100,14 +100,8 @@
 <script type="text/javascript">
 export default {
   name: 'ManageUsersLogins',
-  async asyncData({$axios, params}) { 
-    let users = await $axios.get(`/user_attendances?search=today`);
-    
-    return {
-      users: users.data.data
-    }
-  },
   data:() =>  ({
+    users: [],
     headers: [
       { text: 'Sr No', value: 'sr_no' },
       {
@@ -126,9 +120,10 @@ export default {
     break_dialog: false,
     tests: ['hi', 'fi', 'si']
   }),
-  mounted() {
-    this.users.forEach((user, i) => {
-      console.log(users)
+  async mounted() {
+    this.users = await this.$axios.get(`/user_attendances?search=today`);
+    this.users.data.data.forEach((user, i) => {
+      console.log(this.users)
       this.user_logins.push({
         name: `
           ${user.name} [ ${user.roles[0].name} ]
