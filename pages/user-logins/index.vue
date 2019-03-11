@@ -130,9 +130,7 @@ export default {
     this.users.forEach((user, i) => {
       this.user_logins.push({
         name: `
-          ${user.name} 
-            <br> 
-            ${user.email} [ ${user.roles[0].name} ]
+          ${user.name}
         `,
         login_time: user.user_attendances.length ? user.user_attendances[0].login_time : '-',
         logout_time: user.user_attendances.length ? user.user_attendances[0].logout_time : '-',
