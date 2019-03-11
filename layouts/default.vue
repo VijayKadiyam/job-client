@@ -134,7 +134,8 @@ export default {
     },
     items() {
       let items = [];
-      items.push({ icon: 'accessible', title: 'User Logins', to: '/user-logins' })
+      if(this.permissions.indexOf(16)!= -1)
+        items.push({ icon: 'accessible', title: 'User Logins', to: '/user-logins' })
       if(this.permissions.indexOf(5)!= -1)
         items.push({ icon: 'public', title: 'Organizations', to: '/organizations' })
       if(this.permissions.indexOf(4)!= -1)
@@ -146,8 +147,10 @@ export default {
         items.push({ icon: 'work_off', title: 'Holidays', to: '/holidays'})
       if(this.permissions.indexOf(1)!= -1)
         items.push({ icon: 'brightness_7', title: 'Settings', to: '/settings'})
-      items.push({ icon: 'attach_money', title: 'Sales', to: '/sales'})
-      items.push({ icon: 'security', title: "Reset Password", to: '/auth/reset-password'})
+      if(this.permissions.indexOf(13)!= -1)
+        items.push({ icon: 'attach_money', title: 'Sales', to: '/sales'})
+      if(this.permissions.indexOf(14)!= -1)
+        items.push({ icon: 'security', title: "Reset Password", to: '/auth/reset-password'})
       return items;
     },
     dropdownItems() {
@@ -165,7 +168,8 @@ export default {
         dropdownItems[0].items.push({ icon: 'location_on', title: 'States', to: `/organizations/${this.organizationId}/states`})
       if(this.permissions.indexOf(8)!= -1)
         dropdownItems[0].items.push({ icon: 'work_off', title: 'Holidays', to: `/organizations/${this.organizationId}/state_holidays`})
-      dropdownItems[0].items.push({ icon: 'free_breakfast', title: 'Break Types', to: `/organizations/${this.organizationId}/break-types`})
+      if(this.permissions.indexOf(15)!= -1)
+        dropdownItems[0].items.push({ icon: 'free_breakfast', title: 'Break Types', to: `/organizations/${this.organizationId}/break-types`})
       // Users
       if(this.permissions.indexOf(10)!= -1)
         dropdownItems[1].items.push({ icon: 'my_location', title: 'Supervisors', to: `/organizations/${this.organizationId}/supervisors`})
