@@ -128,9 +128,10 @@ export default {
   }),
   mounted() {
     this.users.forEach((user, i) => {
+      console.log(users)
       this.user_logins.push({
         name: `
-          ${user.name}
+          ${user.name} [ ${user.roles[0].name} ]
         `,
         login_time: user.user_attendances.length ? user.user_attendances[0].login_time : '-',
         logout_time: user.user_attendances.length ? user.user_attendances[0].logout_time : '-',
