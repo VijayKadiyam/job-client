@@ -123,7 +123,6 @@ export default {
   async mounted() {
     this.users = await this.$axios.get(`/user_attendances?search=today`);
     this.users.data.data.forEach((user, i) => {
-      console.log(this.users)
       this.user_logins.push({
         name: `
           ${user.name} [ ${user.roles[0].name} ]
