@@ -154,33 +154,60 @@ export default {
       return items;
     },
     dropdownItems() {
-      let dropdownItems = [
-        { name: 'Company', icon: 'account_balance', items: [] },
-        { name: 'Users', icon: 'group', items: [] },
-        { name: 'Leaves', icon: 'beach_access', items: [] },
-        { name: 'Applications', icon: 'bookmark_border', items: [] },
-      ];
-      
+      let dropdownItems = [];
+      let length = 0;
       // Company
-      if(this.permissions.indexOf(6)!= -1)
-        dropdownItems[0].items.push({ icon: 'school', title: 'Designations', to: `/organizations/${this.organizationId}/designations`})
-      if(this.permissions.indexOf(7)!= -1)
-        dropdownItems[0].items.push({ icon: 'location_on', title: 'States', to: `/organizations/${this.organizationId}/states`})
-      if(this.permissions.indexOf(8)!= -1)
-        dropdownItems[0].items.push({ icon: 'work_off', title: 'Holidays', to: `/organizations/${this.organizationId}/state_holidays`})
-      if(this.permissions.indexOf(15)!= -1)
-        dropdownItems[0].items.push({ icon: 'free_breakfast', title: 'Break Types', to: `/organizations/${this.organizationId}/break-types`})
+      if(this.permissions.indexOf(6)!= -1 || this.permissions.indexOf(7)!= -1 || this.permissions.indexOf(8)!= -1 || this.permissions.indexOf(15)!= -1) {
+
+        dropdownItems.push({ name: 'Company', icon: 'account_balance', items: [] })
+        length = dropdownItems.length - 1
+
+        if(this.permissions.indexOf(6)!= -1)
+          dropdownItems[length].items.push({ icon: 'school', title: 'Designations', to: `/organizations/${this.organizationId}/designations`})
+        if(this.permissions.indexOf(7)!= -1)
+          dropdownItems[length].items.push({ icon: 'location_on', title: 'States', to: `/organizations/${this.organizationId}/states`})
+        if(this.permissions.indexOf(8)!= -1)
+          dropdownItems[length].items.push({ icon: 'work_off', title: 'Holidays', to: `/organizations/${this.organizationId}/state_holidays`})
+        if(this.permissions.indexOf(15)!= -1)
+          dropdownItems[length].items.push({ icon: 'free_breakfast', title: 'Break Types', to: `/organizations/${this.organizationId}/break-types`})
+      }
+      
       // Users
-      if(this.permissions.indexOf(10)!= -1)
-        dropdownItems[1].items.push({ icon: 'my_location', title: 'Supervisors', to: `/organizations/${this.organizationId}/supervisors`})
-      if(this.permissions.indexOf(9)!= -1)
-        dropdownItems[1].items.push({ icon: 'person', title: 'Employees', to: `/organizations/${this.organizationId}/employees`})
+      if(this.permissions.indexOf(10)!= -1 || this.permissions.indexOf(9)!= -1) {
+
+        dropdownItems.push({ name: 'Users', icon: 'group', items: [] })
+        length = dropdownItems.length - 1
+
+        if(this.permissions.indexOf(10)!= -1)
+          dropdownItems[length].items.push({ icon: 'my_location', title: 'Supervisors', to: `/organizations/${this.organizationId}/supervisors`})
+        if(this.permissions.indexOf(9)!= -1)
+          dropdownItems[length].items.push({ icon: 'person', title: 'Employees', to: `/organizations/${this.organizationId}/employees`})
+
+      }
+
       // Leaves
-      if(this.permissions.indexOf(11)!= -1)
-        dropdownItems[2].items.push({ icon: 'beach_access', title: 'Leaves', to: `/organizations/${this.organizationId}/leaves`})
+      if(this.permissions.indexOf(11)!= -1) {
+
+        dropdownItems.push({ name: 'Leaves', icon: 'beach_access', items: [] })
+        length = dropdownItems.length - 1
+
+        if(this.permissions.indexOf(11)!= -1)
+          dropdownItems[length].items.push({ icon: 'beach_access', title: 'Leaves', to: `/organizations/${this.organizationId}/leaves`})
+      }
+
       // Applications
-      if(this.permissions.indexOf(12)!= -1)
-        dropdownItems[3].items.push({ icon: 'bookmark_border', title: 'Leave Applications', to: `/organizations/${this.organizationId}/leave-applications`})
+      if(this.permissions.indexOf(12)!= -1) {
+
+        dropdownItems.push({ name: 'Applications', icon: 'bookmark_border', items: [] })
+        length = dropdownItems.length - 1
+
+        if(this.permissions.indexOf(11)!= -1)
+          dropdownItems[length].items.push({ icon: 'beach_access', title: 'Leaves', to: `/organizations/${this.organizationId}/leaves`})
+
+        if(this.permissions.indexOf(12)!= -1)
+          dropdownItems[length].items.push({ icon: 'bookmark_border', title: 'Leave Applications', to: `/organizations/${this.organizationId}/leave-applications`})
+      }
+      
       return dropdownItems;
     }
   },
