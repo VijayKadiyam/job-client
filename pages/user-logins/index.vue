@@ -7,6 +7,7 @@
       :items="user_logins"
       :loading="loading"
       class="elevation-1"
+      hide-actions
     >
       <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
       <template slot="items" slot-scope="props">

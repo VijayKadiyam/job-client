@@ -201,9 +201,6 @@ export default {
         dropdownItems.push({ name: 'Applications', icon: 'bookmark_border', items: [] })
         length = dropdownItems.length - 1
 
-        if(this.permissions.indexOf(11)!= -1)
-          dropdownItems[length].items.push({ icon: 'beach_access', title: 'Leaves', to: `/organizations/${this.organizationId}/leaves`})
-
         if(this.permissions.indexOf(12)!= -1)
           dropdownItems[length].items.push({ icon: 'bookmark_border', title: 'Leave Applications', to: `/organizations/${this.organizationId}/leave-applications`})
       }
