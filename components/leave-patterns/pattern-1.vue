@@ -51,7 +51,7 @@
       :items="company_leaves"
       class="elevation-1"
       :loading="loading"
-      hide-actions
+      hide-actions 
     >
       <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
       <template slot="items" slot-scope="props">
