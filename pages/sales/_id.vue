@@ -13,6 +13,48 @@
           <v-card-text>
             <v-form>
               <v-text-field 
+                :error-messages="errors.customer_name"
+                prepend-icon="person" 
+                name="customer_name" 
+                label="Customer Name"
+                v-model="form.customer_name" 
+                type="text"
+              ></v-text-field>
+              <v-text-field 
+                :error-messages="errors.phone_no"
+                prepend-icon="phone" 
+                name="phone_no" 
+                label="Customer Phone No"
+                v-model="form.phone_no" 
+                type="text"
+              ></v-text-field>
+              <v-menu
+                ref="dateMenu"
+                :close-on-content-click="false"
+                v-model="dateMenu"
+                :nudge-right="40"
+                :return-value.sync="form.doj"
+                lazy
+                transition="scale-transition"
+                offset-y
+                full-width
+                min-width="290px"
+              >
+                <v-text-field
+                  :error-messages="errors.date"
+                  slot="activator"
+                  v-model="form.date"
+                  label="Date"
+                  prepend-icon="event"
+                  readonly
+                ></v-text-field>
+                <v-date-picker v-model="form.date" no-title scrollable>
+                  <v-spacer></v-spacer>
+                  <v-btn flat color="primary" @click="dateMenu = false">Cancel</v-btn>
+                  <v-btn flat color="primary" @click="$refs.dateMenu.save(form.date)">OK</v-btn>
+                </v-date-picker>
+              </v-menu>
+              <v-text-field 
                 :error-messages="errors.amount"
                 prepend-icon="attach_money" 
                 name="amount" 
@@ -24,7 +66,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn :dark="darkStatus" @click="store" :color="baseColor">Update Sales Amount</v-btn>
+            <v-btn :dark="darkStatus" @click="store" :color="baseColor">Update Sales</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -45,17 +87,13 @@ export default {
     }
   },
   data: () => ({
-    form: {
-      date: '',
-      amount: ''
-    }
+    dateMenu: false
   }),
   components: {
     BackButton
   },
   methods: {
     async store() {
-      this.form.date = moment(new Date()).format("YYYY-MM-DD")
       await this.$axios.patch(`/user_sales/${this.$route.params.id}`, this.form)
       this.$router.push(`/sales`);
     }

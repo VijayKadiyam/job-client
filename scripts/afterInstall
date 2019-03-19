@@ -3,6 +3,6 @@ cd /var/www/html/ems/client
 
 #npm install.
 
-#npm run build
-#pm2 restart npm -- start
+npm run build
+pm2 restart npm -- start
  

@@ -23,6 +23,8 @@
       <template slot="items" slot-scope="props">
         <td>{{ props.item.id }}</td>
         <td>{{ props.item.date }}</td>
+        <td>{{ props.item.customer_name }}</td>
+        <td>{{ props.item.phone_no }}</td>
         <td>&#36; {{ props.item.amount }}</td>
         <td class="text-xs-left">
           <nuxt-link :to="`/sales/${props.item.id}`">
@@ -52,7 +54,9 @@ export default {
         sortable: false,
         value: 'name'
       },
-      { text: 'Amount', value: '' },
+      { text: 'Customer Name', value: 'customer_name' },
+      { text: 'Phone No', value: 'phone_no' },
+      { text: 'Amount', value: 'amount' },
       { text: 'Action', value: '' }
     ],
     loading: true
