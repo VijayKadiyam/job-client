@@ -21,10 +21,25 @@
     >
       <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
       <template slot="items" slot-scope="props">
-        <td>{{ props.item.id }}</td>
+        <td>{{ props.index + 1 }}</td>
         <td>{{ props.item.company_leave.name }}</td>
         <td>{{ props.item.from_date }}</td>
         <td>{{ props.item.to_date }}</td>
+        <td>{{ props.item.description }}</td>
+        <td v-if="props.item.application_approvals.length"> 
+          <div v-if="props.item.application_approvals[0].status == 0">
+            Un Approved
+          </div>
+          <div v-if="props.item.application_approvals[0].status == 1">
+            Approved
+          </div>
+          <div v-if="props.item.application_approvals[0].status == 2">
+            On Hold
+          </div>
+        </td>
+        <td v-else>
+          On Hold
+        </td>
         <td class="text-xs-left">
           <nuxt-link :to="`/organizations/${organization.value}/leave-applications/${props.item.id}`">
             <v-icon>edit</v-icon>
@@ -55,6 +70,8 @@ export default {
       },
       { text: 'From Date', value: 'from_date' },
       { text: 'To Date', value: 'to_date' },
+      { text: 'Description', value: 'description' },
+      { text: 'Status', value: 'status' },
       { text: 'Action', value: '' }
     ],
     loading: true

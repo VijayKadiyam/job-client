@@ -1,12 +1,12 @@
 <template>
   <section>
-    <span class="title">Manage Break Types</span>
+    <span class="title">Manage Transport Modes</span>
     <v-btn
       small
       fab
-      :to="`/organizations/${organization.value}/break-types/create`"
+      :to="`/organizations/${organization.value}/transport-modes/create`"
       :color="baseColor"
-      title="Add New Designation"
+      title="Add New Transport Mode"
       :dark="darkStatus"
     >
       <v-icon>
@@ -15,7 +15,7 @@
     </v-btn>
     <v-data-table
       :headers="headers"
-      :items="break_types"
+      :items="modes"
       :loading="loading"
       class="elevation-1"
       hide-actions
@@ -25,7 +25,7 @@
         <td>{{ props.index + 1 }}</td>
         <td>{{ props.item.name }}</td>
         <td class="text-xs-left">
-          <nuxt-link :to="`/organizations/${organization.value}/break-types/${props.item.id}`">
+          <nuxt-link :to="`/organizations/${organization.value}/transport-modes/${props.item.id}`">
             <v-icon>edit</v-icon>
           </nuxt-link>
         </td>
@@ -36,23 +36,24 @@
 
 <script type="text/javascript">
 export default {
-  name: 'ManageBreakTypes',
+  name: 'ManageTransportModes',
   async asyncData({$axios, params}) { 
-    let break_types = await $axios.get(`break_types`);
+    let transport_modes = await $axios.get(`transport_modes`);
+    console.log(transport_modes)
     return {
-      break_types: break_types.data.data
+      modes: transport_modes.data.data
     }
   },
   data:() =>  ({
     headers: [
       { text: 'Sr No', value: 'sr_no' },
       {
-        text: 'Break Type',
+        text: 'Transport Mode',
         align: 'left',
         sortable: false,
         value: 'name'
       },
-      { text: 'Action', value: '' }
+      { text: 'Action', value: '' },
     ],
     loading: true
   }),

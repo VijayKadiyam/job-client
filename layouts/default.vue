@@ -170,6 +170,8 @@ export default {
           dropdownItems[length].items.push({ icon: 'work_off', title: 'Holidays', to: `/organizations/${this.organizationId}/state_holidays`})
         if(this.permissions.indexOf(15)!= -1)
           dropdownItems[length].items.push({ icon: 'free_breakfast', title: 'Break Types', to: `/organizations/${this.organizationId}/break-types`})
+        dropdownItems[length].items.push({ icon: 'tram', title: 'Transport Modes', to: `/organizations/${this.organizationId}/transport-modes`})
+        dropdownItems[length].items.push({ icon: 'money', title: 'Allowance Types', to: `/organizations/${this.organizationId}/allowance-types`})
       }
       
       // Users
@@ -203,6 +205,7 @@ export default {
 
         if(this.permissions.indexOf(12)!= -1)
           dropdownItems[length].items.push({ icon: 'bookmark_border', title: 'Leave Applications', to: `/organizations/${this.organizationId}/leave-applications`})
+        dropdownItems[length].items.push({ icon: 'bookmark', title: 'Application Approvals', to: `/organizations/${this.organizationId}/application-approvals`})
       }
       
       return dropdownItems;

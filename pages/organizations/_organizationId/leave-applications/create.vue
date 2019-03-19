@@ -71,6 +71,14 @@
                   <v-btn flat color="primary" @click="$refs.toDateMenu.save(form.to_date)">OK</v-btn>
                 </v-date-picker>
               </v-menu>
+              <v-textarea
+                :error-messages="errors.description"
+                name="description" 
+                prepend-icon="description" 
+                label="Description" 
+                v-model="form.description"
+                hint="Hint text"
+              ></v-textarea>
             </v-form>
           </v-card-text>
           <v-card-actions>
@@ -109,6 +117,7 @@ export default {
       company_leave_id: '',
       from_date: '',
       to_date: '',
+      description: ''
     },
     fromDateMenu: false,
     toDateMenu: false,

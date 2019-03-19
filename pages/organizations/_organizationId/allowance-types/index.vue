@@ -1,10 +1,10 @@
 <template>
   <section>
-    <span class="title">Manage Break Types</span>
+    <span class="title">Manage Allowance Types</span>
     <v-btn
       small
       fab
-      :to="`/organizations/${organization.value}/break-types/create`"
+      :to="`/organizations/${organization.value}/allowance-types/create`"
       :color="baseColor"
       title="Add New Designation"
       :dark="darkStatus"
@@ -24,8 +24,9 @@
       <template slot="items" slot-scope="props">
         <td>{{ props.index + 1 }}</td>
         <td>{{ props.item.name }}</td>
+        <td>{{ props.item.amount }}</td>
         <td class="text-xs-left">
-          <nuxt-link :to="`/organizations/${organization.value}/break-types/${props.item.id}`">
+          <nuxt-link :to="`/organizations/${organization.value}/allowance-types/${props.item.id}`">
             <v-icon>edit</v-icon>
           </nuxt-link>
         </td>
@@ -36,9 +37,9 @@
 
 <script type="text/javascript">
 export default {
-  name: 'ManageBreakTypes',
+  name: 'ManageAllowanceTypes',
   async asyncData({$axios, params}) { 
-    let break_types = await $axios.get(`break_types`);
+    let break_types = await $axios.get(`allowance_types`);
     return {
       break_types: break_types.data.data
     }
@@ -47,11 +48,12 @@ export default {
     headers: [
       { text: 'Sr No', value: 'sr_no' },
       {
-        text: 'Break Type',
+        text: 'Allowance Type',
         align: 'left',
         sortable: false,
         value: 'name'
       },
+      { text: 'Amount', value: 'amount' },
       { text: 'Action', value: '' }
     ],
     loading: true

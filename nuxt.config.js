@@ -89,7 +89,7 @@ module.exports = {
   */
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
-    baseURL: (process.env.NODE_ENV !== 'production') ?  'http://localhost:8080/api' : 'http://13.232.128.229:8080/api'
+    baseURL: (process.env.NODE_ENV !== 'production') ?  'http://192.168.43.9:8080/api' : 'http://13.232.128.229:8080/api'
   },
 
   /*
