@@ -130,6 +130,14 @@
                 v-model="form.esi_no" 
                 type="text"
               ></v-text-field>
+              <v-text-field 
+                :error-messages="errors.salary"
+                prepend-icon="money" 
+                name="salary" 
+                label="Salary"
+                v-model="form.salary" 
+                type="text"
+              ></v-text-field>
             </v-form>
           </v-card-text>
           <v-card-actions>
@@ -181,7 +189,8 @@ export default {
       role_id: 4,
       pf_no: '',
       uan_no: '',
-      esi_no: ''
+      esi_no: '',
+      salary: '',
     },
     dojDateMenu: false,
     dobDateMenu: false,

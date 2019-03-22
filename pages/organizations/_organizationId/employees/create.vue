@@ -130,6 +130,14 @@
                 v-model="form.esi_no" 
                 type="text"
               ></v-text-field>
+              <v-text-field 
+                :error-messages="errors.salary"
+                prepend-icon="money" 
+                name="salary" 
+                label="Salary"
+                v-model="form.salary" 
+                type="text"
+              ></v-text-field>
               <v-select
                 v-model="form.supervisor_id"
                 :items="supervisors"
@@ -193,6 +201,7 @@ export default {
       pf_no: '',
       uan_no: '',
       esi_no: '',
+      salary: '',
       supervisor_id: ''
     },
     dojDateMenu: false,

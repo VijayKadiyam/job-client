@@ -98,6 +98,7 @@ export default {
   name: 'CreateLeaveApplication',
   async asyncData({$axios, params}) {
     let company = await $axios.get(`/companies/${params.organizationId}`)
+    console.log(company)
     company = company.data.data
     let company_leaves = await $axios.get(`company_leaves`)
     let leave_pattern_id = ''

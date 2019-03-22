@@ -56,7 +56,8 @@ module.exports = {
     '@/plugins/mixins/auth',
     '@/plugins/mixins/settings',
     '@/plugins/axios',
-    '@/plugins/charts'
+    '@/plugins/charts',
+    { src: '@/plugins/vue-json-excel', ssr: false }
   ],
 
   auth: {
@@ -89,7 +90,11 @@ module.exports = {
   */
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
-    baseURL: (process.env.NODE_ENV !== 'production') ?  'http://localhost:8080/api' : 'http://13.232.128.229:8080/api'
+    baseURL: (process.env.NODE_ENV == 'production') 
+      ? ((process.env.CLIENT == 'pms')
+          ? 'http://92.42.108.132:8082//api' // For PMS 
+          : 'http://13.232.128.229:8080/api') // For Sanket
+      : 'http://192.168.43.9:8080/api' // For Localhost
   },
 
   /*

@@ -8,6 +8,8 @@
     "dev": "NODE_ENV=development nuxt",
     "build": "nuxt build",
     "start": "NODE_ENV=production nuxt start",
+    "pms": "NODE_ENV=production CLIENT=pms nuxt start",
+    "sanket": "NODE_ENV=production CLIENT=sanket nuxt start",
     "generate": "nuxt generate"
   },
   "dependencies": {

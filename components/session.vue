@@ -4,7 +4,7 @@
       <v-card-title primary-title>
         <v-btn round :color="sessionTextColor"
           dark
-        >{{sessionText}}</v-btn>
+        >{{sessionText}} <!-- [{{ duration }} &nbsp; <clock :time="duration"></clock>] --></v-btn>
         <br><br>
         <v-layout>
           <v-flex xs4 px-3>
@@ -117,6 +117,7 @@
 
 <script type="text/javascript">
 import moment from 'moment'
+import clock from '@/components/clock.vue'
 
 export default {
   name: 'ManageSession',
@@ -151,7 +152,8 @@ export default {
       user_attendance_breaks: []
     },
     breakDialog: false,
-    break_types: []
+    break_types: [],
+    duration: ''
   }),
   computed: {
     sessionText() {
@@ -194,6 +196,21 @@ export default {
       })
       return actions
     }
+  },
+  components: {
+    clock
+  },
+  created() {
+    var start = moment.utc(this.form.login_time, "HH:mm:ss")
+    var end = moment.utc(new Date(), 'HH:mm:ss')
+    // calculate the duration
+    var d = moment.duration(end.diff(start));
+
+    // subtract the lunch break
+    // d.subtract(30, 'minutes');
+
+    // format a string result
+    this.duration = moment(+d).format('HH:mm:ss')
   },
   async mounted() {
     await this.getUserAttendances()

@@ -29,6 +29,7 @@
         <td>{{ props.item.dob }}</td>
         <td>{{ props.item.company_designation.name }}</td>
         <td>{{ props.item.company_state_branch ? props.item.company_state_branch.name : '-' }}</td>
+        <td>{{ props.item.salary }}</td>
         <td>{{ props.item.supervisors.length ? props.item.supervisors[0].name : '' }}</td>
         <td class="text-xs-left">
           <nuxt-link :to="`/organizations/${organization.value}/employees/${props.item.id}`">
@@ -63,6 +64,7 @@ export default {
       { text: 'DOB', value: 'dob' },
       { text: 'Designation', value: 'designation' },
       { text: 'Branch', value: 'branch' },
+      { text: 'Salary', value: 'salary' },
       { text: 'Supervisor', value: 'supervisor' },
       { text: 'Action', value: '' }
     ],

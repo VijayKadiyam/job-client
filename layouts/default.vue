@@ -207,6 +207,12 @@ export default {
           dropdownItems[length].items.push({ icon: 'bookmark_border', title: 'Leave Applications', to: `/organizations/${this.organizationId}/leave-applications`})
         dropdownItems[length].items.push({ icon: 'bookmark', title: 'Application Approvals', to: `/organizations/${this.organizationId}/application-approvals`})
       }
+
+      dropdownItems.push({ name: 'Reports', icon: 'bookmark_border', items: [] })
+        length = dropdownItems.length - 1
+
+        dropdownItems[length].items.push({ icon: 'bookmark_border', title: 'Leave Report', to: `/reports/leave-report`})
+        dropdownItems[length].items.push({ icon: 'bookmark_border', title: 'Plan Report', to: `/reports/plan-report`})
       
       return dropdownItems;
     }
@@ -253,5 +259,10 @@ a {
 a.links{
   text-decoration: underline !important;
   color: blue;
+}
+
+.download {
+   color: red !important;
+   text-decoration: underline !important; 
 }
 </style>
