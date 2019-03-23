@@ -1,6 +1,6 @@
 <template>
   <section>
-    {{ display }} {{ timer }}
+    {{displayContent}} {{ display }}
   </section>
 </template>
 
@@ -10,32 +10,37 @@ import moment from 'moment'
 
 export default {
   data: () => ({
-    timer: ''
+    formattedTime: '',
+    timer: '',
   }),
-  props: ['time'],
+  props: ['time', 'content'],
   watch: {
     time: 'updateTimer'
   },
   computed: {
     display() {
-      return this.timer
+      if(this.timer != 'Invalid date')
+        return this.timer
+      return null
+    },
+    displayContent() {
+      if(this.timer != 'Invalid date')
+        return this.content
+      return null
     }
   },
   mounted() {
-    this.timer = this.time
-    let t = moment(this.timer, 'HH:mm:ss')
-    t.add(1, 'seconds')
-    this.timer = moment(t).format('HH:mm:ss');
+    this.formattedTime = moment(this.time, 'HH:mm:ss')
 
     setInterval(() => {
-      t.add(1, 'seconds')
-      this.timer = moment(t).format('HH:mm:ss');
+      this.formattedTime.add(1, 'seconds')
+      this.timer = moment(this.formattedTime).format('HH:mm:ss')
     }, 1000)
   },
   methods: {
     updateTimer(newValue) {
-      console.log(this.timer)
-      this.timer = newValue
+      this.formattedTime = moment(newValue, 'HH:mm:ss')
+      this.timer = moment(this.formattedTime).format('HH:mm:ss')
     }
   }
 }  

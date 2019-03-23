@@ -4,7 +4,7 @@
       <v-card-title primary-title>
         <v-btn round :color="sessionTextColor"
           dark
-        >{{sessionText}} <!-- [{{ duration }} &nbsp; <clock :time="duration"></clock>] --></v-btn>
+        >{{sessionText}} [<clock :time="duration"></clock>]</v-btn>
         <br><br>
         <v-layout>
           <v-flex xs4 px-3>
@@ -200,19 +200,7 @@ export default {
   components: {
     clock
   },
-  created() {
-    var start = moment.utc(this.form.login_time, "HH:mm:ss")
-    var end = moment.utc(new Date(), 'HH:mm:ss')
-    // calculate the duration
-    var d = moment.duration(end.diff(start));
-
-    // subtract the lunch break
-    // d.subtract(30, 'minutes');
-
-    // format a string result
-    this.duration = moment(+d).format('HH:mm:ss')
-  },
-  async mounted() {
+  async created() {
     await this.getUserAttendances()
 
     this.formBreak.user_attendance_id = this.form.id
@@ -224,6 +212,8 @@ export default {
         'value': type.id
       })
     })
+
+    this.duration = this.getDuration(this.form.login_time, new Date())
   },
   methods: {
     async saveStart() {
@@ -309,6 +299,18 @@ export default {
     },
     checkUserBreak() {
       return this.user_attendances.user_attendance_breaks.find(user_break => user_break.end_time == null)
+    },
+    getDuration(startTime,  endTime) {
+      var start = moment.utc(startTime, "HH:mm:ss")
+      var end = moment.utc(endTime, 'HH:mm:ss')
+      // calculate the duration
+      var d = moment.duration(end.diff(start));
+
+      // subtract the lunch break
+      // d.subtract(30, 'minutes');
+
+      // format a string result
+      return moment(+d).format('HH:mm:ss')
     }
   }
 }

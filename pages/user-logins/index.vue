@@ -69,7 +69,7 @@
             class="green--text"
             small
           >
-            LIVE
+            LIVE 
           </v-btn>
           <v-btn flat 
             v-if="props.item.status == 'LOGGED OUT'"
@@ -92,13 +92,20 @@
           >
             NOT STARTED
           </v-btn>
-        </td>
+          <br>
+          {{ props.item.duration == 'Invalid date' ? '' : 'Live Hours: ' + props.item.duration }}
+<!--           <br>
+          {{ props.item.duration == 'Invalid date' ? '' : 'Break Hours: ' + props.item.duration }}
+ -->        </td>
       </template>
     </v-data-table>
   </section>
 </template>
 
 <script type="text/javascript">
+import moment from 'moment'
+import clock from '@/components/clock.vue'
+
 export default {
   name: 'ManageUsersLogins',
   data:() =>  ({
@@ -119,8 +126,11 @@ export default {
     loading: true,
     user_logins: [],
     break_dialog: false,
-    tests: ['hi', 'fi', 'si']
+    tests: ['hi', 'fi', 'si'],
   }),
+  components: {
+    clock
+  },
   async mounted() {
     this.users = await this.$axios.get(`/user_attendances?search=today`);
     this.users.data.data.forEach((user, i) => {
@@ -138,6 +148,7 @@ export default {
           :
           [],
         breakDialog: false,
+        duration: this.getDuration(user.user_attendances.length ? user.user_attendances[0].login_time : '', user.user_attendances.length ? user.user_attendances[0].logout_time : ''),
         status: 
           user.user_attendances.length ? 
           (
@@ -163,6 +174,30 @@ export default {
       })
     })
     this.loading = false
+  },
+  methods: {
+    getDuration(startTime,  endTime) {
+      var start = '';
+      var end = moment.utc(new Date(), 'HH:mm:ss')
+      if(startTime != "") {
+        start = moment.utc(startTime, "HH:mm:ss")
+      }
+      if(endTime != "" && endTime != null) {
+        end = moment.utc(endTime, 'HH:mm:ss')
+      }
+      console.log(start)
+      console.log(end)
+      console.log(moment(end.diff(start)).format('HH:mm:ss'));
+
+      // calculate the duration
+      var d = moment.duration(end.diff(start));
+      console.log(moment(+d).format('HH:mm:ss'))
+      // subtract the lunch break
+      // d.subtract(30, 'minutes');
+
+      // format a string result
+      return moment(+d).format('HH:mm:ss')
+    }
   }
 }
 </script>

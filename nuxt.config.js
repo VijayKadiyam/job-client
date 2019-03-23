@@ -91,10 +91,10 @@ module.exports = {
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
     baseURL: (process.env.NODE_ENV == 'production') 
-      ? ((process.env.CLIENT == 'pms')
-          ? 'http://92.42.108.132:8082//api' // For PMS 
-          : 'http://13.232.128.229:8080/api') // For Sanket
-      : 'http://192.168.43.9:8080/api' // For Localhost
+      ? ((process.env.NUXT_ENV_CLIENT == 'pms')
+          ? 'http://92.42.108.132:8082/api' // For PMS 
+          : 'http://13.232.128.229:8082/api')// For Sanket
+      : 'http://localhost:8080/api' // For Localhost
   },
 
   /*
