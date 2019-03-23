@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "NODE_ENV=development nuxt",
     "build": "nuxt build",
-    "build_pms": "NUXT_ENV_CLIENT=pms nuxt build",
+    "build_pms": "set NUXT_ENV_CLIENT=pms & nuxt build",
     "build_sanket": "NUXT_ENV_CLIENT=sanket nuxt build",
     "start": "NODE_ENV=production nuxt start",
     "generate": "nuxt generate"
