@@ -260,7 +260,7 @@ export default {
       await this.$axios.patch(`/user_attendances/${this.form.id}/user_attendance_breaks/${this.formBreak.id}`, this.formBreak)
       this.getUserAttendances()
     },
-    async saveEnd() {
+    async saveEnd() { 
       // If the user has not resumed the session
       // let user_break = this.checkUserBreak()
       // if(user_break) {
