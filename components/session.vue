@@ -222,6 +222,8 @@ export default {
       this.form.login_time = moment(new Date()).format("HH:mm:ss")
       await this.$axios.post('/user_attendances', this.form)
       this.getUserAttendances()
+
+      this.duration = this.getDuration(this.form.login_time, new Date())
     },
     openBreak() {
       console.log('Open Break')

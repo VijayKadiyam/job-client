@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "dev": "NODE_ENV=development nuxt",
-    "build": "nuxt build",
+    "build": "NODE_ENV=production nuxt build",
     "build_pms": "NODE_ENV=production NUXT_ENV_CLIENT=pms nuxt build",
     "build_sanket": "NODE_ENV=production NUXT_ENV_CLIENT=sanket nuxt build",
     "start": "nuxt start",
