@@ -6,12 +6,14 @@ export default function({store, redirect, route}) {
   let organizations = user ? user.companies : ''
   let id = organizations.length ? organizations[0].id : '';
   let name = organizations.length ? organizations[0].name : '';
+  let time_zone = organizations.length ? organizations[0].time_zone : 'Asia/Calcutta';
   if(!id) 
     id = store.getters['settings/organization'].value
   else
     store.dispatch('settings/setOrganization', {
       text: name,
-      value: id
+      value: id,
+      time_zone: time_zone
     })
   if(!id)
   {

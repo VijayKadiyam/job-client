@@ -24,7 +24,8 @@ export default {
     let organizations = await $axios.get('/companies');
     organizations = organizations.data.data.map(organization => ({
       'text': organization.name,
-      'value': organization.id 
+      'value': organization.id,
+      'time_zone': organization.time_zone ? organization.time_zone : 'Asia/Calcutta'
     }));
     return {
       organizations: organizations

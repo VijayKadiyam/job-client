@@ -43,6 +43,13 @@
                 label="Address" 
                 v-model="form.address"
               ></v-text-field>
+              <v-autocomplete
+                :error-messages="errors.time_zone"
+                v-model="form.time_zone"
+                :items="time_zones"
+                label="Time Zone"
+              >
+              </v-autocomplete>
             </v-form>
           </v-card-text>
           <v-card-actions>
@@ -58,6 +65,9 @@
 <script type="text/javascript">
 import BackButton from '@/components/back-button.vue'
 
+import moment from 'moment'
+import moment_timezone from 'moment-timezone'
+
 export default {
   name: 'UpdateOrganization',
   async asyncData({$axios, params}) {
@@ -68,11 +78,22 @@ export default {
   },
   data: () => ({
     form: {
-      name: ''
-    }
+      name: '',
+      time_zone: ''
+    },
+    time_zones: []
   }),
   components: {
     BackButton
+  },
+  mounted() {
+    var timezones = moment.tz.names();
+    for (var i = 0; i < timezones.length; i++) {
+      this.time_zones.push({
+        'text': timezones[i],
+        'value': timezones[i]
+      })
+    }
   },
   methods: {
     async store() {

@@ -93,10 +93,13 @@
             NOT STARTED
           </v-btn>
           <br>
-          {{ props.item.duration == 'Invalid date' ? '' : 'Live Hours: ' + props.item.duration }}
-<!--           <br>
-          {{ props.item.duration == 'Invalid date' ? '' : 'Break Hours: ' + props.item.duration }}
- -->        </td>
+          <template v-if="props.item.logout_time==null">
+            <clock :content="'Live Hours: '"  :time="props.item.duration"></clock>
+          </template>
+          <template v-else>
+            {{ props.item.duration == 'Invalid date' ? '' : 'Live Hours: ' + props.item.duration }}
+          </template>
+        </td>
       </template>
     </v-data-table>
   </section>
@@ -104,6 +107,8 @@
 
 <script type="text/javascript">
 import moment from 'moment'
+import moment_timezone from 'moment-timezone'
+
 import clock from '@/components/clock.vue'
 
 export default {
@@ -127,11 +132,13 @@ export default {
     user_logins: [],
     break_dialog: false,
     tests: ['hi', 'fi', 'si'],
+    time_zone: ''
   }),
   components: {
     clock
   },
   async mounted() {
+    this.time_zone = this.organization.time_zone
     this.users = await this.$axios.get(`/user_attendances?search=today`);
     this.users.data.data.forEach((user, i) => {
       this.user_logins.push({
@@ -178,25 +185,22 @@ export default {
   methods: {
     getDuration(startTime,  endTime) {
       var start = '';
-      var end = moment.utc(new Date(), 'HH:mm:ss')
+      var end = moment.utc(moment().tz(this.time_zone).format("HH:mm:ss"), 'HH:mm:ss')
       if(startTime != "") {
         start = moment.utc(startTime, "HH:mm:ss")
       }
       if(endTime != "" && endTime != null) {
         end = moment.utc(endTime, 'HH:mm:ss')
       }
-      console.log(start)
-      console.log(end)
-      console.log(moment(end.diff(start)).format('HH:mm:ss'));
 
       // calculate the duration
       var d = moment.duration(end.diff(start));
-      console.log(moment(+d).format('HH:mm:ss'))
+
       // subtract the lunch break
       // d.subtract(30, 'minutes');
 
       // format a string result
-      return moment(+d).format('HH:mm:ss')
+      return moment.utc(+d).format('HH:mm:ss')
     }
   }
 }

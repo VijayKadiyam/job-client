@@ -4,7 +4,17 @@
       <v-card-title primary-title>
         <v-btn round :color="sessionTextColor"
           dark
-        >{{sessionText}} [<clock :time="duration"></clock>]</v-btn>
+        >
+          {{sessionText}} 
+            [
+              <template v-if="form.logout_time==null">
+                <clock  :time="duration"></clock>
+              </template>
+              <template v-else>
+                {{ duration }}
+              </template>
+            ]
+        </v-btn>
         <br><br>
         <v-layout>
           <v-flex xs4 px-3>
@@ -117,6 +127,7 @@
 
 <script type="text/javascript">
 import moment from 'moment'
+import moment_timezone from 'moment-timezone'
 import clock from '@/components/clock.vue'
 
 export default {
@@ -153,7 +164,8 @@ export default {
     },
     breakDialog: false,
     break_types: [],
-    duration: ''
+    duration: '',
+    time_zone: ''
   }),
   computed: {
     sessionText() {
@@ -213,17 +225,20 @@ export default {
       })
     })
 
-    this.duration = this.getDuration(this.form.login_time, new Date())
+    this.time_zone = this.organization.time_zone
+    var latest_time = moment().tz(this.time_zone).format("HH:mm:ss")
+    this.duration = this.getDuration(this.form.login_time, latest_time)
   },
   methods: {
     async saveStart() {
       console.log('Session Started');
-      this.form.date = moment(new Date()).format("YYYY-MM-DD")
-      this.form.login_time = moment(new Date()).format("HH:mm:ss")
+      this.form.date = moment().tz(this.time_zone).format("YYYY-MM-DD")
+      this.form.login_time = moment().tz(this.time_zone).format("HH:mm:ss")
       await this.$axios.post('/user_attendances', this.form)
       this.getUserAttendances()
 
-      this.duration = this.getDuration(this.form.login_time, new Date())
+      var latest_time = moment().tz(this.time_zone).format("HH:mm:ss")
+      this.duration = this.getDuration(this.form.login_time, latest_time)
     },
     openBreak() {
       console.log('Open Break')
@@ -245,7 +260,7 @@ export default {
       console.log('Save Break')
       if(this.formBreak.break_type_id) {
         this.breakDialog = false
-        this.formBreak.start_time = moment(new Date()).format("HH:mm:ss")
+        this.formBreak.start_time = moment().tz(this.time_zone).format("HH:mm:ss")
         this.formBreak.end_time = null
         await this.$axios.post(`/user_attendances/${this.form.id}/user_attendance_breaks`, this.formBreak)
         this.getUserAttendances()
@@ -256,7 +271,7 @@ export default {
     async saveResume() {
       console.log('Save Resume')
       this.disableSessionBreak = false
-      this.formBreak.end_time = moment(new Date()).format("HH:mm:ss")
+      this.formBreak.end_time = moment().tz(this.time_zone).format("HH:mm:ss")
       await this.$axios.patch(`/user_attendances/${this.form.id}/user_attendance_breaks/${this.formBreak.id}`, this.formBreak)
       this.getUserAttendances()
     },
@@ -268,8 +283,9 @@ export default {
       //   this.formBreak = user_break
       //   this.saveResume()
       // }
-      if(this.disableSessionEnd)
-        this.form.logout_time = moment(new Date()).format("HH:mm:ss")
+      if(this.disableSessionEnd) {
+        this.form.logout_time = moment().tz(this.time_zone).format("HH:mm:ss")
+      }
       else
         this.form.logout_time = ''
       await this.$axios.patch(`/user_attendances/${this.form.id}`, this.form)
@@ -312,7 +328,7 @@ export default {
       // d.subtract(30, 'minutes');
 
       // format a string result
-      return moment(+d).format('HH:mm:ss')
+      return moment.utc(+d).format('HH:mm:ss')
     }
   }
 }

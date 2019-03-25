@@ -4,7 +4,8 @@ export const state = () => ({
   darkStatus: true,
   organization: {
     value: '',
-    text: ''
+    text: '',
+    time_zone: ''
   }
 })
 
