@@ -211,6 +211,7 @@ export default {
   },
   methods: {
     async store() {
+      this.form.active = 1
       let employee = await this.$axios.patch(`/users/${this.form.id}`, this.form)
       // Supervisor User
       let supervisor_user = {
