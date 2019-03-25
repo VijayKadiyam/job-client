@@ -100,7 +100,7 @@ module.exports = {
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
     baseURL: (process.env.NODE_ENV == 'production') 
-      ? 'http://92.42.108.132:15502/api')// For Sanket
+      ? 'http://92.42.108.132:15502/api' // For Sanket
       : 'http://localhost:8080/api' // For Localhost
   },
 
