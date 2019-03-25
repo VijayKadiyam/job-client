@@ -11,7 +11,17 @@
     >
       <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
       <template slot="items" slot-scope="props">
-        <td>{{ props.index + 1 }}</td>
+        <td>
+          {{ props.index + 1 }}
+          <v-btn 
+            v-if="props.item.login_time != null 
+              && props.item.login_time != '-' 
+              && (props.item.logout_time == null 
+                  || 
+                  props.item.logout_time == '-')" 
+            flat color="red" small @click="forceLogout(props.item.user_attendance_id)"
+          >Force logout</v-btn>
+        </td>
         <td v-html="props.item.name"></td>
         <td>{{ props.item.login_time }}</td>
         <td>{{ props.item.logout_time }}</td>
@@ -132,57 +142,69 @@ export default {
     user_logins: [],
     break_dialog: false,
     tests: ['hi', 'fi', 'si'],
-    time_zone: ''
+    time_zone: '',
+    form: {
+      user_id: '',
+      date: '',
+      login_time: '',
+      logout_time: ''
+    }
   }),
   components: {
     clock
   },
   async mounted() {
     this.time_zone = this.organization.time_zone
-    this.users = await this.$axios.get(`/user_attendances?search=today`);
-    this.users.data.data.forEach((user, i) => {
-      this.user_logins.push({
-        name: `
-          ${user.name} [ ${user.roles[0].name} ]
-        `,
-        login_time: user.user_attendances.length ? user.user_attendances[0].login_time : '-',
-        logout_time: user.user_attendances.length ? user.user_attendances[0].logout_time : '-',
-        breaks: 
-          user.user_attendances.length ?
-          (
-            user.user_attendances[0].user_attendance_breaks
-          )
-          :
-          [],
-        breakDialog: false,
-        duration: this.getDuration(user.user_attendances.length ? user.user_attendances[0].login_time : '', user.user_attendances.length ? user.user_attendances[0].logout_time : ''),
-        status: 
-          user.user_attendances.length ? 
-          (
-            user.user_attendances[0].logout_time ? 
+    this.fetchLogins()
+  },
+  methods: {
+    async fetchLogins() {
+      this.loading = true
+      this.user_logins = []
+      this.users = await this.$axios.get(`/user_attendances?search=today`);
+      this.users.data.data.forEach((user, i) => {
+        this.user_logins.push({
+          user_attendance_id: user.user_attendances.length ? user.user_attendances[0].id : '',
+          name: `
+            ${user.name} [ ${user.roles[0].name} ]
+          `,
+          login_time: user.user_attendances.length ? user.user_attendances[0].login_time : '-',
+          logout_time: user.user_attendances.length ? user.user_attendances[0].logout_time : '-',
+          breaks: 
+            user.user_attendances.length ?
             (
-              'LOGGED OUT'
+              user.user_attendances[0].user_attendance_breaks
             )
             :
-            user.user_attendances[0].user_attendance_breaks.length ? 
+            [],
+          breakDialog: false,
+          duration: this.getDuration(user.user_attendances.length ? user.user_attendances[0].login_time : '', user.user_attendances.length ? user.user_attendances[0].logout_time : ''),
+          status: 
+            user.user_attendances.length ? 
             (
-              user.user_attendances[0].user_attendance_breaks.find(user_break => user_break.end_time == null) ?
+              user.user_attendances[0].logout_time ? 
               (
-                'ON BREAK'
+                'LOGGED OUT'
+              )
+              :
+              user.user_attendances[0].user_attendance_breaks.length ? 
+              (
+                user.user_attendances[0].user_attendance_breaks.find(user_break => user_break.end_time == null) ?
+                (
+                  'ON BREAK'
+                )
+                :
+                'LIVE'
               )
               :
               'LIVE'
-            )
-            :
-            'LIVE'
-          ) 
-          : 
-          'NOT STARTED'
+            ) 
+            : 
+            'NOT STARTED'
+        })
       })
-    })
-    this.loading = false
-  },
-  methods: {
+      this.loading = false
+    },
     getDuration(startTime,  endTime) {
       var start = '';
       var end = moment.utc(moment().tz(this.time_zone).format("HH:mm:ss"), 'HH:mm:ss')
@@ -201,6 +223,13 @@ export default {
 
       // format a string result
       return moment.utc(+d).format('HH:mm:ss')
+    },
+    async forceLogout(attendanceId) {
+      let user_attendance = await this.$axios.get(`user_attendances/${attendanceId}`)
+      user_attendance.data.data.logout_time = moment().tz(this.time_zone).format("HH:mm:ss")
+      console.log(user_attendance)
+      await this.$axios.patch(`/user_attendances/${attendanceId}`, user_attendance.data.data)
+      this.fetchLogins();
     }
   }
 }
