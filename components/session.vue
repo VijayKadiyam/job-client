@@ -198,7 +198,7 @@ export default {
       })
       this.user_attendances.user_attendance_breaks.forEach(user_break => {
         actions.push({
-          'action': user_break.break_type.name + ' BREAK',
+          'action': user_break.break_type.name,
           'time'  : user_break.start_time + (user_break.end_time ? ' - ' + user_break.end_time : '')
         })
       })
