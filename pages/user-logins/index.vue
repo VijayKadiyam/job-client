@@ -161,7 +161,8 @@ export default {
     async fetchLogins() {
       this.loading = true
       this.user_logins = []
-      this.users = await this.$axios.get(`/user_attendances?search=today`);
+      let date = moment().tz(this.time_zone).format("YYYY-MM-DD")
+      this.users = await this.$axios.get(`/user_attendances?searchDate=${date}`);
       this.users.data.data.forEach((user, i) => {
         this.user_logins.push({
           user_attendance_id: user.user_attendances.length ? user.user_attendances[0].id : '',
