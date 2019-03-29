@@ -170,8 +170,11 @@ export default {
           dropdownItems[length].items.push({ icon: 'work_off', title: 'Holidays', to: `/organizations/${this.organizationId}/state_holidays`})
         if(this.permissions.indexOf(15)!= -1)
           dropdownItems[length].items.push({ icon: 'free_breakfast', title: 'Break Types', to: `/organizations/${this.organizationId}/break-types`})
+        dropdownItems[length].items.push({ icon: 'all_inbox', title: 'Leave Types', to: `/organizations/${this.organizationId}/leave-types`})
         dropdownItems[length].items.push({ icon: 'tram', title: 'Transport Modes', to: `/organizations/${this.organizationId}/transport-modes`})
+        dropdownItems[length].items.push({ icon: 'settings_ethernet', title: 'Travelling Ways', to: `/organizations/${this.organizationId}/travelling-ways`})
         dropdownItems[length].items.push({ icon: 'money', title: 'Allowance Types', to: `/organizations/${this.organizationId}/allowance-types`})
+        dropdownItems[length].items.push({ icon: 'assignment', title: 'Voucher Types', to: `/organizations/${this.organizationId}/voucher-types`})
       }
       
       // Users
@@ -208,11 +211,12 @@ export default {
         dropdownItems[length].items.push({ icon: 'bookmark', title: 'Application Approvals', to: `/organizations/${this.organizationId}/application-approvals`})
       }
 
-      dropdownItems.push({ name: 'Reports', icon: 'bookmark_border', items: [] })
+      dropdownItems.push({ name: 'Reports', icon: 'file_copy', items: [] })
         length = dropdownItems.length - 1
 
-        dropdownItems[length].items.push({ icon: 'bookmark_border', title: 'Leave Report', to: `/reports/leave-report`})
-        dropdownItems[length].items.push({ icon: 'bookmark_border', title: 'Plan Report', to: `/reports/plan-report`})
+        dropdownItems[length].items.push({ icon: 'how_to_vote', title: 'Leave Report', to: `/reports/leave-report`})
+        dropdownItems[length].items.push({ icon: 'inbox', title: 'Plan Report', to: `/reports/plan-report`})
+        dropdownItems[length].items.push({ icon: 'flag', title: 'Sales Report', to: `/reports/sales-report`})
       
       return dropdownItems;
     }

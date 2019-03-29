@@ -20,7 +20,6 @@ import Salary from '@/components/salary.vue'
 
 import Vue from 'vue'
 
-
 export default {
   components: {
     Session, MonthlyAttendanceTable, Salary

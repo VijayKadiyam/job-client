@@ -213,6 +213,8 @@ export default {
     clock
   },
   async created() {
+    this.time_zone = this.organization.time_zone
+
     await this.getUserAttendances()
 
     this.formBreak.user_attendance_id = this.form.id
@@ -224,10 +226,9 @@ export default {
         'value': type.id
       })
     })
-
-    this.time_zone = this.organization.time_zone
+    
     var latest_time = moment().tz(this.time_zone).format("HH:mm:ss")
-    this.duration = this.getDuration(this.form.login_time, latest_time)
+    this.duration = this.getDuration(this.form.login_time, this.form.logout_time ? this.form.logout_time : latest_time)
   },
   methods: {
     async saveStart() {
@@ -291,7 +292,7 @@ export default {
       await this.$axios.patch(`/user_attendances/${this.form.id}`, this.form)
     },
     async getUserAttendances() {
-      this.form.date = moment(new Date()).format("YYYY-MM-DD")
+      this.form.date = moment().tz(this.time_zone).format("YYYY-MM-DD")
       this.user_attendances = await this.$axios.get(`user_attendances?date=${this.form.date}`)
       this.user_attendances = this.user_attendances.data.data ? 
                               this.user_attendances.data.data : 
@@ -319,16 +320,23 @@ export default {
       return this.user_attendances.user_attendance_breaks.find(user_break => user_break.end_time == null)
     },
     getDuration(startTime,  endTime) {
-      var start = moment.utc(startTime, "HH:mm:ss")
-      var end = moment.utc(endTime, 'HH:mm:ss')
-      // calculate the duration
-      var d = moment.duration(end.diff(start));
+      var d = this.getMomentDuration(startTime, endTime)
 
       // subtract the lunch break
-      // d.subtract(30, 'minutes');
+      // d.add(d);
+      // d.add(d);
 
       // format a string result
       return moment.utc(+d).format('HH:mm:ss')
+    },
+    getBreakDuration() {
+      
+    },
+    getMomentDuration(startTime, endTime) {
+      var start = moment.utc(startTime, "HH:mm:ss")
+      var end = moment.utc(endTime, 'HH:mm:ss')
+      // calculate the duration
+      return moment.duration(end.diff(start));
     }
   }
 }

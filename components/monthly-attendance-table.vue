@@ -88,7 +88,7 @@ export default {
 
     let month = moment().format("MM")
     let attendances = await this.$axios.get(`user_attendances?month=${month}`)
-    console.log(attendances.data.data)
+    // console.log(attendances.data.data)
     attendances.data.data.forEach((attendance) => {
       this.monthly_user_attendances.push({
         'id': attendance.id,
