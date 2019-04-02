@@ -57,7 +57,8 @@ module.exports = {
     '@/plugins/mixins/settings',
     '@/plugins/axios',
     '@/plugins/charts',
-    { src: '@/plugins/vue-json-excel', ssr: false }
+    { src: '@/plugins/vue-json-excel', ssr: false },
+    { src: "@/plugins/vue2-google-maps.js"}
   ],
 
   auth: {
@@ -94,7 +95,7 @@ module.exports = {
       ? ((process.env.NUXT_ENV_CLIENT == 'pms')
           ? 'http://92.42.108.132:8082/api' // For PMS 
           : 'http://crm.firststepsolutions.in:8080/api/')// For Sanket
-      : 'http://localhost:8080/api' // For Localhost
+      : 'http://92.42.108.132:8082/api' // For Localhost
   },
 
   /*
@@ -105,7 +106,7 @@ module.exports = {
     ** You can extend webpack config here
     */
     extend(config, ctx) {
-      
-    }
+      transpile: [/^vue2-google-maps($|\/)/]
+    },
   },
 }

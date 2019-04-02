@@ -151,6 +151,7 @@ export default {
         items.push({ icon: 'attach_money', title: 'Sales', to: '/sales'})
       if(this.permissions.indexOf(14)!= -1)
         items.push({ icon: 'security', title: "Reset Password", to: '/auth/reset-password'})
+      items.push({ icon: 'location_on', title: "Location", to: '/locations'})
       return items;
     },
     dropdownItems() {
