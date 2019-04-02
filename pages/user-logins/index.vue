@@ -123,6 +123,12 @@ import clock from '@/components/clock.vue'
 
 export default {
   name: 'ManageUsersLogins',
+  async asyncData({$axios}) {
+    let timeStampJson = await $axios.get('http://worldclockapi.com/api/json/utc/now')
+    return {
+      currentTimeStamp: timeStampJson.data.currentDateTime
+    }
+  },
   data:() =>  ({
     users: [],
     headers: [
@@ -155,13 +161,14 @@ export default {
   },
   async mounted() {
     this.time_zone = this.organization.time_zone
+    this.currentMoment = moment.utc(this.currentTimeStamp).tz(this.time_zone)
     this.fetchLogins()
   },
   methods: {
     async fetchLogins() {
       this.loading = true
       this.user_logins = []
-      let date = moment().tz(this.time_zone).format("YYYY-MM-DD")
+      let date = this.currentMoment.format("YYYY-MM-DD")
       this.users = await this.$axios.get(`/user_attendances?searchDate=${date}`);
       this.users.data.data.forEach((user, i) => {
         this.user_logins.push({
@@ -208,7 +215,7 @@ export default {
     },
     getDuration(startTime,  endTime) {
       var start = '';
-      var end = moment.utc(moment().tz(this.time_zone).format("HH:mm:ss"), 'HH:mm:ss')
+      var end = moment.utc(this.currentMoment.format("HH:mm:ss"), 'HH:mm:ss')
       if(startTime != "") {
         start = moment.utc(startTime, "HH:mm:ss")
       }
@@ -227,7 +234,7 @@ export default {
     },
     async forceLogout(attendanceId) {
       let user_attendance = await this.$axios.get(`user_attendances/${attendanceId}`)
-      user_attendance.data.data.logout_time = moment().tz(this.time_zone).format("HH:mm:ss")
+      user_attendance.data.data.logout_time = this.currentMoment.format("HH:mm:ss")
       console.log(user_attendance)
       await this.$axios.patch(`/user_attendances/${attendanceId}`, user_attendance.data.data)
       this.fetchLogins();

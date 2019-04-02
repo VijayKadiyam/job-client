@@ -165,8 +165,12 @@ export default {
     breakDialog: false,
     break_types: [],
     duration: '',
-    time_zone: ''
+    time_zone: '',
+    currentMoment: ''
   }),
+  props: [
+    'currentTimeStamp'
+  ],
   computed: {
     sessionText() {
       if(this.disableSessionEnd)
@@ -213,7 +217,11 @@ export default {
     clock
   },
   async created() {
+    
     this.time_zone = this.organization.time_zone
+    // console.log(moment.utc(this.currentTimeStamp).tz(this.time_zone).format("HH:mm:ss"))
+
+    this.currentMoment = moment.utc(this.currentTimeStamp).tz(this.time_zone)
 
     await this.getUserAttendances()
 
@@ -226,19 +234,21 @@ export default {
         'value': type.id
       })
     })
+
     
-    var latest_time = moment().tz(this.time_zone).format("HH:mm:ss")
+    var latest_time = this.currentMoment.format("HH:mm:ss")
+    // console.log(latest_time)
     this.duration = this.getDuration(this.form.login_time, this.form.logout_time ? this.form.logout_time : latest_time)
   },
   methods: {
     async saveStart() {
       console.log('Session Started');
-      this.form.date = moment().tz(this.time_zone).format("YYYY-MM-DD")
-      this.form.login_time = moment().tz(this.time_zone).format("HH:mm:ss")
+      this.form.date = this.currentMoment.format("YYYY-MM-DD")
+      this.form.login_time = this.currentMoment.format("HH:mm:ss")
       await this.$axios.post('/user_attendances', this.form)
       this.getUserAttendances()
 
-      var latest_time = moment().tz(this.time_zone).format("HH:mm:ss")
+      var latest_time = this.currentMoment.format("HH:mm:ss")
       this.duration = this.getDuration(this.form.login_time, latest_time)
     },
     openBreak() {
@@ -261,7 +271,7 @@ export default {
       console.log('Save Break')
       if(this.formBreak.break_type_id) {
         this.breakDialog = false
-        this.formBreak.start_time = moment().tz(this.time_zone).format("HH:mm:ss")
+        this.formBreak.start_time = this.currentMoment.format("HH:mm:ss")
         this.formBreak.end_time = null
         await this.$axios.post(`/user_attendances/${this.form.id}/user_attendance_breaks`, this.formBreak)
         this.getUserAttendances()
@@ -272,7 +282,7 @@ export default {
     async saveResume() {
       console.log('Save Resume')
       this.disableSessionBreak = false
-      this.formBreak.end_time = moment().tz(this.time_zone).format("HH:mm:ss")
+      this.formBreak.end_time = this.currentMoment.format("HH:mm:ss")
       await this.$axios.patch(`/user_attendances/${this.form.id}/user_attendance_breaks/${this.formBreak.id}`, this.formBreak)
       this.getUserAttendances()
     },
@@ -285,14 +295,14 @@ export default {
       //   this.saveResume()
       // }
       if(this.disableSessionEnd) {
-        this.form.logout_time = moment().tz(this.time_zone).format("HH:mm:ss")
+        this.form.logout_time = this.currentMoment.format("HH:mm:ss")
       }
       else
         this.form.logout_time = ''
       await this.$axios.patch(`/user_attendances/${this.form.id}`, this.form)
     },
     async getUserAttendances() {
-      this.form.date = moment().tz(this.time_zone).format("YYYY-MM-DD")
+      this.form.date = this.currentMoment.format("YYYY-MM-DD")
       this.user_attendances = await this.$axios.get(`user_attendances?date=${this.form.date}`)
       this.user_attendances = this.user_attendances.data.data ? 
                               this.user_attendances.data.data : 

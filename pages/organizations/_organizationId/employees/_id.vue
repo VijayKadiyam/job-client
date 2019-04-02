@@ -12,6 +12,28 @@
           </v-toolbar>
           <v-card-text>
             <v-form>
+              <v-avatar
+                size="120px"
+                v-if="form.image_path"
+              >
+                <img
+                  :src="form.image_path"
+                  alt="Profile Image"
+                >
+              </v-avatar>
+              <v-text-field 
+                label="Select Image" 
+                @click='pickFile' 
+                v-model='imageName' 
+                prepend-icon='attach_file'
+              ></v-text-field>
+              <input
+                type="file"
+                style="display: none"
+                ref="image"
+                accept="image/*"
+                @change="onFilePicked"
+              >
               <v-text-field 
                 :error-messages="errors.name"
                 prepend-icon="public" 
@@ -192,7 +214,9 @@ export default {
   data: () => ({
     dojDateMenu: false,
     dobDateMenu: false,
-    branches: []
+    branches: [],
+    imageName: '',
+    imageFile: ''
   }),
   components: {
     BackButton
@@ -221,6 +245,10 @@ export default {
       if(this.form.supervisor_id)
         await this.$axios.post('/supervisor_user', supervisor_user)
       this.$router.push(`/organizations/${this.organization.value}/employees`);
+
+      // To upload a file
+      let form = new FormData()
+      
     },
     changeBranch() {
       let state = this.company_states.find(state => state.id == this.form.company_state_id)
@@ -231,6 +259,28 @@ export default {
           value: branch.id
         })
       })
+    },
+    pickFile () {
+      this.$refs.image.click ()
+    },
+    onFilePicked (e) {
+      const files = e.target.files
+      if(files[0] !== undefined) {
+        this.imageName = files[0].name
+        if(this.imageName.lastIndexOf('.') <= 0) {
+          return
+        }
+        const fr = new FileReader ()
+        fr.readAsDataURL(files[0])
+        fr.addEventListener('load', () => {
+          this.form.image_path = fr.result
+          this.imageFile = files[0] // this is an image file that can be sent to server...
+        })
+      } else {
+        this.imageName = ''
+        this.imageFile = ''
+        this.form.image_path = ''
+      }
     }
   }
 }

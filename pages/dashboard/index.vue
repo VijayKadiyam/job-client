@@ -2,7 +2,7 @@
   <section>
     <v-layout row wrap>
       <v-flex xs6 px-4>
-        <session></session>
+        <session :currentTimeStamp="currentTimeStamp"></session>
         <br>
         <salary></salary>
       </v-flex>
@@ -21,6 +21,12 @@ import Salary from '@/components/salary.vue'
 import Vue from 'vue'
 
 export default {
+  async asyncData({$axios}) {
+    let timeStampJson = await $axios.get('http://worldclockapi.com/api/json/utc/now')
+    return {
+      currentTimeStamp: timeStampJson.data.currentDateTime
+    }
+  },
   components: {
     Session, MonthlyAttendanceTable, Salary
   }
