@@ -12,7 +12,7 @@
       </v-flex>
     </v-layout>
 
-    <GmapMap
+    <gmap-map
       :center="center"
       :zoom="15"
       map-type-id="terrain"
@@ -27,13 +27,13 @@
         @click="center=m.position"
       /> -->
       <gmap-polyline 
-        v-bind:path.sync="path" 
-        v-bind:options="
+        :path.sync="path" 
+        :options="
           { 
             strokeColor:'#008000'
           }">
        </gmap-polyline> 
-    </GmapMap>
+    </gmap-map>
     <!-- <no-ssr>
       <download-excel
         class   = "btn btn-default"
@@ -97,7 +97,7 @@ export default {
     ],
     locations: [],
     user_locations: [],
-    center: {},
+    center: {lat: 19.0760, lng: 72.8777},
     markers: [],
     path: [],
     distance: 0
