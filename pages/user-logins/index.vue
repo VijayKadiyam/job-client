@@ -170,7 +170,7 @@ export default {
   },
   async mounted() {
     this.time_zone = this.organization.time_zone
-    this.currentMoment = await this.getCurrentMoment()
+    // this.currentMoment = await this.getCurrentMoment()
     this.fetchLogins()
   },
   methods: {
@@ -180,7 +180,9 @@ export default {
       this.currentMoment = await this.getCurrentMoment()
       let date = this.currentMoment.format("YYYY-MM-DD")
       this.users = await this.$axios.get(`/user_attendances?searchDate=${date}`);
-      this.users.data.data.forEach((user, i) => {
+      this.users.data.data.forEach(async (user, i) => {
+        let duration = await this.getDuration(user.user_attendances.length ? user.user_attendances[0].login_time : '', user.user_attendances.length ? user.user_attendances[0].logout_time : '')
+
         this.user_logins.push({
           user_attendance_id: user.user_attendances.length ? user.user_attendances[0].id : '',
           name: `
@@ -197,7 +199,7 @@ export default {
             :
             [],
           breakDialog: false,
-          duration: this.getDuration(user.user_attendances.length ? user.user_attendances[0].login_time : '', user.user_attendances.length ? user.user_attendances[0].logout_time : ''),
+          duration: duration,
           status: 
             user.user_attendances.length ? 
             (
@@ -226,7 +228,7 @@ export default {
     },
     async getDuration(startTime,  endTime) {
       var start = '';
-      this.currentMoment = await this.getCurrentMoment()
+      // this.currentMoment = await this.getCurrentMoment()
       var end = moment.utc(this.currentMoment.format("HH:mm:ss"), 'HH:mm:ss')
       if(startTime != "") {
         start = moment.utc(startTime, "HH:mm:ss")
