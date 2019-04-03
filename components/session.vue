@@ -220,9 +220,7 @@ export default {
     this.time_zone = this.organization.time_zone
     // console.log(moment.utc(this.currentTimeStamp).tz(this.time_zone).format("HH:mm:ss"))
 
-    let timeStampJson = await this.$axios.get('http://worldclockapi.com/api/json/utc/now')
-    this.currentTimeStamp = timeStampJson.data.currentDateTime
-    this.currentMoment = moment.utc(this.currentTimeStamp).tz(this.time_zone)
+    this.currentMoment = await this.getCurrentMoment()
 
     await this.getUserAttendances()
 
@@ -245,9 +243,7 @@ export default {
     async saveStart() {
       console.log('Session Started');
       this.loading = true
-      let timeStampJson = await this.$axios.get('http://worldclockapi.com/api/json/utc/now')
-      this.currentTimeStamp = timeStampJson.data.currentDateTime
-      this.currentMoment = moment.utc(this.currentTimeStamp).tz(this.time_zone)
+      this.currentMoment = await this.getCurrentMoment()
       this.form.date = this.currentMoment.format("YYYY-MM-DD")
       this.form.login_time = this.currentMoment.format("HH:mm:ss")
       await this.$axios.post('/user_attendances', this.form)
@@ -282,9 +278,7 @@ export default {
       this.loading = true
       if(this.formBreak.break_type_id) {
         this.breakDialog = false
-        let timeStampJson = await this.$axios.get('http://worldclockapi.com/api/json/utc/now')
-        this.currentTimeStamp = timeStampJson.data.currentDateTime
-        this.currentMoment = moment.utc(this.currentTimeStamp).tz(this.time_zone)
+        this.currentMoment = await this.getCurrentMoment()
         this.formBreak.start_time = this.currentMoment.format("HH:mm:ss")
         this.formBreak.end_time = null
         await this.$axios.post(`/user_attendances/${this.form.id}/user_attendance_breaks`, this.formBreak)
@@ -298,9 +292,7 @@ export default {
       console.log('Save Resume')
       this.loading = true
       this.disableSessionBreak = false
-      let timeStampJson = await this.$axios.get('http://worldclockapi.com/api/json/utc/now')
-      this.currentTimeStamp = timeStampJson.data.currentDateTime
-      this.currentMoment = moment.utc(this.currentTimeStamp).tz(this.time_zone)
+      this.currentMoment = await this.getCurrentMoment()
       this.formBreak.end_time = this.currentMoment.format("HH:mm:ss")
       await this.$axios.patch(`/user_attendances/${this.form.id}/user_attendance_breaks/${this.formBreak.id}`, this.formBreak)
       this.getUserAttendances()
@@ -316,9 +308,7 @@ export default {
       // }
       this.loading = true
       if(this.disableSessionEnd) {
-        let timeStampJson = await this.$axios.get('http://worldclockapi.com/api/json/utc/now')
-        this.currentTimeStamp = timeStampJson.data.currentDateTime
-        this.currentMoment = moment.utc(this.currentTimeStamp).tz(this.time_zone)
+        this.currentMoment = await this.getCurrentMoment()
         this.form.logout_time = this.currentMoment.format("HH:mm:ss")
       }
       else
@@ -328,9 +318,7 @@ export default {
     },
     async getUserAttendances() {
       this.loading = true
-      let timeStampJson = await this.$axios.get('http://worldclockapi.com/api/json/utc/now')
-      this.currentTimeStamp = timeStampJson.data.currentDateTime
-      this.currentMoment = moment.utc(this.currentTimeStamp).tz(this.time_zone)
+      this.currentMoment = await this.getCurrentMoment()
       this.form.date = this.currentMoment.format("YYYY-MM-DD")
       this.user_attendances = await this.$axios.get(`user_attendances?date=${this.form.date}`)
       this.user_attendances = this.user_attendances.data.data ? 
@@ -376,6 +364,14 @@ export default {
       var end = moment.utc(endTime, 'HH:mm:ss')
       // calculate the duration
       return moment.duration(end.diff(start));
+    },
+    async getCurrentMoment() {
+      this.currentTimeStamp = await this.getCurrentTimeStamp()
+      return moment.utc(this.currentTimeStamp).tz(this.time_zone)
+    },
+    async getCurrentTimeStamp() {
+      let timeStampJson = await this.$axios.get('http://worldclockapi.com/api/json/utc/now')
+      return timeStampJson.data.currentDateTime
     }
   }
 }

@@ -170,13 +170,14 @@ export default {
   },
   async mounted() {
     this.time_zone = this.organization.time_zone
-    this.currentMoment = moment.utc(this.currentTimeStamp).tz(this.time_zone)
+    this.currentMoment = await this.getCurrentMoment()
     this.fetchLogins()
   },
   methods: {
     async fetchLogins() {
       this.loading = true
       this.user_logins = []
+      this.currentMoment = await this.getCurrentMoment()
       let date = this.currentMoment.format("YYYY-MM-DD")
       this.users = await this.$axios.get(`/user_attendances?searchDate=${date}`);
       this.users.data.data.forEach((user, i) => {
@@ -223,8 +224,9 @@ export default {
       })
       this.loading = false
     },
-    getDuration(startTime,  endTime) {
+    async getDuration(startTime,  endTime) {
       var start = '';
+      this.currentMoment = await this.getCurrentMoment()
       var end = moment.utc(this.currentMoment.format("HH:mm:ss"), 'HH:mm:ss')
       if(startTime != "") {
         start = moment.utc(startTime, "HH:mm:ss")
@@ -244,10 +246,19 @@ export default {
     },
     async forceLogout(attendanceId) {
       let user_attendance = await this.$axios.get(`user_attendances/${attendanceId}`)
+      this.currentMoment = await this.getCurrentMoment()
       user_attendance.data.data.logout_time = this.currentMoment.format("HH:mm:ss")
       console.log(user_attendance)
       await this.$axios.patch(`/user_attendances/${attendanceId}`, user_attendance.data.data)
       this.fetchLogins();
+    },
+    async getCurrentMoment() {
+      this.currentTimeStamp = await this.getCurrentTimeStamp()
+      return moment.utc(this.currentTimeStamp).tz(this.time_zone)
+    },
+    async getCurrentTimeStamp() {
+      let timeStampJson = await this.$axios.get('http://worldclockapi.com/api/json/utc/now')
+      return timeStampJson.data.currentDateTime
     }
   }
 }
