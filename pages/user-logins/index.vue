@@ -247,6 +247,7 @@ export default {
       return moment.utc(+d).format('HH:mm:ss')
     },
     async forceLogout(attendanceId) {
+      this.loading = true
       let user_attendance = await this.$axios.get(`user_attendances/${attendanceId}`)
       this.currentMoment = await this.getCurrentMoment()
       user_attendance.data.data.logout_time = this.currentMoment.format("HH:mm:ss")
