@@ -72,6 +72,16 @@
             Logout
             <v-icon dark right>cancel_presentation</v-icon>
           </v-btn>
+          <v-avatar 
+            style="margin: 5px;"
+            size="40px"
+            v-if="user.image_path"
+          >
+            <img
+              :src="(mediaUrl + user.image_path)"
+              alt="Profile Image"
+            >
+          </v-avatar>
         </template>
         <template v-else>
           <v-btn flat to="/register">

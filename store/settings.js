@@ -6,7 +6,8 @@ export const state = () => ({
     value: '',
     text: '',
     time_zone: ''
-  }
+  },
+  mediaUrl: 'http://localhost:8080/storage/'
 })
 
 export const getters = {
@@ -21,6 +22,9 @@ export const getters = {
   },
   organization(state) {
     return state.organization;
+  },
+  mediaUrl(state) {
+    return state.mediaUrl;
   }
 }
 

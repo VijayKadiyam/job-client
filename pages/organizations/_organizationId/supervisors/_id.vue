@@ -12,6 +12,28 @@
           </v-toolbar>
           <v-card-text>
             <v-form>
+              <v-avatar
+                size="120px"
+                v-if="form.image_path || imageBase64"
+              >
+                <img
+                  :src="imageBase64 ? imageBase64 :  (mediaUrl + form.image_path)"
+                  alt="Profile Image"
+                >
+              </v-avatar>
+              <v-text-field 
+                label="Select Image" 
+                @click='pickFile' 
+                v-model='imageName' 
+                prepend-icon='attach_file'
+              ></v-text-field>
+              <input
+                type="file"
+                style="display: none"
+                ref="image"
+                accept="image/*"
+                @change="onFilePicked"
+              >
               <v-text-field 
                 :error-messages="errors.name"
                 prepend-icon="public" 
@@ -180,7 +202,10 @@ export default {
   data: () => ({
     dojDateMenu: false,
     dobDateMenu: false,
-    branches: []
+    branches: [],
+    imageBase64: '',
+    imageName: '',
+    imageFile: ''
   }),
   components: {
     BackButton
@@ -199,6 +224,16 @@ export default {
   methods: {
     async store() {
       let employee = await this.$axios.patch(`/users/${this.form.id}`, this.form)
+
+      // To upload a file
+      if(this.imageFile) {
+        let formImage = new FormData()
+        formImage.append('user_id', this.form.id)
+        formImage.append('profile_image', this.imageFile)
+
+        let response = await this.$axios.post(`/upload_profile_image`, formImage)
+      }
+
       this.$router.push(`/organizations/${this.organization.value}/supervisors`);
     },
     changeBranch() {
@@ -210,6 +245,28 @@ export default {
           value: branch.id
         })
       })
+    },
+    pickFile () {
+      this.$refs.image.click()
+    },
+    onFilePicked (e) {
+      const files = e.target.files
+      if(files[0] !== undefined) {
+        this.imageName = files[0].name
+        if(this.imageName.lastIndexOf('.') <= 0) {
+          return
+        }
+        const fr = new FileReader ()
+        fr.readAsDataURL(files[0])
+        fr.addEventListener('load', () => {
+          this.imageBase64 = fr.result
+          this.imageFile = files[0] // this is an image file that can be sent to server...
+        })
+      } else {
+        this.imageName = ''
+        this.imageFile = ''
+        this.imageBase64 = ''
+      }
     }
   }
 }

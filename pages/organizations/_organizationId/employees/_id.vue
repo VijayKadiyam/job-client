@@ -14,10 +14,10 @@
             <v-form>
               <v-avatar
                 size="120px"
-                v-if="form.image_path"
+                v-if="form.image_path || imageBase64"
               >
                 <img
-                  :src="form.image_path"
+                  :src="imageBase64 ? imageBase64 :  (mediaUrl + form.image_path)"
                   alt="Profile Image"
                 >
               </v-avatar>
@@ -182,7 +182,7 @@
 import BackButton from '@/components/back-button.vue'
 
 export default {
-  name: 'CreateEmployee',
+  name: 'UpdateEmployee',
   async asyncData({$axios, params}) {
     let employee = await $axios.get(`users/${params.id}`)
     let company_states = await $axios.get(`/company_states`);
@@ -215,6 +215,7 @@ export default {
     dojDateMenu: false,
     dobDateMenu: false,
     branches: [],
+    imageBase64: '',
     imageName: '',
     imageFile: ''
   }),
@@ -244,11 +245,18 @@ export default {
       }
       if(this.form.supervisor_id)
         await this.$axios.post('/supervisor_user', supervisor_user)
-      this.$router.push(`/organizations/${this.organization.value}/employees`);
 
       // To upload a file
-      let form = new FormData()
+      if(this.imageFile) {
+        let formImage = new FormData()
+        formImage.append('user_id', this.form.id)
+        formImage.append('profile_image', this.imageFile)
+
+        let response = await this.$axios.post(`/upload_profile_image`, formImage)
+      }
       
+      // console.log(response)
+      this.$router.push(`/organizations/${this.organization.value}/employees`);
     },
     changeBranch() {
       let state = this.company_states.find(state => state.id == this.form.company_state_id)
@@ -261,7 +269,7 @@ export default {
       })
     },
     pickFile () {
-      this.$refs.image.click ()
+      this.$refs.image.click()
     },
     onFilePicked (e) {
       const files = e.target.files
@@ -273,13 +281,13 @@ export default {
         const fr = new FileReader ()
         fr.readAsDataURL(files[0])
         fr.addEventListener('load', () => {
-          this.form.image_path = fr.result
+          this.imageBase64 = fr.result
           this.imageFile = files[0] // this is an image file that can be sent to server...
         })
       } else {
         this.imageName = ''
         this.imageFile = ''
-        this.form.image_path = ''
+        this.imageBase64 = ''
       }
     }
   }

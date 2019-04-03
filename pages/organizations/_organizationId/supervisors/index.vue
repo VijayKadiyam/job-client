@@ -23,6 +23,17 @@
       <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
       <template slot="items" slot-scope="props">
         <td>{{ props.index + 1 }}</td>
+        <td>
+          <v-avatar
+            size="60px"
+            v-if="props.item.image_path != ''"
+          >
+            <img
+              :src="(mediaUrl + props.item.image_path)"
+              alt="Profile Image"
+            >
+          </v-avatar>
+        </td>
         <td>{{ props.item.name }}</td>
         <td>{{ props.item.email }}</td>
         <td>{{ props.item.phone }}</td>
@@ -53,6 +64,7 @@ export default {
   data:() =>  ({
     headers: [
       { text: 'Sr No', value: 'sr_no' },
+      { text: 'Image', value: 'image_path' },
       {
         text: 'Name',
         align: 'left',

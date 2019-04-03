@@ -12,7 +12,16 @@
       <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
       <template slot="items" slot-scope="props">
         <td>
-          {{ props.index + 1 }}
+          {{ props.index + 1 }}.
+          <v-avatar
+            size="30px"
+            v-if="props.item.image_path != null"
+          >
+            <img
+              :src="(mediaUrl + props.item.image_path)"
+              alt="Profile Image"
+            >
+          </v-avatar>
           <v-btn 
             v-if="props.item.login_time != null 
               && props.item.login_time != '-' 
@@ -176,6 +185,7 @@ export default {
           name: `
             ${user.name} [ ${user.roles[0].name} ]
           `,
+          image_path: user.image_path,
           login_time: user.user_attendances.length ? user.user_attendances[0].login_time : '-',
           logout_time: user.user_attendances.length ? user.user_attendances[0].logout_time : '-',
           breaks: 

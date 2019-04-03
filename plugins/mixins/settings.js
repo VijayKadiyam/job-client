@@ -10,7 +10,8 @@ const Settings = {
           baseColor: 'settings/baseColor',
           baseHeight: 'settings/baseHeight',
           darkStatus: 'settings/darkStatus',
-          organization: 'settings/organization'
+          organization: 'settings/organization',
+          mediaUrl: 'settings/mediaUrl',
         })
       }
     })

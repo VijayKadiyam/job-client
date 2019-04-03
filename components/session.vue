@@ -16,7 +16,9 @@
             ]
         </v-btn>
         <br><br>
-        <v-layout>
+        <v-layout
+          v-if="!loading"
+        >
           <v-flex xs4 px-3>
             <v-switch
               :color="baseColor"
@@ -168,9 +170,6 @@ export default {
     time_zone: '',
     currentMoment: ''
   }),
-  props: [
-    'currentTimeStamp'
-  ],
   computed: {
     sessionText() {
       if(this.disableSessionEnd)
@@ -221,6 +220,8 @@ export default {
     this.time_zone = this.organization.time_zone
     // console.log(moment.utc(this.currentTimeStamp).tz(this.time_zone).format("HH:mm:ss"))
 
+    let timeStampJson = await this.$axios.get('http://worldclockapi.com/api/json/utc/now')
+    this.currentTimeStamp = timeStampJson.data.currentDateTime
     this.currentMoment = moment.utc(this.currentTimeStamp).tz(this.time_zone)
 
     await this.getUserAttendances()
@@ -243,6 +244,10 @@ export default {
   methods: {
     async saveStart() {
       console.log('Session Started');
+      this.loading = true
+      let timeStampJson = await this.$axios.get('http://worldclockapi.com/api/json/utc/now')
+      this.currentTimeStamp = timeStampJson.data.currentDateTime
+      this.currentMoment = moment.utc(this.currentTimeStamp).tz(this.time_zone)
       this.form.date = this.currentMoment.format("YYYY-MM-DD")
       this.form.login_time = this.currentMoment.format("HH:mm:ss")
       await this.$axios.post('/user_attendances', this.form)
@@ -250,9 +255,11 @@ export default {
 
       var latest_time = this.currentMoment.format("HH:mm:ss")
       this.duration = this.getDuration(this.form.login_time, latest_time)
+      this.loading = false
     },
     openBreak() {
       console.log('Open Break')
+      this.loading = true
       this.formBreak = {
         user_attendance_id: '',
         break_type_id: '',
@@ -261,16 +268,23 @@ export default {
       }
       this.disableSessionResume = false
       this.breakDialog = true
+      this.loading = false
     },
     closeBreak() {
       console.log('Close Break')
+      this.loading = true
       this.disableSessionBreak = false
       this.breakDialog = false
+      this.loading = false
     },
     async saveBreak() {
       console.log('Save Break')
+      this.loading = true
       if(this.formBreak.break_type_id) {
         this.breakDialog = false
+        let timeStampJson = await this.$axios.get('http://worldclockapi.com/api/json/utc/now')
+        this.currentTimeStamp = timeStampJson.data.currentDateTime
+        this.currentMoment = moment.utc(this.currentTimeStamp).tz(this.time_zone)
         this.formBreak.start_time = this.currentMoment.format("HH:mm:ss")
         this.formBreak.end_time = null
         await this.$axios.post(`/user_attendances/${this.form.id}/user_attendance_breaks`, this.formBreak)
@@ -278,13 +292,19 @@ export default {
       }
       else
         alert('No break type selected')
+      this.loading = false
     },
     async saveResume() {
       console.log('Save Resume')
+      this.loading = true
       this.disableSessionBreak = false
+      let timeStampJson = await this.$axios.get('http://worldclockapi.com/api/json/utc/now')
+      this.currentTimeStamp = timeStampJson.data.currentDateTime
+      this.currentMoment = moment.utc(this.currentTimeStamp).tz(this.time_zone)
       this.formBreak.end_time = this.currentMoment.format("HH:mm:ss")
       await this.$axios.patch(`/user_attendances/${this.form.id}/user_attendance_breaks/${this.formBreak.id}`, this.formBreak)
       this.getUserAttendances()
+      this.loading = false
     },
     async saveEnd() { 
       // If the user has not resumed the session
@@ -294,14 +314,23 @@ export default {
       //   this.formBreak = user_break
       //   this.saveResume()
       // }
+      this.loading = true
       if(this.disableSessionEnd) {
+        let timeStampJson = await this.$axios.get('http://worldclockapi.com/api/json/utc/now')
+        this.currentTimeStamp = timeStampJson.data.currentDateTime
+        this.currentMoment = moment.utc(this.currentTimeStamp).tz(this.time_zone)
         this.form.logout_time = this.currentMoment.format("HH:mm:ss")
       }
       else
         this.form.logout_time = ''
       await this.$axios.patch(`/user_attendances/${this.form.id}`, this.form)
+      this.loading = false
     },
     async getUserAttendances() {
+      this.loading = true
+      let timeStampJson = await this.$axios.get('http://worldclockapi.com/api/json/utc/now')
+      this.currentTimeStamp = timeStampJson.data.currentDateTime
+      this.currentMoment = moment.utc(this.currentTimeStamp).tz(this.time_zone)
       this.form.date = this.currentMoment.format("YYYY-MM-DD")
       this.user_attendances = await this.$axios.get(`user_attendances?date=${this.form.date}`)
       this.user_attendances = this.user_attendances.data.data ? 
