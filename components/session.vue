@@ -92,30 +92,40 @@
         <h3 class="headline mb-0">
           <u>Today's Session Details</u>
           <br><br>
-          <template v-if="!checkUserBreak">
-                <template v-if="form.logout_time==null">
-                  LIVE: <clock  :time="duration"></clock>
-                  |
-                  BREAK: {{ breakDuration }}
-                </template>
-                <template v-else>
-                  LIVE: {{ duration }}
-                  |
-                  BREAK: {{ breakDuration }}
-                </template>
-              </template>
-              <template v-else>
-                <template v-if="form.logout_time==null">
-                  LIVE: {{ duration }}
-                  |
-                  BREAK: <clock  :time="breakDuration"></clock>
-                </template>
-                <template v-else>
-                  LIVE: {{ duration }}
-                  |
-                  BREAK: {{ breakDuration }}
-                </template>
-              </template>
+          <template v-if="form.logout_time==null">
+            LIVE: <clock  :time="duration"></clock>
+            <!-- |
+            BREAK: {{ breakDuration }} -->
+          </template>
+          <template v-else>
+            LIVE: {{ duration }}
+            <!-- |
+            BREAK: {{ breakDuration }} -->
+          </template>
+          <!-- <template v-if="!checkUserBreak">
+            <template v-if="form.logout_time==null">
+              LIVE: <clock  :time="duration"></clock>
+              |
+              BREAK: {{ breakDuration }}
+            </template>
+            <template v-else>
+              LIVE: {{ duration }}
+              |
+              BREAK: {{ breakDuration }}
+            </template>
+          </template>
+          <template v-else>
+            <template v-if="form.logout_time==null">
+              LIVE: {{ duration }}
+              |
+              BREAK: <clock  :time="breakDuration"></clock>
+            </template>
+            <template v-else>
+              LIVE: {{ duration }}
+              |
+              BREAK: {{ breakDuration }}
+            </template>
+          </template> -->
           <br>
           <v-container
             px-0
@@ -371,7 +381,7 @@ export default {
       var d = this.getMomentDuration(startTime, endTime)
 
       // Subtract break duration
-      d.subtract(await this.getBreakDuration())
+      // d.subtract(await this.getBreakDuration())
 
       // subtract the lunch break
       // d.add(d);
