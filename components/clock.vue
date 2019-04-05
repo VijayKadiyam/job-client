@@ -1,7 +1,7 @@
 <template>
-  <section>
+  <span>
     {{displayContent}} {{ display }}
-  </section>
+  </span>
 </template>
 
 <script type="text/javascript">

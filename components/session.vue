@@ -6,14 +6,6 @@
           dark
         >
           {{sessionText}} 
-            [
-              <template v-if="form.logout_time==null">
-                <clock  :time="duration"></clock>
-              </template>
-              <template v-else>
-                {{ duration }}
-              </template>
-            ]
         </v-btn>
         <br><br>
         <v-layout
@@ -99,6 +91,31 @@
       <v-card-text>
         <h3 class="headline mb-0">
           <u>Today's Session Details</u>
+          <br><br>
+          <template v-if="!checkUserBreak">
+                <template v-if="form.logout_time==null">
+                  LIVE: <clock  :time="duration"></clock>
+                  |
+                  BREAK: {{ breakDuration }}
+                </template>
+                <template v-else>
+                  LIVE: {{ duration }}
+                  |
+                  BREAK: {{ breakDuration }}
+                </template>
+              </template>
+              <template v-else>
+                <template v-if="form.logout_time==null">
+                  LIVE: {{ duration }}
+                  |
+                  BREAK: <clock  :time="breakDuration"></clock>
+                </template>
+                <template v-else>
+                  LIVE: {{ duration }}
+                  |
+                  BREAK: {{ breakDuration }}
+                </template>
+              </template>
           <br>
           <v-container
             px-0
@@ -167,6 +184,7 @@ export default {
     breakDialog: false,
     break_types: [],
     duration: '',
+    breakDuration: '',
     time_zone: '',
     currentMoment: ''
   }),
@@ -210,7 +228,10 @@ export default {
         'time': this.user_attendances.logout_time
       })
       return actions
-    }
+    },
+    checkUserBreak() {
+      return this.user_attendances.user_attendance_breaks.find(user_break => user_break.end_time == null)
+    },
   },
   components: {
     clock
@@ -237,7 +258,9 @@ export default {
     
     var latest_time = this.currentMoment.format("HH:mm:ss")
     // console.log(latest_time)
-    this.duration = this.getDuration(this.form.login_time, this.form.logout_time ? this.form.logout_time : latest_time)
+    this.duration = await this.getDuration(this.form.login_time, this.form.logout_time ? this.form.logout_time : latest_time)
+
+    this.getBreakDuration()
   },
   methods: {
     async saveStart() {
@@ -250,7 +273,7 @@ export default {
       this.getUserAttendances()
 
       var latest_time = this.currentMoment.format("HH:mm:ss")
-      this.duration = this.getDuration(this.form.login_time, latest_time)
+      this.duration = await this.getDuration(this.form.login_time, latest_time)
       this.loading = false
     },
     openBreak() {
@@ -331,7 +354,7 @@ export default {
         this.disableSessionStart = true
         if(this.user_attendances.user_attendance_breaks.length) {
           // TO check if the user is still on break
-          let user_break = this.checkUserBreak()
+          let user_break = this.checkUserBreak
           if(user_break) {
             // Latest form break whose end time is not defined
             this.formBreak = user_break
@@ -343,11 +366,12 @@ export default {
       }
       this.loading = false
     },
-    checkUserBreak() {
-      return this.user_attendances.user_attendance_breaks.find(user_break => user_break.end_time == null)
-    },
-    getDuration(startTime,  endTime) {
+    
+    async getDuration(startTime,  endTime) {
       var d = this.getMomentDuration(startTime, endTime)
+
+      // Subtract break duration
+      d.subtract(await this.getBreakDuration())
 
       // subtract the lunch break
       // d.add(d);
@@ -356,8 +380,26 @@ export default {
       // format a string result
       return moment.utc(+d).format('HH:mm:ss')
     },
-    getBreakDuration() {
-      
+    async getBreakDuration() {
+      this.currentMoment = await this.getCurrentMoment()
+      let totalBreakTime = '';
+      let d = '';
+      this.user_attendances.user_attendance_breaks.forEach((br, i) => {
+        let endTime = br.end_time
+        if(!br.end_time) {
+          endTime = this.currentMoment.format("HH:mm:ss")
+        }
+        d = this.getMomentDuration(br.start_time, endTime)
+        if(i == 0) 
+          totalBreakTime = d
+        
+        else 
+          totalBreakTime.add(d)
+      })
+
+      this.breakDuration = moment.utc(+totalBreakTime).format('HH:mm:ss')
+
+      return totalBreakTime
     },
     getMomentDuration(startTime, endTime) {
       var start = moment.utc(startTime, "HH:mm:ss")
