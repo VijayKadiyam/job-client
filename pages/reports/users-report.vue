@@ -1,7 +1,47 @@
 <template>
   <section>
-    <span class="title">Login Status</span>
-    <br><br>
+    <span class="title">Users Report</span>
+     <v-layout row wrap>
+      <v-flex md3>
+       <v-menu
+          ref="dateMenu"
+          :close-on-content-click="false"
+          v-model="dateMenu"
+          :nudge-right="40"
+          :return-value.sync="form.doj"
+          lazy
+          transition="scale-transition"
+          offset-y
+          full-width
+          min-width="290px"
+        >
+          <v-text-field
+            :error-messages="errors.date"
+            slot="activator"
+            v-model="date"
+            label="Date"
+            prepend-icon="event"
+            readonly
+          ></v-text-field>
+          <v-date-picker v-model="date" no-title scrollable>
+            <v-spacer></v-spacer>
+            <v-btn flat color="primary" @click="dateMenu = false">Cancel</v-btn>
+            <v-btn flat color="primary" @click="fetchLogins(date)">OK</v-btn>
+          </v-date-picker>
+        </v-menu>
+      </v-flex>
+    </v-layout>
+    <!-- <no-ssr>
+      <download-excel
+        class   = "btn btn-default"
+        :data   = "json_data"
+        :fields = "json_fields"
+        worksheet = "My Worksheet"
+        name    = "SaleReport.xls"
+      >
+        <a href="#" class="download">export to excel</a>
+      </download-excel>
+    </no-ssr> -->
     <v-data-table
       :headers="headers"
       :items="user_logins"
@@ -157,7 +197,9 @@ export default {
       date: '',
       login_time: '',
       logout_time: ''
-    }
+    },
+    dateMenu: false,
+    date: ''
   }),
   components: {
     clock
@@ -168,15 +210,20 @@ export default {
 
     this.time_zone = this.organization.time_zone
     // this.currentMoment = await this.getCurrentMoment()
-    this.fetchLogins()
+    this.currentMoment = await this.getCurrentMoment()
+    this.date = this.currentMoment.format("YYYY-MM-DD")
+    this.fetchLogins(this.date)
   },
   methods: {
-    async fetchLogins() {
+    async fetchLogins(date) {
+      this.$refs.dateMenu.save(date)
+      if(!date) {
+        this.currentMoment = await this.getCurrentMoment()
+        this.date = this.currentMoment.format("YYYY-MM-DD")
+      }
       this.loading = true
       this.user_logins = []
-      this.currentMoment = await this.getCurrentMoment()
-      let date = this.currentMoment.format("YYYY-MM-DD")
-      this.users = await this.$axios.get(`/user_attendances?searchDate=${date}`);
+      this.users = await this.$axios.get(`/user_attendances?searchDate=${this.date}`);
 
       this.users = this.users.data.data.filter(user => user.active == 1)
       this.users.forEach(async (user, i) => {

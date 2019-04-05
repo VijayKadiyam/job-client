@@ -228,6 +228,7 @@ export default {
         dropdownItems[length].items.push({ icon: 'how_to_vote', title: 'Leave Report', to: `/reports/leave-report`})
         dropdownItems[length].items.push({ icon: 'inbox', title: 'Plan Report', to: `/reports/plan-report`})
         dropdownItems[length].items.push({ icon: 'flag', title: 'Sales Report', to: `/reports/sales-report`})
+        dropdownItems[length].items.push({ icon: 'person', title: 'Users Report', to: `/reports/users-report`})
       
       return dropdownItems;
     }
