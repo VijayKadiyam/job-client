@@ -5,18 +5,22 @@
       <v-flex md3>
         <v-select
           v-model="month"
-          :items="users"
+          :items="months"
           label="Select Month"
           @input="fetchSales(month, user_id)"
         ></v-select>
       </v-flex>
       <v-flex md3 pl-3>
         <v-select
+          v-if="month"
           v-model="user_id"
           :items="users"
           label="Select Employee"
           @input="fetchSales(month, user_id)"
         ></v-select>
+      </v-flex>
+      <v-flex md3 pl-3>
+        Total: $ {{ total }}/-
       </v-flex>
     </v-layout>
     <no-ssr>
@@ -25,27 +29,26 @@
         :data   = "json_data"
         :fields = "json_fields"
         worksheet = "My Worksheet"
-        name    = "PlanReport.xls"
+        name    = "SaleReport.xls"
       >
         <a href="#" class="download">export to excel</a>
       </download-excel>
     </no-ssr>
     <v-data-table
-      v-if="user_id"
+      v-if="user_id | month"
       :headers="headers"
-      :items="plans"
+      :items="user_sales"
       :loading="loading"
       class="elevation-1"
     >
       <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
       <template slot="items" slot-scope="props">
         <td>{{ props.index + 1 }}</td>
+        <td>{{ props.item.user.name }}</td>
         <td>{{ props.item.date }}</td>
-        <td>{{ props.item.plan }}</td>
-        <td>{{ props.item.allowance_type ? props.item.allowance_type.name : '' }}</td>
-        <td>{{ props.item.allowance_type ? props.item.allowance_type.amount : '' }}</td>
-        <td>{{ props.item.plan_actuals.length ? (props.item.plan_actuals[0].status == 1 ? 'Visited' : 'Not Visited') : '' }}</td>
-        <td>{{ props.item.plan_actuals.length ? props.item.plan_actuals[0].details : '' }}</td>
+        <td>{{ props.item.customer_name }}</td>
+        <td>{{ props.item.phone_no }}</td>
+        <td>&#36; {{ props.item.amount }}</td>
       </template>
     </v-data-table>
   </section>
@@ -75,28 +78,24 @@ export default {
     loading: false,
     headers: [
       { text: 'Sr No', value: 'sr_no' },
+      { text: 'Employee Name', value: 'employee_name' },
       {
         text: 'Date',
         align: 'left',
         sortable: false,
-        value: 'date'
+        value: 'name'
       },
-      { text: 'Plan', value: 'plan' },
-      { text: 'Allowance Type', value: 'allowance_type' },
-      { text: 'Allowance Amount', value: 'allowance_amount' },
-      { text: 'Status', value: 'status' },
-      { text: 'Details', value: 'details' },
+      { text: 'Customer Name', value: 'customer_name' },
+      { text: 'Phone No', value: 'phone_no' },
+      { text: 'Amount', value: 'amount' },
     ],
-    plans: [],
+    user_sales: [],
     json_fields: {
       'Sr No': 'sr_no',
-      'User': 'user',
-      'Date': 'date',
-      'Plan': 'plan',
-      'Allowance Type': 'allowance_type',
-      'Allowance Amount': 'allowance_amount',
-      'Status': 'status',
-      'Details': 'details',
+      'Employee name': 'employee_name',
+      'Customer Name': 'customer_name',
+      'Phone No': 'phone_no',
+      'Amount': 'amount'
     },
     json_data: [],
     json_meta: [
@@ -107,34 +106,37 @@ export default {
         }
       ]
     ],
+    total: 0
   }),
+  created() {
+    let months = moment.months();
+    for(let i = 0; i < months.length ; i++) {
+      this.months.push({
+        'text': months[i],
+        'value': '0' + (i + 1)
+      })
+    }
+  },
   methods: {
     async fetchSales(month, user_id) {
-      let months = moment.months();
-      for(let i = 0; i < months.length ; i++) {
-        this.months.push({
-          'text': months[i],
-          'value': '0' + (i + 1)
-        })
-      }
-      console.log(this.months)
-      console.log(user_id)
-      // this.plans = await this.$axios.get(`/plans?user_id=${user_id}`);
-      // this.plans = this.plans.data.data
-      // console.log(this.plans)
+      let user_sales = await this.$axios.get(`/user_sales?month=${month}&user_id=${user_id}`);
+      this.user_sales = user_sales.data.data
 
-      // this.plans.forEach((plan, i) => {
-      //   this.json_data.push({
-      //     sr_no: i + 1,
-      //     user: plan.user.name,
-      //     date: plan.date,
-      //     plan: plan.plan,
-      //     allowance_type: plan.allowance_type ? plan.allowance_type.name : '',
-      //     allowance_amount: plan.allowance_type ? plan.allowance_type.amount : '',
-      //     status: plan.plan_actuals.length ? (plan.plan_actuals[0].status == 1) ? 'Visited' : 'Not Visited' : '',
-      //     details: plan.plan_actuals.length ? plan.plan_actuals[0].details : '',
-      //   })
-      // })
+      this.total = 0;
+
+      this.user_sales.forEach(sale => {
+        this.total += parseInt(sale.amount)
+      })
+
+      this.user_sales.forEach((sale, i) => {
+        this.json_data.push({
+          'sr_no': i + 1,
+          'employee_name': sale.user.name,
+          'customer_name': sale.customer_name,
+          'phone_no': sale.phone_no,
+          'amount': sale.amount
+        })
+      })
     }
   }
 }

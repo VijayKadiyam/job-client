@@ -180,7 +180,9 @@ export default {
       this.currentMoment = await this.getCurrentMoment()
       let date = this.currentMoment.format("YYYY-MM-DD")
       this.users = await this.$axios.get(`/user_attendances?searchDate=${date}`);
-      this.users.data.data.forEach(async (user, i) => {
+
+      this.users = this.users.data.data.filter(user => user.active == 1)
+      this.users.forEach(async (user, i) => {
         let duration = await this.getDuration(user.user_attendances.length ? user.user_attendances[0].login_time : '', user.user_attendances.length ? user.user_attendances[0].logout_time : '')
 
         this.user_logins.push({
