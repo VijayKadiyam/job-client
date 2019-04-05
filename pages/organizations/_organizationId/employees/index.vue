@@ -61,14 +61,14 @@
               </nuxt-link>
             </v-flex>
             <v-flex xs12 sm3 pl-2>
-              <v-btn flat icon color="pink" @click.stop="dialogDelete = true">
+              <v-btn flat icon color="pink" @click.stop="props.item.dialogDelete = true">
                 <v-icon>delete</v-icon>
               </v-btn>
             </v-flex>
           </v-layout>
 
           <v-dialog
-            v-model="dialogDelete"
+            v-model="props.item.dialogDelete"
             max-width="290"
           >
             <v-card>
@@ -84,7 +84,7 @@
                 <v-btn
                   color="green darken-1"
                   flat="flat"
-                  @click="dialogDelete = false"
+                  @click="props.item.dialogDelete = false"
                 >
                   Cancel
                 </v-btn>
@@ -112,8 +112,13 @@ export default {
     let employees = await $axios.get(`/users?role_id=3`);
     employees = employees.data.data
     employees = employees.filter(employee => employee.active == 1)
+    let emp = [];
+    employees.forEach(employee => {
+      employee.dialogDelete = false
+      emp.push(employee)
+    })
     return {
-      employees: employees
+      employees: emp,
     }
   },
   data:() =>  ({
