@@ -111,6 +111,7 @@ export default {
       this.user_locations.data.data.forEach((data, i) => {
         if(this.IsJsonString(data['content'])) {
           let loc = JSON.parse(data['content']);
+          console.log(loc)
           if(loc.hasOwnProperty('coords')) {
             this.markers.push({
                 position: {
