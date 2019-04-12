@@ -168,7 +168,7 @@ export default {
       let dropdownItems = [];
       let length = 0;
       // Company
-      if(this.permissions.indexOf(6)!= -1 || this.permissions.indexOf(7)!= -1 || this.permissions.indexOf(8)!= -1 || this.permissions.indexOf(15)!= -1) {
+      if(this.permissions.indexOf(6)!= -1 || this.permissions.indexOf(7)!= -1 || this.permissions.indexOf(8)!= -1 || this.permissions.indexOf(15)!= -1 || this.permissions.indexOf(17)!= -1 || this.permissions.indexOf(18)!= -1 || this.permissions.indexOf(19)!= -1 || this.permissions.indexOf(20)!= -1 || this.permissions.indexOf(21)!= -1) {
 
         dropdownItems.push({ name: 'Company', icon: 'account_balance', items: [] })
         length = dropdownItems.length - 1
@@ -181,11 +181,16 @@ export default {
           dropdownItems[length].items.push({ icon: 'work_off', title: 'Holidays', to: `/organizations/${this.organizationId}/state_holidays`})
         if(this.permissions.indexOf(15)!= -1)
           dropdownItems[length].items.push({ icon: 'free_breakfast', title: 'Break Types', to: `/organizations/${this.organizationId}/break-types`})
-        dropdownItems[length].items.push({ icon: 'all_inbox', title: 'Leave Types', to: `/organizations/${this.organizationId}/leave-types`})
-        dropdownItems[length].items.push({ icon: 'tram', title: 'Transport Modes', to: `/organizations/${this.organizationId}/transport-modes`})
-        dropdownItems[length].items.push({ icon: 'settings_ethernet', title: 'Travelling Ways', to: `/organizations/${this.organizationId}/travelling-ways`})
-        dropdownItems[length].items.push({ icon: 'money', title: 'Allowance Types', to: `/organizations/${this.organizationId}/allowance-types`})
-        dropdownItems[length].items.push({ icon: 'assignment', title: 'Voucher Types', to: `/organizations/${this.organizationId}/voucher-types`})
+        if(this.permissions.indexOf(17)!= -1)
+          dropdownItems[length].items.push({ icon: 'all_inbox', title: 'Leave Types', to: `/organizations/${this.organizationId}/leave-types`})
+        if(this.permissions.indexOf(18)!= -1)
+          dropdownItems[length].items.push({ icon: 'tram', title: 'Transport Modes', to: `/organizations/${this.organizationId}/transport-modes`})
+        if(this.permissions.indexOf(19)!= -1)
+          dropdownItems[length].items.push({ icon: 'settings_ethernet', title: 'Travelling Ways', to: `/organizations/${this.organizationId}/travelling-ways`})
+        if(this.permissions.indexOf(20)!= -1)
+          dropdownItems[length].items.push({ icon: 'money', title: 'Allowance Types', to: `/organizations/${this.organizationId}/allowance-types`})
+        if(this.permissions.indexOf(21)!= -1)
+          dropdownItems[length].items.push({ icon: 'assignment', title: 'Voucher Types', to: `/organizations/${this.organizationId}/voucher-types`})
       }
       
       // Users
@@ -212,23 +217,32 @@ export default {
       }
 
       // Applications
-      if(this.permissions.indexOf(12)!= -1) {
+      if(this.permissions.indexOf(12)!= -1 || this.permissions.indexOf(22)!= -1) {
 
         dropdownItems.push({ name: 'Applications', icon: 'bookmark_border', items: [] })
         length = dropdownItems.length - 1
 
         if(this.permissions.indexOf(12)!= -1)
           dropdownItems[length].items.push({ icon: 'bookmark_border', title: 'Leave Applications', to: `/organizations/${this.organizationId}/leave-applications`})
-        dropdownItems[length].items.push({ icon: 'bookmark', title: 'Application Approvals', to: `/organizations/${this.organizationId}/application-approvals`})
+        if(this.permissions.indexOf(22)!= -1)
+          dropdownItems[length].items.push({ icon: 'bookmark', title: 'Application Approvals', to: `/organizations/${this.organizationId}/application-approvals`})
       }
 
-      dropdownItems.push({ name: 'Reports', icon: 'file_copy', items: [] })
-        length = dropdownItems.length - 1
+      // Reports
+      if(this.permissions.indexOf(23)!= -1 || this.permissions.indexOf(24)!= -1 || this.permissions.indexOf(25)!= -1 || this.permissions.indexOf(26)!= -1) {
 
-        dropdownItems[length].items.push({ icon: 'how_to_vote', title: 'Leave Report', to: `/reports/leave-report`})
-        dropdownItems[length].items.push({ icon: 'inbox', title: 'Plan Report', to: `/reports/plan-report`})
-        dropdownItems[length].items.push({ icon: 'flag', title: 'Sales Report', to: `/reports/sales-report`})
-        dropdownItems[length].items.push({ icon: 'person', title: 'Users Report', to: `/reports/users-report`})
+        dropdownItems.push({ name: 'Reports', icon: 'file_copy', items: [] })
+        length = dropdownItems.length - 1
+        
+        if(this.permissions.indexOf(23)!= -1)
+          dropdownItems[length].items.push({ icon: 'how_to_vote', title: 'Leave Report', to: `/reports/leave-report`})
+        if(this.permissions.indexOf(24)!= -1)
+          dropdownItems[length].items.push({ icon: 'inbox', title: 'Plan Report', to: `/reports/plan-report`})
+        if(this.permissions.indexOf(25)!= -1)
+          dropdownItems[length].items.push({ icon: 'flag', title: 'Sales Report', to: `/reports/sales-report`})
+        if(this.permissions.indexOf(26)!= -1)
+          dropdownItems[length].items.push({ icon: 'person', title: 'Users Report', to: `/reports/users-report`})
+      }
       
       return dropdownItems;
     }
