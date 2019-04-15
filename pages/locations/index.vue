@@ -10,6 +10,34 @@
           @input="fetchLocations"
         ></v-select>
       </v-flex>
+      <v-flex md3>
+       <v-menu
+          ref="dateMenu"
+          :close-on-content-click="false"
+          v-model="dateMenu"
+          :nudge-right="40"
+          :return-value.sync="date"
+          lazy
+          transition="scale-transition"
+          offset-y
+          full-width
+          min-width="290px"
+        >
+          <v-text-field
+            :error-messages="errors.date"
+            slot="activator"
+            v-model="date"
+            label="Date"
+            prepend-icon="event"
+            readonly
+          ></v-text-field>
+          <v-date-picker v-model="date" no-title scrollable>
+            <v-spacer></v-spacer>
+            <v-btn flat color="primary" @click="dateMenu = false">Cancel</v-btn>
+            <v-btn flat color="primary" @click="fetchLocations">OK</v-btn>
+          </v-date-picker>
+        </v-menu>
+      </v-flex>
     </v-layout>
 
     <gmap-map
@@ -100,23 +128,31 @@ export default {
     center: {lat: 19.0760, lng: 72.8777},
     markers: [],
     path: [],
-    distance: 0
+    distance: 0,
+    dateMenu: false,
+    date: ''
   }),
   methods: {
-    async fetchLocations(user_id) {
-      this.user_locations = await this.$axios.get(`/user_locations?user_id=${user_id}`);
+    async fetchLocations() {
+      if(this.date == '' || this.user_id == '')
+        return;
+      this.$refs.dateMenu.save(this.date)
+      this.user_locations = await this.$axios.get(`/user_locations?user_id=${this.user_id}&date=${this.date}`);
       this.markers = []
       this.path = []
+
+      console.log(this.user_locations);
 
       this.user_locations.data.data.forEach((data, i) => {
         if(this.IsJsonString(data['content'])) {
           let loc = JSON.parse(data['content']);
-          console.log(loc)
+          // console.log(loc)
           if(loc.hasOwnProperty('coords')) {
             this.markers.push({
                 position: {
                   lat: loc['coords']['latitude'],
                   lng: loc['coords']['longitude'],
+                  time: data.updated_at
                 },
               }
             )
@@ -127,7 +163,24 @@ export default {
             })
           }
         }
+        else{
+          if(data.content.coords) {
+            this.markers.push({
+                position: {
+                  lat: data.content.coords.latitude,
+                  lng: data.content.coords.longitude,
+                },
+              }
+            )
+
+            this.path.push({
+              lat: data.content.coords.latitude,
+              lng: data.content.coords.longitude,
+            })
+          }
+        }
       })
+      console.log(this.markers)
       this.center = {
         lat: this.markers[0]['position']['lat'], 
         lng: this.markers[0]['position']['lng']
