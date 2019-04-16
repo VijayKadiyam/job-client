@@ -79,12 +79,15 @@
       :items="locations"
       :loading="loading"
       class="elevation-1"
+      hide-actions
     >
       <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
       <template slot="items" slot-scope="props">
         <td>{{ props.index + 1 }}</td>
-        <td>Distance</td>
-        <td>{{ props.item.distance }} KM</td>
+        <td>{{ props.item.time_stamp }}</td>
+        <td>{{ props.item.lat }} - {{ props.item.lng }}</td>
+        <td>{{ props.item.type }}</td>
+        <td>{{ props.item.battery }}</td>
       </template>
     </v-data-table>
   </section>
@@ -115,13 +118,10 @@ export default {
     loading: false,
     headers: [
       { text: 'Sr No', value: 'sr_no' },
-      {
-        text: 'User',
-        align: 'left',
-        sortable: false,
-        value: 'name'
-      },
-      { text: 'Distance', value: 'distance' }
+      { text: 'Time Stamp', value: 'time_stamp' },
+      { text: 'Lat - Long', value: 'lat_lng' },
+      { text: 'Activity Type', value: 'type' },
+      { text: 'Battery', value: 'battery' },
     ],
     locations: [],
     user_locations: [],
@@ -141,10 +141,16 @@ export default {
       this.markers = []
       this.path = []
 
-      console.log(this.user_locations);
+      console.log(this.user_locations.data.data)
 
       this.user_locations.data.data.forEach((data, i) => {
         if(this.IsJsonString(data['content'])) {
+          this.locations.push({
+            'lat': data['content']['coords']['latitude'],
+            'lng': data['content']['coords']['longitude']
+          })
+
+
           let loc = JSON.parse(data['content']);
           // console.log(loc)
           if(loc.hasOwnProperty('coords')) {
@@ -165,6 +171,14 @@ export default {
         }
         else{
           if(data.content.coords) {
+            this.locations.push({
+              'time_stamp': data.updated_at,
+              'lat': data.content.coords.latitude,
+              'lng': data.content.coords.longitude,
+              'type': data.content.activity.type,
+              'battery': data.content.battery.level + ' (Charging:' + data.content.battery.is_charging + ')'
+            })
+
             this.markers.push({
                 position: {
                   lat: data.content.coords.latitude,
@@ -180,7 +194,7 @@ export default {
           }
         }
       })
-      console.log(this.markers)
+
       this.center = {
         lat: this.markers[0]['position']['lat'], 
         lng: this.markers[0]['position']['lng']
@@ -192,10 +206,9 @@ export default {
           this.distance += this.distanceFun(this.markers[i-1]['position']['lat'], this.markers[i-1]['position']['lng'], this.markers[i]['position']['lat'], this.markers[i]['position']['lng'], 'K')
         }
       })
-      this.locations.push({
-        'distance': this.distance
-      })
-      console.log(this.distance)
+      // this.locations.push({
+      //   'distance': this.distance
+      // })
     },
 
     setMapMarkers(){
