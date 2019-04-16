@@ -140,17 +140,12 @@ export default {
       this.user_locations = await this.$axios.get(`/user_locations?user_id=${this.user_id}&date=${this.date}`);
       this.markers = []
       this.path = []
+      this.locations = []
 
       console.log(this.user_locations.data.data)
 
       this.user_locations.data.data.forEach((data, i) => {
         if(this.IsJsonString(data['content'])) {
-          this.locations.push({
-            'lat': data['content']['coords']['latitude'],
-            'lng': data['content']['coords']['longitude']
-          })
-
-
           let loc = JSON.parse(data['content']);
           // console.log(loc)
           if(loc.hasOwnProperty('coords')) {
