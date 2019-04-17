@@ -41,25 +41,23 @@
     </v-layout>
 
     <gmap-map
+      ref="mapRef"
       :center="center"
       :zoom="15"
       map-type-id="terrain"
       style="width: 100%; height: 500px"
     >
-      <!-- <GmapMarker
+      <GmapMarker
         :key="index"
         v-for="(m, index) in markers"
         :position="m.position"
         :clickable="true"
         :draggable="true"
         @click="center=m.position"
-      /> -->
+      />
       <gmap-polyline 
         :path.sync="path" 
-        :options="
-          { 
-            strokeColor:'#008000'
-          }">
+        :options="options">
        </gmap-polyline> 
     </gmap-map>
     <!-- <no-ssr>
@@ -88,6 +86,7 @@
         <td>{{ props.item.lat }} - {{ props.item.lng }}</td>
         <td>{{ props.item.type }}</td>
         <td>{{ props.item.battery }}</td>
+        <td>{{ props.item.distance }} KM</td>
       </template>
     </v-data-table>
   </section>
@@ -122,6 +121,7 @@ export default {
       { text: 'Lat - Long', value: 'lat_lng' },
       { text: 'Activity Type', value: 'type' },
       { text: 'Battery', value: 'battery' },
+      { text: 'Distance', value: 'distance' },
     ],
     locations: [],
     user_locations: [],
@@ -130,8 +130,24 @@ export default {
     path: [],
     distance: 0,
     dateMenu: false,
-    date: ''
+    date: '',
+    options: {
+      
+    }
   }),
+  mounted() {
+    this.$refs.mapRef.$mapPromise.then((map) => {
+      this.options = {
+        strokeColor: 'green',
+        icons: [{
+          icon: {path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW},
+          offset: '100%',
+          repeat: '50px',
+          color: 'black'
+        }]
+      }
+    })
+  },
   methods: {
     async fetchLocations() {
       if(this.date == '' || this.user_id == '')
@@ -141,8 +157,8 @@ export default {
       this.markers = []
       this.path = []
       this.locations = []
+      this.distance = 0
 
-      console.log(this.user_locations.data.data)
 
       this.user_locations.data.data.forEach((data, i) => {
         if(this.IsJsonString(data['content'])) {
@@ -166,21 +182,26 @@ export default {
         }
         else{
           if(data.content.coords) {
+            if(i != 0) {
+              this.distance += this.distanceFun(this.locations[i-1]['lat'], this.locations[i-1]['lng'], data.content.coords.latitude, data.content.coords.longitude, 'K')
+            }
             this.locations.push({
               'time_stamp': data.updated_at,
               'lat': data.content.coords.latitude,
               'lng': data.content.coords.longitude,
               'type': data.content.activity.type,
-              'battery': data.content.battery.level + ' (Charging:' + data.content.battery.is_charging + ')'
+              'battery': data.content.battery.level + ' (Charging:' + data.content.battery.is_charging + ')',
+              'distance': parseFloat(this.distance).toFixed(2)
             })
 
-            this.markers.push({
-                position: {
-                  lat: data.content.coords.latitude,
-                  lng: data.content.coords.longitude,
-                },
-              }
-            )
+            if(i == 0 | i == this.user_locations.data.data.length - 1)
+              this.markers.push({
+                  position: {
+                    lat: data.content.coords.latitude,
+                    lng: data.content.coords.longitude,
+                  },
+                }
+              )
 
             this.path.push({
               lat: data.content.coords.latitude,
@@ -191,14 +212,14 @@ export default {
       })
 
       this.center = {
-        lat: this.markers[0]['position']['lat'], 
-        lng: this.markers[0]['position']['lng']
+        lat: this.locations[0]['lat'], 
+        lng: this.locations[0]['lng']
       }
       this.distance = 0
-      this.markers.forEach((m, i) => {
+      this.locations.forEach((m, i) => {
         if(i!= 0)
         {
-          this.distance += this.distanceFun(this.markers[i-1]['position']['lat'], this.markers[i-1]['position']['lng'], this.markers[i]['position']['lat'], this.markers[i]['position']['lng'], 'K')
+          this.distance += this.distanceFun(this.locations[i-1]['lat'], this.locations[i-1]['lng'], this.locations[i]['lat'], this.locations[i]['lng'], 'K')
         }
       })
       // this.locations.push({
@@ -207,10 +228,10 @@ export default {
     },
 
     setMapMarkers(){
-      for(var index = 0; index < this.markers.length; index++) {
+      for(var index = 0; index < this.locations.length; index++) {
         var point = new google.maps.LatLng(
-            parseFloat(this.markers[index]['position'].lat),
-            parseFloat(this.markers[index]['position'].lng)
+            parseFloat(this.locations[index].lat),
+            parseFloat(this.locations[index].lng)
         )
 
         var marker = new google.maps.Marker({
