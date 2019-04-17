@@ -10,9 +10,19 @@
           @input="fetchPlans"
         ></v-select>
       </v-flex>
+      <v-flex md3 pl-3>
+        <v-select
+          v-model="month"
+          :items="months"
+          label="Select Month"
+          @input="fetchPlans"
+        ></v-select>
+      </v-flex>
+      Grand Total : {{ grand_total }}
     </v-layout>
     <no-ssr>
       <download-excel
+        :title = "title"
         class   = "btn btn-default"
         :data   = "json_data"
         :fields = "json_fields"
@@ -23,21 +33,23 @@
       </download-excel>
     </no-ssr>
     <v-data-table
-      v-if="user_id"
       :headers="headers"
-      :items="plans"
+      :items="json_data"
       :loading="loading"
       class="elevation-1"
     >
       <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
       <template slot="items" slot-scope="props">
-        <td>{{ props.index + 1 }}</td>
+        <td>{{ props.sr_no }}</td>
         <td>{{ props.item.date }}</td>
         <td>{{ props.item.plan }}</td>
-        <td>{{ props.item.allowance_type ? props.item.allowance_type.name : '' }}</td>
-        <td>{{ props.item.allowance_type ? props.item.allowance_type.amount : '' }}</td>
-        <td>{{ props.item.plan_actuals.length ? (props.item.plan_actuals[0].status == 1 ? 'Visited' : 'Not Visited') : '' }}</td>
-        <td>{{ props.item.plan_actuals.length ? props.item.plan_actuals[0].details : '' }}</td>
+        <td>{{ props.item.from_to }}</td>
+        <td>{{ props.item.way }}</td>
+        <td>{{ props.item.fare }}</td>
+        <td>{{ props.item.allowance_amount }}</td>
+        <td>{{ props.item.status }}</td>
+        <td>{{ props.item.details }}</td>
+        <td>{{ props.item.total }}</td>
       </template>
     </v-data-table>
   </section>
@@ -45,6 +57,7 @@
 
 <script type="text/javascript">
 
+import moment from 'moment'
 import Vue from 'vue'
 
 export default {
@@ -71,21 +84,28 @@ export default {
         value: 'date'
       },
       { text: 'Plan', value: 'plan' },
-      { text: 'Allowance Type', value: 'allowance_type' },
+      { text: 'From - To', value: 'from_to' },
+      { text: 'Way', value: 'way' },
+      { text: 'Fare', value: 'fare' },
       { text: 'Allowance Amount', value: 'allowance_amount' },
       { text: 'Status', value: 'status' },
       { text: 'Details', value: 'details' },
+      { text: 'Total', value: 'total' },
     ],
     plans: [],
+    vouchers: [],
     json_fields: {
       'Sr No': 'sr_no',
       'User': 'user',
       'Date': 'date',
       'Plan': 'plan',
-      'Allowance Type': 'allowance_type',
+      'From - To': 'from_to',
+      'Way': 'way',
+      'Fare': 'fare',
       'Allowance Amount': 'allowance_amount',
       'Status': 'status',
       'Details': 'details',
+      'Total': 'total'
     },
     json_data: [],
     json_meta: [
@@ -96,23 +116,77 @@ export default {
         }
       ]
     ],
+    months: [],
+    month: '',
+    grand_total: 0,
+    title: ''
   }),
+  created() {
+    let months = moment.months();
+    for(let i = 0; i < months.length ; i++) {
+      this.months.push({
+        'text': months[i],
+        'value': '0' + (i + 1)
+      })
+    }
+  },
   methods: {
-    async fetchPlans(user_id) {
-      this.plans = await this.$axios.get(`/plans?user_id=${user_id}`);
+    async fetchPlans() {
+      if(this.month == '' || this.user_id == '')
+        return;
+
+      this.plans = await this.$axios.get(`/plans?user_id=${this.user_id}&month=${this.month}`);
       this.plans = this.plans.data.data
-      console.log(this.plans)
+
+      this.vouchers = await this.$axios.get(`/vouchers?user_id=${this.user_id}&month=${this.month}`);
+      this.vouchers = this.vouchers.data.data
+
+      this.grand_total = 0
+      let fare = 0
+      let allowance_amount = 0
+      let total = 0
+
+      this.json_data = []
+      let user = this.users.find(user => user.value == this.user_id)
+      let month = this.months.find(month => month.value == this.month)
+      this.title = 'Name:' + user.text + ' | Agency Name: PMS | Month: ' + month.text + ' 2019' 
 
       this.plans.forEach((plan, i) => {
+        fare = plan.plan_travelling_details.length ? plan.plan_travelling_details[0].fare : 0
+        allowance_amount = plan.allowance_type ? plan.allowance_type.amount : 0
+        total = parseInt(fare) + parseInt(allowance_amount)
+        this.grand_total += total
+
         this.json_data.push({
           sr_no: i + 1,
           user: plan.user.name,
           date: plan.date,
           plan: plan.plan,
-          allowance_type: plan.allowance_type ? plan.allowance_type.name : '',
-          allowance_amount: plan.allowance_type ? plan.allowance_type.amount : '',
+          from_to : plan.plan_travelling_details.length ? plan.plan_travelling_details[0].from + ' - ' + plan.plan_travelling_details[0].to : '',
+          way: plan.plan_travelling_details.length ? plan.plan_travelling_details[0].travelling_way.name : '',
+          fare: fare,
+          allowance_amount: allowance_amount,
           status: plan.plan_actuals.length ? (plan.plan_actuals[0].status == 1) ? 'Visited' : 'Not Visited' : '',
           details: plan.plan_actuals.length ? plan.plan_actuals[0].details : '',
+          total: total
+        })
+      })
+
+      this.json_data.push({
+        details: 'Grand Total',
+        total: this.grand_total
+      })
+
+      this.json_data.push({
+        details: 'Xerox',
+        total: '50'
+      })
+
+      this.vouchers.forEach(voucher => {
+        this.grand_total += voucher.amount
+        this.json_data.push({
+          details: voucher.voucher_type.name,
+          total: voucher.amount
         })
       })
     }

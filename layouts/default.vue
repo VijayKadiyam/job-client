@@ -162,6 +162,7 @@ export default {
       if(this.permissions.indexOf(14)!= -1)
         items.push({ icon: 'security', title: "Reset Password", to: '/auth/reset-password'})
       items.push({ icon: 'location_on', title: "Location", to: '/locations'})
+      // items.push({ icon: 'money', title: "Plan & Expense  ", to: '/plan-expense'})
       return items;
     },
     dropdownItems() {
