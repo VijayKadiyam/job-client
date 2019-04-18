@@ -34,7 +34,7 @@
     </no-ssr>
     <v-data-table
       :headers="headers"
-      :items="json_data"
+      :items="table_data"
       :loading="loading"
       class="elevation-1"
     >
@@ -50,6 +50,7 @@
         <td>
           {{ props.item.status }}
           <v-btn
+            v-if="props.item.details != 'Grand Total'"
             flat
             small
             color="blue"
@@ -116,7 +117,7 @@ export default {
       {
         text: 'Date',
         align: 'left',
-        sortable: false,
+        sortable: true,
         value: 'date'
       },
       { text: 'Plan', value: 'plan' },
@@ -144,6 +145,7 @@ export default {
       'Total': 'total'
     },
     json_data: [],
+    table_data: [],
     json_meta: [
       [
         {
@@ -187,14 +189,15 @@ export default {
       let month = this.months.find(month => month.value == this.month)
       this.title = 'Name:' + user.text + ' | Agency Name: PMS | Month: ' + month.text + ' 2019' 
 
-      this.plans.forEach((plan, i) => {
+      var j = 0;
+      this.plans.forEach(plan => {
         fare = plan.plan_travelling_details.length ? plan.plan_travelling_details[0].fare : 0
         allowance_amount = plan.allowance_type ? plan.allowance_type.amount : 0
         total = parseInt(fare) + parseInt(allowance_amount)
         this.grand_total += total
 
         this.json_data.push({
-          sr_no: i + 1,
+          sr_no: j + 1,
           user: plan.user.name,
           date: plan.date,
           plan: plan.plan,
@@ -207,24 +210,32 @@ export default {
           total: total,
           receiptDialog: false
         })
+        j++
       })
+
+      this.fetchVouchers(j)
 
       this.json_data.push({
-        details: 'Xerox',
-        total: '50'
+        sr_no: j + 1,
+        details: 'Grand Total',
+        total: this.grand_total
       })
 
+      this.table_data = []
+      this.json_data.forEach(data => {
+        this.table_data.push(data)
+      })
+    },
+    fetchVouchers(j) 
+    {
       this.vouchers.forEach(voucher => {
         this.grand_total += voucher.amount
         this.json_data.push({
+          sr_no: j + 1,
           details: voucher.voucher_type.name,
           total: voucher.amount
         })
-      })
-
-      this.json_data.push({
-        details: 'Grand Total',
-        total: this.grand_total
+        j++
       })
     }
   }
