@@ -40,14 +40,50 @@
     >
       <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
       <template slot="items" slot-scope="props">
-        <td>{{ props.sr_no }}</td>
+        <td>{{ props.item.sr_no }}</td>
         <td>{{ props.item.date }}</td>
         <td>{{ props.item.plan }}</td>
         <td>{{ props.item.from_to }}</td>
         <td>{{ props.item.way }}</td>
         <td>{{ props.item.fare }}</td>
         <td>{{ props.item.allowance_amount }}</td>
-        <td>{{ props.item.status }}</td>
+        <td>
+          {{ props.item.status }}
+          <v-btn
+            flat
+            small
+            color="blue"
+            @click.stop="props.item.receiptDialog = true"
+          >
+            Receipt
+          </v-btn>
+
+          <v-dialog
+            v-model="props.item.receiptDialog"
+            max-width="290"
+          >
+            <v-card>
+              <v-card-text>
+                <h3>Receipt Details</h3>
+                <table>
+                  <tbody>
+                    
+                  </tbody>
+                </table>
+              </v-card-text>
+
+              <v-card-actions>
+                <v-btn
+                  color="green darken-1"
+                  flat="flat"
+                  @click="props.item.receiptDialog = false"
+                >
+                  OK
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </td>
         <td>{{ props.item.details }}</td>
         <td>{{ props.item.total }}</td>
       </template>
@@ -168,13 +204,9 @@ export default {
           allowance_amount: allowance_amount,
           status: plan.plan_actuals.length ? (plan.plan_actuals[0].status == 1) ? 'Visited' : 'Not Visited' : '',
           details: plan.plan_actuals.length ? plan.plan_actuals[0].details : '',
-          total: total
+          total: total,
+          receiptDialog: false
         })
-      })
-
-      this.json_data.push({
-        details: 'Grand Total',
-        total: this.grand_total
       })
 
       this.json_data.push({
@@ -188,6 +220,11 @@ export default {
           details: voucher.voucher_type.name,
           total: voucher.amount
         })
+      })
+
+      this.json_data.push({
+        details: 'Grand Total',
+        total: this.grand_total
       })
     }
   }
