@@ -60,17 +60,6 @@
         :options="options">
        </gmap-polyline> 
     </gmap-map>
-    <!-- <no-ssr>
-      <download-excel
-        class   = "btn btn-default"
-        :data   = "json_data"
-        :fields = "json_fields"
-        worksheet = "My Worksheet"
-        name    = "LeaveApplication.xls"
-      >
-        <a href="#" class="download">export to excel</a>
-      </download-excel>
-    </no-ssr> -->
     <v-data-table
       v-if="user_id"
       :headers="headers"
@@ -153,26 +142,41 @@ export default {
       if(this.date == '' || this.user_id == '')
         return;
       this.$refs.dateMenu.save(this.date)
+
       this.user_locations = await this.$axios.get(`/user_locations?user_id=${this.user_id}&date=${this.date}`);
       this.markers = []
       this.path = []
       this.locations = []
       this.distance = 0
 
-
+      let j = 0
       this.user_locations.data.data.forEach((data, i) => {
+        
         if(this.IsJsonString(data['content'])) {
           let loc = JSON.parse(data['content']);
-          // console.log(loc)
           if(loc.hasOwnProperty('coords')) {
-            this.markers.push({
-                position: {
-                  lat: loc['coords']['latitude'],
-                  lng: loc['coords']['longitude'],
-                  time: data.updated_at
-                },
-              }
-            )
+            if(j != 0) {
+              this.distance += this.distanceFun(this.locations[j-1]['lat'], this.locations[j-1]['lng'], loc['coords']['latitude'], loc['coords']['longitude'], 'K')
+            }
+            this.locations.push({
+              'time_stamp': data['updated_at'],
+              'lat': loc['coords']['latitude'],
+              'lng': loc['coords']['longitude'],
+              'type': loc['activity']['type'],
+              'battery': loc['battery']['level'] + ' (Charging:' + loc['battery']['is_charging'] + ')',
+              'distance': parseFloat(this.distance).toFixed(2)
+            })
+
+            if(j == 0 | j == this.user_locations.data.data.length - 1)
+              this.markers.push({
+                  position: {
+                    lat: loc['coords']['latitude'],
+                    lng: loc['coords']['longitude'],
+                    time: data.updated_at
+                  },
+                }
+              )
+            j++
 
             this.path.push({
               lat: loc['coords']['latitude'],
@@ -212,19 +216,9 @@ export default {
       })
 
       this.center = {
-        lat: this.locations[0]['lat'], 
-        lng: this.locations[0]['lng']
+        lat: this.markers[0]['position']['lat'], 
+        lng: this.markers[0]['position']['lng']
       }
-      this.distance = 0
-      this.locations.forEach((m, i) => {
-        if(i!= 0)
-        {
-          this.distance += this.distanceFun(this.locations[i-1]['lat'], this.locations[i-1]['lng'], this.locations[i]['lat'], this.locations[i]['lng'], 'K')
-        }
-      })
-      // this.locations.push({
-      //   'distance': this.distance
-      // })
     },
 
     setMapMarkers(){

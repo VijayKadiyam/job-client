@@ -29,6 +29,10 @@ export default {
   // },
   components: {
     Session, MonthlyAttendanceTable, Salary
+  },
+  created() {
+    if(this.user.roles[0].name == 'Admin')
+      this.$router.push('/')
   }
 }
 </script>
