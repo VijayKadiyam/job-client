@@ -124,6 +124,15 @@ export default {
       
     }
   }),
+  computed: {
+    sortedItems() {
+      this.user_locations.data.data.sort( ( a, b) => {
+          return new Date(a.content.timestamp) - new Date(b.content.timestamp);
+      });
+      console.log(this.user_locations.data.data)
+      return this.user_locations.data.data;
+    }
+  },
   mounted() {
     this.$refs.mapRef.$mapPromise.then((map) => {
       this.options = {
@@ -144,73 +153,87 @@ export default {
       this.$refs.dateMenu.save(this.date)
 
       this.user_locations = await this.$axios.get(`/user_locations?user_id=${this.user_id}&date=${this.date}`);
+      // console.log(this.user_locations.data.data)
       this.markers = []
       this.path = []
       this.locations = []
       this.distance = 0
 
       let j = 0
-      this.user_locations.data.data.forEach((data, i) => {
+      let tempDist = 0
+      this.sortedItems.forEach((data, i) => {
         
         if(this.IsJsonString(data['content'])) {
           let loc = JSON.parse(data['content']);
           if(loc.hasOwnProperty('coords')) {
             if(j != 0) {
-              this.distance += this.distanceFun(this.locations[j-1]['lat'], this.locations[j-1]['lng'], loc['coords']['latitude'], loc['coords']['longitude'], 'K')
+              tempDist = this.distanceFun(this.locations[j-1]['lat'], this.locations[j-1]['lng'], loc['coords']['latitude'], loc['coords']['longitude'], 'K')
+              if(tempDist < 0.3)
+                this.distance += tempDist
             }
-            this.locations.push({
-              'time_stamp': data['updated_at'],
-              'lat': loc['coords']['latitude'],
-              'lng': loc['coords']['longitude'],
-              'type': loc['activity']['type'],
-              'battery': loc['battery']['level'] + ' (Charging:' + loc['battery']['is_charging'] + ')',
-              'distance': parseFloat(this.distance).toFixed(2)
-            })
+            if(tempDist < 0.3)
+            {
+              this.locations.push({
+                'time_stamp': data['updated_at'],
+                'lat': loc['coords']['latitude'],
+                'lng': loc['coords']['longitude'],
+                'type': loc['activity']['type'],
+                'battery': loc['battery']['level'] + ' (Charging:' + loc['battery']['is_charging'] + ')',
+                'distance': parseFloat(this.distance).toFixed(2)
+              })
 
-            if(j == 0 | j == this.user_locations.data.data.length - 1)
-              this.markers.push({
-                  position: {
-                    lat: loc['coords']['latitude'],
-                    lng: loc['coords']['longitude'],
-                    time: data.updated_at
-                  },
-                }
-              )
-            j++
+              if(j == 0 | j == this.sortedItems.length - 1)
+                this.markers.push({
+                    position: {
+                      lat: loc['coords']['latitude'],
+                      lng: loc['coords']['longitude'],
+                      time: data.updated_at
+                    },
+                  }
+                )
+              j++
 
-            this.path.push({
-              lat: loc['coords']['latitude'],
-              lng: loc['coords']['longitude'],
-            })
+              this.path.push({
+                lat: loc['coords']['latitude'],
+                lng: loc['coords']['longitude'],
+              })
+            }
           }
         }
         else{
           if(data.content.coords) {
-            if(i != 0) {
-              this.distance += this.distanceFun(this.locations[i-1]['lat'], this.locations[i-1]['lng'], data.content.coords.latitude, data.content.coords.longitude, 'K')
+            if(j != 0) {
+              tempDist = this.distanceFun(this.locations[j-1]['lat'], this.locations[j-1]['lng'], data.content.coords.latitude, data.content.coords.longitude, 'K')
+              // if(tempDist < 0.3)
+                this.distance += tempDist
             }
-            this.locations.push({
-              'time_stamp': data.updated_at,
-              'lat': data.content.coords.latitude,
-              'lng': data.content.coords.longitude,
-              'type': data.content.activity.type,
-              'battery': data.content.battery.level + ' (Charging:' + data.content.battery.is_charging + ')',
-              'distance': parseFloat(this.distance).toFixed(2)
-            })
+            // if(tempDist < 0.3)
+            // {
+              this.locations.push({
+                'time_stamp': data.updated_at,
+                'lat': data.content.coords.latitude,
+                'lng': data.content.coords.longitude,
+                'type': data.content.activity.type,
+                'battery': data.content.battery.level + ' (Charging:' + data.content.battery.is_charging + ')',
+                'distance': parseFloat(this.distance).toFixed(2)
+              })
 
-            if(i == 0 | i == this.user_locations.data.data.length - 1)
-              this.markers.push({
-                  position: {
-                    lat: data.content.coords.latitude,
-                    lng: data.content.coords.longitude,
-                  },
-                }
-              )
+              if(j == 0 | j == this.user_locations.data.data.length - 1)
+                this.markers.push({
+                    position: {
+                      lat: data.content.coords.latitude,
+                      lng: data.content.coords.longitude,
+                    },
+                  }
+                )
+              j++
 
-            this.path.push({
-              lat: data.content.coords.latitude,
-              lng: data.content.coords.longitude,
-            })
+              this.path.push({
+                lat: data.content.coords.latitude,
+                lng: data.content.coords.longitude,
+              })
+            // }
+            
           }
         }
       })
