@@ -68,6 +68,8 @@
 </template>
 
 <script>
+import moment from 'moment'
+import moment_timezone from 'moment-timezone'
 import Logo from '~/components/Logo.vue'
 import VuetifyLogo from '~/components/VuetifyLogo.vue'
 
@@ -105,6 +107,7 @@ export default {
       width: 600,
       height: 400,
     },
+    count: []
   }),
   computed: {
     organizationId() {
@@ -119,17 +122,73 @@ export default {
     Logo,
     VuetifyLogo
   },
-  mounted() {
+  async mounted() {
+    this.time_zone = this.organization.time_zone
+    this.currentMoment = await this.getCurrentMoment()
+    let date = this.currentMoment.format("YYYY-MM-DD")
+    let count = await this.$axios.get(`/count?date=${date}`);
+    console.log(count.data.count);
+    this.count = count.data.count
     this.fields = [
-      { color: 'purple', name: 'Registered Employees', value: '20', to: `/organizations/${this.organizationId}/employees`},
-      { color: 'green', name: 'Active Employees', value: '3', to: `/user-logins`},
-      { color: 'red', name: 'Present Employees', value: '0', to: `/organizations/${this.organizationId}/application-approvals`},
-      { color: 'indigo', name: 'Absent Employees', value: '0', to: `/organizations/${this.organizationId}/application-approvals`},
-      { color: 'teal', name: 'Employees on Leave', value: '0', to: `/organizations/${this.organizationId}/application-approvals`},
-      { color: 'cyan', name: 'Leave Applications', value: '0', to: `/organizations/${this.organizationId}/application-approvals`},
-      { color: 'orange', name: 'Leave Approved', value: '0', to: `/organizations/${this.organizationId}/application-approvals`},
-      { color: 'green', name: 'Leave Rejected', value: '0', to: `/organizations/${this.organizationId}/application-approvals`}
+      { 
+        color: 'purple', 
+        name: 'Registered Employees', 
+        value: this.count.employees, 
+        to: `/organizations/${this.organizationId}/employees`
+      },
+      { 
+        color: 'green', 
+        name: 'Active Employees', 
+        value: this.count.activeEmployees, 
+        to: `/user-logins`
+      },
+      { 
+        color: 'red', 
+        name: 'Present Employees', 
+        value: this.count.presentEmployees, 
+        to: `/organizations/${this.organizationId}/application-approvals`
+      },
+      { 
+        color: 'indigo', 
+        name: 'Absent Employees', 
+        value: this.count.absentEmployees, 
+        to: `/organizations/${this.organizationId}/application-approvals`
+      },
+      { 
+        color: 'teal', 
+        name: 'Employees on Leave', 
+        value: this.count.employeesOnLeave, 
+        to: `/organizations/${this.organizationId}/application-approvals`
+      },
+      { 
+        color: 'cyan', 
+        name: 'Leave Applications', 
+        value: this.count.leaveApplication, 
+        to: `/organizations/${this.organizationId}/application-approvals`
+      },
+      { 
+        color: 'orange', 
+        name: 'Leave Approved',
+        value: this.count.leaveApproval, 
+        to: `/organizations/${this.organizationId}/application-approvals`
+      },
+      { 
+        color: 'green', 
+        name: 'Leave Rejected', 
+        value: this.count.leaveRejected, 
+        to: `/organizations/${this.organizationId}/application-approvals`
+      }
     ]
+  },
+  methods: {
+    async getCurrentMoment() {
+      this.currentTimeStamp = await this.getCurrentTimeStamp()
+      return moment.utc(this.currentTimeStamp).tz(this.time_zone)
+    },
+    async getCurrentTimeStamp() {
+      let timeStampJson = await this.$axios.get('http://worldclockapi.com/api/json/utc/now')
+      return timeStampJson.data.currentDateTime
+    }
   }
 }
 </script>
