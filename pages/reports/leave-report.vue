@@ -120,7 +120,6 @@ export default {
     ],
   }),
   methods: {
-    
     async fetchLeaveApplications(user_id) {
       this.leave_applications = await this.$axios.get(`/user_applications?user_id=${user_id}`);
       this.leave_applications = this.leave_applications.data.data
