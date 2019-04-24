@@ -35,6 +35,14 @@
                 @change="onFilePicked"
               >
               <v-text-field 
+                :error-messages="errors.employee_code"
+                prepend-icon="code" 
+                name="employee_code" 
+                label="Employee Code"
+                v-model="form.employee_code" 
+                type="text"
+              ></v-text-field>
+              <v-text-field 
                 :error-messages="errors.name"
                 prepend-icon="public" 
                 name="name" 
@@ -158,6 +166,22 @@
                 name="salary" 
                 label="Salary"
                 v-model="form.salary" 
+                type="text"
+              ></v-text-field>
+              <v-text-field 
+                :error-messages="errors.asm_area"
+                prepend-icon="add_to_home_screen" 
+                name="asm_area" 
+                label="Asm Area"
+                v-model="form.asm_area" 
+                type="text"
+              ></v-text-field>
+              <v-text-field 
+                :error-messages="errors.asm_name"
+                prepend-icon="import_contacts" 
+                name="asm_name" 
+                label="Asm Name"
+                v-model="form.asm_name" 
                 type="text"
               ></v-text-field>
               <v-select
