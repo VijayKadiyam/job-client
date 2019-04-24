@@ -89,18 +89,18 @@ module.exports = {
   /*
   ** Axios module configuration
   */
-  axios: {
-    // See https://github.com/nuxt-community/axios-module#options
-    baseURL: (process.env.NODE_ENV == 'production')
-      ? ((process.env.NUXT_ENV_CLIENT == 'pms')
-          ? 'http://92.42.108.132:8082/api' // For PMS
-          : 'http://crm.firststepsolutions.in:8080/api/')// For Sanket
-      : 'http://localhost:8080/api' // For Localhost
-  },
   // axios: {
   //   // See https://github.com/nuxt-community/axios-module#options
-  //   baseURL: 'http://92.42.108.132:8082/api'
+  //   baseURL: (process.env.NODE_ENV == 'production')
+  //     ? ((process.env.NUXT_ENV_CLIENT == 'pms')
+  //         ? 'http://92.42.108.132:8082/api' // For PMS
+  //         : 'http://crm.firststepsolutions.in:8080/api/')// For Sanket
+  //     : 'http://localhost:8080/api' // For Localhost
   // },
+  axios: {
+    // See https://github.com/nuxt-community/axios-module#options
+    baseURL: 'http://92.42.108.132:8082/api'
+  },
 
   /*
   ** Build configuration
