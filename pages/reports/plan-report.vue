@@ -108,12 +108,14 @@ export default {
   name: 'PlanReports',
   async asyncData({$axios}) { 
     let users = await $axios.get('/users?search=all');
+    let rawUsers = users.data.data
     users = users.data.data.map(user => ({
       'text': user.name,
       'value': user.id
     }))
     return {
-      users: users
+      users: users,
+      rawUsers: rawUsers
     }
   },
   data: () => ({
@@ -206,9 +208,17 @@ export default {
       let total = 0
 
       this.json_data = []
-      let user = this.users.find(user => user.value == this.user_id)
+      let user = this.rawUsers.find(user => user.id == this.user_id)
       let month = this.months.find(month => month.value == this.month)
-      this.title = 'Name:' + user.text + ' | Agency Name: PMS | Month: ' + month.text + ' 2019' 
+      // this.title = 'Name:' + user.text + ' | Agency Name: PMS | Month: '
+      this.title = [
+        'Territory Sales Incharge PJP and Expense Statement',
+        'TSI Name:- ' +  user.name + ' | Agency Name:- Pousse Management Services Pvt. Ltd. | ',
+        'TSI UID:- ' + user.uan_no + ' | Month/Year:- ' + month.text + '2019',
+        'HO Town Name:-',
+        'SE Name:- ' + (user.supervisors.length ? user.supervisors[0].name : ''),
+        'ASM Area:- ' + user.asm_area
+      ]
 
       var j = 0;
       let dateCount = j + 1
