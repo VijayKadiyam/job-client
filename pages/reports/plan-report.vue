@@ -34,19 +34,17 @@
     </no-ssr>
     <v-data-table
       :headers="headers"
-      :items="table_data"
+      :items="json_data"
       :loading="loading"
       class="elevation-1"
+      hide-actions
+      disable-initial-sort
     >
       <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
       <template slot="items" slot-scope="props">
-        <td>{{ props.item.sr_no }}</td>
         <td>{{ props.item.date }}</td>
+        <td>{{ props.item.day }}</td>
         <td>{{ props.item.plan }}</td>
-        <td>{{ props.item.from_to }}</td>
-        <td>{{ props.item.way }}</td>
-        <td>{{ props.item.fare }}</td>
-        <td>{{ props.item.allowance_amount }}</td>
         <td>
           {{ props.item.status }}
           <v-btn
@@ -86,6 +84,14 @@
           </v-dialog>
         </td>
         <td>{{ props.item.details }}</td>
+        <td>{{ props.item.from }}</td>
+        <td>{{ props.item.to }}</td>
+        <td>{{ props.item.km }}</td>
+        <td>{{ props.item.way }}</td>
+        <td>{{ props.item.fare }}</td>
+        <td>{{ props.item.stay }}</td>
+        <td>{{ props.item.allowance_amount }}</td>
+        <td>{{ props.item.others }}</td>
         <td>{{ props.item.total }}</td>
       </template>
     </v-data-table>
@@ -113,35 +119,42 @@ export default {
     user_id: '',
     loading: false,
     headers: [
-      { text: 'Sr No', value: 'sr_no' },
       {
         text: 'Date',
         align: 'left',
         sortable: true,
         value: 'date'
       },
+      { text: 'Day', value: 'day' },
       { text: 'Plan', value: 'plan' },
-      { text: 'From - To', value: 'from_to' },
-      { text: 'Way', value: 'way' },
-      { text: 'Fare', value: 'fare' },
-      { text: 'Allowance Amount', value: 'allowance_amount' },
-      { text: 'Status', value: 'status' },
-      { text: 'Details', value: 'details' },
+      { text: 'Actual Visited', value: 'status' },
+      { text: 'Reason for not as per PJP', value: 'details' },
+      { text: 'From', value: 'from' },
+      { text: 'To', value: 'to' },
+      { text: 'Kms Distance', value: 'km' },
+      { text: 'One Way or Up/Down', value: 'way' },
+      { text: 'Ticket Fare Rs.', value: 'fare' },
+      { text: 'Night Stay Town Name', value: 'stay' },
+      { text: 'Daily Allowance Rs.', value: 'allowance_amount' },
+      { text: 'Other', value: 'others' },
       { text: 'Total', value: 'total' },
     ],
     plans: [],
     vouchers: [],
     json_fields: {
-      'Sr No': 'sr_no',
-      'User': 'user',
       'Date': 'date',
+      'Day': 'day',
       'Plan': 'plan',
-      'From - To': 'from_to',
-      'Way': 'way',
-      'Fare': 'fare',
-      'Allowance Amount': 'allowance_amount',
-      'Status': 'status',
-      'Details': 'details',
+      'Actual Visited': 'status',
+      'Reason for not as per PJP': 'details',
+      'From': 'from',
+      'To': 'to',
+      'Kms Distance': 'km',
+      'One Way or Up/Down': 'way',
+      'Ticket Fare Rs.': 'fare',
+      'Night Stay Town Name': 'stay',
+      'Daily Allowance Rs.': 'allowance_amount',
+      'Others': 'others',
       'Total': 'total'
     },
     json_data: [],
@@ -156,6 +169,8 @@ export default {
     ],
     months: [],
     month: '',
+    grand_fare: 0,
+    grand_allowance: 0,
     grand_total: 0,
     title: ''
   }),
@@ -179,6 +194,8 @@ export default {
       this.vouchers = await this.$axios.get(`/vouchers?user_id=${this.user_id}&month=${this.month}`);
       this.vouchers = this.vouchers.data.data
 
+      this.grand_fare = 0
+      this.grand_allowance = 0
       this.grand_total = 0
       let fare = 0
       let allowance_amount = 0
@@ -190,34 +207,55 @@ export default {
       this.title = 'Name:' + user.text + ' | Agency Name: PMS | Month: ' + month.text + ' 2019' 
 
       var j = 0;
+      let dateCount = j + 1
       this.plans.forEach(plan => {
         fare = plan.plan_travelling_details.length ? plan.plan_travelling_details[0].fare : 0
         allowance_amount = plan.allowance_type ? plan.allowance_type.amount : 0
         total = parseInt(fare) + parseInt(allowance_amount)
+        this.grand_fare += fare
+        this.grand_allowance += allowance_amount
         this.grand_total += total
+
+        let date = (moment.utc(plan.date, "YYYY-MM-DD")).format('D')
+        let day = (moment.utc(plan.date, "YYYY-MM-DD")).format('dddd')
+
+        // TO print emply serials
+        // if(date != j + 1) {
+        //   while(date != dateCount) {
+        //     this.json_data.push({
+        //       date: dateCount
+        //     })
+        //     dateCount++
+        //   }
+        // }
 
         this.json_data.push({
           sr_no: j + 1,
           user: plan.user.name,
-          date: plan.date,
+          date: date,
+          day: day,
           plan: plan.plan,
-          from_to : plan.plan_travelling_details.length ? plan.plan_travelling_details[0].from + ' - ' + plan.plan_travelling_details[0].to : '',
+          status: plan.plan_actuals.length ? (plan.plan_actuals[0].status == 1) ? 'Visited' : 'Not Visited' : '',
+          details: plan.plan_actuals.length ? plan.plan_actuals[0].details : '',
+          from : plan.plan_travelling_details.length ? plan.plan_travelling_details[0].from : '',
+          to : plan.plan_travelling_details.length ? plan.plan_travelling_details[0].to : '',
+          km : '-',
           way: plan.plan_travelling_details.length ? plan.plan_travelling_details[0].travelling_way.name : '',
           fare: fare,
           allowance_amount: allowance_amount,
-          status: plan.plan_actuals.length ? (plan.plan_actuals[0].status == 1) ? 'Visited' : 'Not Visited' : '',
-          details: plan.plan_actuals.length ? plan.plan_actuals[0].details : '',
           total: total,
           receiptDialog: false
         })
         j++
+        dateCount++
       })
 
-      this.fetchVouchers(j)
+      // this.fetchVouchers(j)
 
       this.json_data.push({
-        sr_no: j + 1,
-        details: 'Grand Total',
+        fare: this.grand_fare,
+        allowance_amount: this.grand_allowance,
+        others: 'Exp. Total',
         total: this.grand_total
       })
 
