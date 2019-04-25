@@ -48,7 +48,7 @@
         <td>
           {{ props.item.status }}
           <v-btn
-            v-if="props.item.details != 'Grand Total'"
+            v-if="props.item.date != null"
             flat
             small
             color="blue"
@@ -91,6 +91,7 @@
         <td>{{ props.item.fare }}</td>
         <td>{{ props.item.stay }}</td>
         <td>{{ props.item.allowance_amount }}</td>
+        <td>{{ props.item.others_amount }}</td>
         <td>{{ props.item.others }}</td>
         <td>{{ props.item.total }}</td>
       </template>
@@ -136,7 +137,8 @@ export default {
       { text: 'Ticket Fare Rs.', value: 'fare' },
       { text: 'Night Stay Town Name', value: 'stay' },
       { text: 'Daily Allowance Rs.', value: 'allowance_amount' },
-      { text: 'Other', value: 'others' },
+      { text: 'Others Amount', value: 'others_amount' },
+      { text: 'Others Description', value: 'others' },
       { text: 'Total', value: 'total' },
     ],
     plans: [],
@@ -154,11 +156,11 @@ export default {
       'Ticket Fare Rs.': 'fare',
       'Night Stay Town Name': 'stay',
       'Daily Allowance Rs.': 'allowance_amount',
-      'Others': 'others',
+      'Others Amount': 'others_amount',
+      'Others Description': 'others',
       'Total': 'total'
     },
     json_data: [],
-    table_data: [],
     json_meta: [
       [
         {
@@ -171,6 +173,7 @@ export default {
     month: '',
     grand_fare: 0,
     grand_allowance: 0,
+    grand_others: 0,
     grand_total: 0,
     title: ''
   }),
@@ -196,6 +199,7 @@ export default {
 
       this.grand_fare = 0
       this.grand_allowance = 0
+      this.grand_others = 0
       this.grand_total = 0
       let fare = 0
       let allowance_amount = 0
@@ -220,14 +224,14 @@ export default {
         let day = (moment.utc(plan.date, "YYYY-MM-DD")).format('dddd')
 
         // TO print emply serials
-        // if(date != j + 1) {
-        //   while(date != dateCount) {
-        //     this.json_data.push({
-        //       date: dateCount
-        //     })
-        //     dateCount++
-        //   }
-        // }
+        if(date != j + 1) {
+          while(date != dateCount) {
+            this.json_data.push({
+              date: dateCount
+            })
+            dateCount++
+          }
+        }
 
         this.json_data.push({
           sr_no: j + 1,
@@ -250,30 +254,30 @@ export default {
         dateCount++
       })
 
-      // this.fetchVouchers(j)
+      this.fetchVouchers(j)
 
       this.json_data.push({
         fare: this.grand_fare,
         allowance_amount: this.grand_allowance,
+        others_amount: this.grand_others,
         others: 'Exp. Total',
         total: this.grand_total
-      })
-
-      this.table_data = []
-      this.json_data.forEach(data => {
-        this.table_data.push(data)
       })
     },
     fetchVouchers(j) 
     {
-      this.vouchers.forEach(voucher => {
+      this.vouchers.forEach((voucher, i) => {
         this.grand_total += voucher.amount
-        this.json_data.push({
-          sr_no: j + 1,
-          details: voucher.voucher_type.name,
-          total: voucher.amount
-        })
-        j++
+        this.grand_others += voucher.amount
+        this.json_data[i].others = voucher.voucher_type.name
+        this.json_data[i].others_amount = voucher.amount
+        this.json_data[i].total = this.json_data[i].total + voucher.amount
+        // this.json_data.push({
+        //   sr_no: j + 1,
+        //   details: voucher.voucher_type.name,
+        //   total: voucher.amount
+        // })
+        // j++
       })
     }
   }
