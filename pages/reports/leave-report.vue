@@ -3,12 +3,19 @@
     <span class="title">Leave Report</span>
     <v-layout row wrap>
       <v-flex md3>
-        <v-select
+        <v-autocomplete
+          v-model="user_id"
+          :items="users"
+          item-text="text"
+          label="Select Employee"
+          @input="fetchLeaveApplications"
+        ></v-autocomplete>
+        <!-- <v-select
           v-model="user_id"
           :items="users"
           label="Select Employee"
           @input="fetchLeaveApplications"
-        ></v-select>
+        ></v-select> -->
       </v-flex>
     </v-layout>
     <no-ssr>

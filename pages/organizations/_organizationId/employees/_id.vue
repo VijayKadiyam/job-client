@@ -169,10 +169,18 @@
                 type="text"
               ></v-text-field>
               <v-text-field 
+                :error-messages="errors.uid_no"
+                prepend-icon="dns" 
+                name="uid_no" 
+                label="UID No"
+                v-model="form.uid_no" 
+                type="text"
+              ></v-text-field>
+              <v-text-field 
                 :error-messages="errors.asm_area"
                 prepend-icon="add_to_home_screen" 
                 name="asm_area" 
-                label="Asm Area"
+                label="ASM Area"
                 v-model="form.asm_area" 
                 type="text"
               ></v-text-field>
@@ -180,7 +188,7 @@
                 :error-messages="errors.asm_name"
                 prepend-icon="import_contacts" 
                 name="asm_name" 
-                label="Asm Name"
+                label="ASM Name"
                 v-model="form.asm_name" 
                 type="text"
               ></v-text-field>

@@ -3,12 +3,13 @@
     <span class="title">Plan Report</span>
     <v-layout row wrap>
       <v-flex md3>
-        <v-select
+        <v-autocomplete
           v-model="user_id"
           :items="users"
+          item-text="text"
           label="Select Employee"
           @input="fetchPlans"
-        ></v-select>
+        ></v-autocomplete>
       </v-flex>
       <v-flex md3 pl-3>
         <v-select
@@ -26,7 +27,7 @@
         class   = "btn btn-default"
         :data   = "json_data"
         :fields = "json_fields"
-        worksheet = "My Worksheet"
+        worksheet = "Territory Sales Incharge PJP and Expense Statement"
         name    = "PlanReport.xls"
       >
         <a href="#" class="download">export to excel</a>
@@ -214,7 +215,7 @@ export default {
       this.title = [
         'Territory Sales Incharge PJP and Expense Statement',
         'TSI Name:- ' +  user.name + ' | Agency Name:- Pousse Management Services Pvt. Ltd. | ',
-        'TSI UID:- ' + user.uan_no + ' | Month/Year:- ' + month.text + '2019',
+        'TSI UID:- ' + user.uid_no + ' | Month/Year:- ' + month.text + '2019',
         'HO Town Name:-',
         'SE Name:- ' + (user.supervisors.length ? user.supervisors[0].name : ''),
         'ASM Area:- ' + user.asm_area

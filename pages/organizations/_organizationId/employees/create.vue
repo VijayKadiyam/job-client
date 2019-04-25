@@ -169,6 +169,14 @@
                 type="text"
               ></v-text-field>
               <v-text-field 
+                :error-messages="errors.uid_no"
+                prepend-icon="dns" 
+                name="uid_no" 
+                label="UID No"
+                v-model="form.uid_no" 
+                type="text"
+              ></v-text-field>
+              <v-text-field 
                 :error-messages="errors.asm_area"
                 prepend-icon="add_to_home_screen" 
                 name="asm_area" 
