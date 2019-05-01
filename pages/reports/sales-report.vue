@@ -11,13 +11,13 @@
         ></v-select>
       </v-flex>
       <v-flex md3 pl-3>
-        <v-select
+        <v-autocomplete
           v-if="month"
           v-model="user_id"
           :items="users"
           label="Select Employee"
           @input="fetchSales(month, user_id)"
-        ></v-select>
+        ></v-autocomplete>
       </v-flex>
       <v-flex md3 pl-3>
         Total: $ {{ total }}/-
@@ -25,10 +25,11 @@
     </v-layout>
     <no-ssr>
       <download-excel
+        :title  = "title"
         class   = "btn btn-default"
         :data   = "json_data"
         :fields = "json_fields"
-        worksheet = "My Worksheet"
+        worksheet = "Sales Report"
         name    = "SaleReport.xls"
       >
         <a href="#" class="download">export to excel</a>
@@ -40,6 +41,7 @@
       :items="user_sales"
       :loading="loading"
       class="elevation-1"
+      hide-actions
     >
       <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
       <template slot="items" slot-scope="props">
@@ -92,6 +94,7 @@ export default {
     user_sales: [],
     json_fields: {
       'Sr No': 'sr_no',
+      'Date' : 'date',
       'Employee name': 'employee_name',
       'Customer Name': 'customer_name',
       'Phone No': 'phone_no',
@@ -106,7 +109,8 @@ export default {
         }
       ]
     ],
-    total: 0
+    total: 0,
+    title: []
   }),
   created() {
     let months = moment.months();
@@ -124,13 +128,24 @@ export default {
 
       this.total = 0;
 
+      let user = ''
+      let mon = this.months.find(m => m.value == month)
+
       this.user_sales.forEach(sale => {
+        user = sale.user.name
         this.total += parseInt(sale.amount)
       })
 
+      this.title = [
+        'Sales Report',
+        'Month: ' + mon.text + ( user_id ? ' | ' + user : '')
+      ]
+
+      this.json_data = []
       this.user_sales.forEach((sale, i) => {
         this.json_data.push({
           'sr_no': i + 1,
+          'date': sale.date,
           'employee_name': sale.user.name,
           'customer_name': sale.customer_name,
           'phone_no': sale.phone_no,

@@ -4,9 +4,9 @@
      <v-layout row wrap>
       <v-flex md3>
        <v-menu
-          ref="dateMenu"
+          ref="fromDateMenu"
           :close-on-content-click="false"
-          v-model="dateMenu"
+          v-model="fromDateMenu"
           :nudge-right="40"
           :return-value.sync="form.doj"
           lazy
@@ -16,17 +16,45 @@
           min-width="290px"
         >
           <v-text-field
-            :error-messages="errors.date"
+            :error-messages="errors.fromDate"
             slot="activator"
-            v-model="date"
-            label="Date"
+            v-model="fromDate"
+            label="From Date"
             prepend-icon="event"
             readonly
           ></v-text-field>
-          <v-date-picker v-model="date" no-title scrollable>
+          <v-date-picker v-model="fromDate" no-title scrollable>
             <v-spacer></v-spacer>
-            <v-btn flat color="primary" @click="dateMenu = false">Cancel</v-btn>
-            <v-btn flat color="primary" @click="fetchLogins(date)">OK</v-btn>
+            <v-btn flat color="primary" @click="fromDateMenu = false">Cancel</v-btn>
+            <v-btn flat color="primary" @click="fetchMonthlyLogins(fromDate, toDate)">OK</v-btn>
+          </v-date-picker>
+        </v-menu>
+      </v-flex>
+      <v-flex md3>
+       <v-menu
+          ref="toDateMenu"
+          :close-on-content-click="false"
+          v-model="toDateMenu"
+          :nudge-right="40"
+          :return-value.sync="form.doj"
+          lazy
+          transition="scale-transition"
+          offset-y
+          full-width
+          min-width="290px"
+        >
+          <v-text-field
+            :error-messages="errors.toDate"
+            slot="activator"
+            v-model="toDate"
+            label="To Date"
+            prepend-icon="event"
+            readonly
+          ></v-text-field>
+          <v-date-picker v-model="toDate" no-title scrollable>
+            <v-spacer></v-spacer>
+            <v-btn flat color="primary" @click="toDateMenu = false">Cancel</v-btn>
+            <v-btn flat color="primary" @click="fetchMonthlyLogins(fromDate, toDate)">OK</v-btn>
           </v-date-picker>
         </v-menu>
       </v-flex>
@@ -198,8 +226,10 @@ export default {
       login_time: '',
       logout_time: ''
     },
-    dateMenu: false,
-    date: ''
+    fromDateMenu: false,
+    fromDate: '',
+    toDateMenu: false,
+    toDate: ''
   }),
   components: {
     clock
@@ -209,10 +239,10 @@ export default {
     this.currentTimeStamp = timeStampJson.data.currentDateTime
 
     this.time_zone = this.organization.time_zone
-    // this.currentMoment = await this.getCurrentMoment()
     this.currentMoment = await this.getCurrentMoment()
-    this.date = this.currentMoment.format("YYYY-MM-DD")
-    this.fetchLogins(this.date)
+    // this.date = this.currentMoment.format("YYYY-MM-DD")
+    // this.fetchLogins(this.date)
+    this.loading = false
   },
   methods: {
     async fetchLogins(date) {
@@ -224,7 +254,6 @@ export default {
       this.loading = true
       this.user_logins = []
       this.users = await this.$axios.get(`/user_attendances?searchDate=${this.date}`);
-
       this.users = this.users.data.data.filter(user => user.active == 1)
       this.users.forEach(async (user, i) => {
         let duration = await this.getDuration(user.user_attendances.length ? user.user_attendances[0].login_time : '', user.user_attendances.length ? user.user_attendances[0].logout_time : '')
@@ -270,6 +299,18 @@ export default {
             'NOT STARTED'
         })
       })
+      this.loading = false
+    },
+    async fetchMonthlyLogins(fromDate, toDate) {
+      this.$refs.fromDateMenu.save(fromDate)
+      this.$refs.toDateMenu.save(toDate)
+      if(!fromDate | !toDate) {
+        return        
+      }
+      this.loading = true
+      this.user_logins = []
+      this.users = await this.$axios.get(`/user_attendances?fromDate=${this.fromDate}&toDate=${this.toDate}`);
+      console.log(this.users.data.data)
       this.loading = false
     },
     async getDuration(startTime,  endTime) {
