@@ -242,7 +242,8 @@ export default {
         if(this.permissions.indexOf(25)!= -1)
           dropdownItems[length].items.push({ icon: 'flag', title: 'Sales Report', to: `/reports/sales-report`})
         if(this.permissions.indexOf(26)!= -1)
-          dropdownItems[length].items.push({ icon: 'person', title: 'Users Report', to: `/reports/users-report`})
+          dropdownItems[length].items.push({ icon: 'view_carousel', title: 'Daily Report', to: `/reports/daily-report`})
+        dropdownItems[length].items.push({ icon: 'view_column', title: 'Monthly Report', to: `/reports/monthly-report`})
       }
       
       return dropdownItems;
