@@ -121,6 +121,7 @@ export default {
     toDate: '',
     currentMoment: '',
     json_data: [],
+    fetched_json_data: [],
     json_fields: []
   }),
   async mounted() {
@@ -138,6 +139,7 @@ export default {
     fetchSingleEmployeeLogins(employee_id)
     { 
       this.user_monthly_logins = this.fetched_user_monthly_logins.filter(l => l.id == employee_id)
+      this.json_data = this.fetched_json_data.filter(l => l.id == employee_id)
     },
     async fetchMonthlyLogins(fromDate, toDate) {
       this.$refs.fromDateMenu.save(fromDate)
@@ -166,12 +168,10 @@ export default {
       let d = moment(fromDate)
       while(d.format('YYYY-MM-DD') <= toDate) {
         this.headers.push({text: d.format('DD'), value: d.format('DD')})
-        this.json_fields[d.format('DD')] = d.format('DD')
+        this.json_fields['-' + (d.format('DD')).toString()] = (d.format('DD')).toString()
         d = d.add(1, 'days')
       }
 
-      console.log(this.json_fields)
-      
       this.loading = true
       this.users = await this.$axios.get(`/user_attendances?fromDate=${this.fromDate}&toDate=${this.toDate}`);
       this.user_monthly_logins = []
@@ -186,6 +186,7 @@ export default {
         this.json_data.push({
           'sr_no': i + 1,
           'name': user.name,
+          'id': user.id,
         })
 
         // To get total hours
@@ -196,7 +197,7 @@ export default {
               'date': countDate.format('DD'),
               'total_hrs': '-'
             })
-            this.json_data[i][countDate.format('DD')] = '-'
+            this.json_data[i][(countDate.format('DD')).toString()] = '-'
             countDate = countDate.add(1, 'days')
           }
 
@@ -206,11 +207,12 @@ export default {
             'date': countDate.format('DD'),
             'total_hrs': duration
           })
-          this.json_data[i][countDate.format('DD')] = duration
+          this.json_data[i][(countDate.format('DD')).toString()] = duration
           countDate = countDate.add(1, 'days')
         })
       })
       this.fetched_user_monthly_logins = this.user_monthly_logins
+      this.fetched_json_data = this.json_data
       this.loading = false
     },
     getDuration(startTime,  endTime, att) {
