@@ -31,17 +31,17 @@
         </v-menu>
       </v-flex>
     </v-layout>
-    <!-- <no-ssr>
+    <no-ssr>
       <download-excel
         class   = "btn btn-default"
         :data   = "json_data"
         :fields = "json_fields"
         worksheet = "My Worksheet"
-        name    = "SaleReport.xls"
+        name    = "DailyReport.xls"
       >
         <a href="#" class="download">export to excel</a>
       </download-excel>
-    </no-ssr> -->
+    </no-ssr>
     <v-data-table
       :headers="headers"
       :items="user_logins"
@@ -187,6 +187,14 @@ export default {
       { text: 'Breaks', value: 'breaks', align: 'left', },
       { text: 'Status', value: 'status', align: 'left', },
     ],
+    json_fields: {
+      'Sr No': 'sr_no',
+      'Name': 'name',
+      'Login Time': 'login_time',
+      'Logout Time': 'logout_time',
+      'Breaks': 'breaks',
+      'Status': 'status'
+    },
     loading: true,
     user_logins: [],
     break_dialog: false,
@@ -199,7 +207,8 @@ export default {
       logout_time: ''
     },
     dateMenu: false,
-    date: ''
+    date: '',
+    json_data: [],
   }),
   components: {
     clock
@@ -223,6 +232,7 @@ export default {
       }
       this.loading = true
       this.user_logins = []
+      this.json_data = []
       this.users = await this.$axios.get(`/user_attendances?searchDate=${this.date}`);
 
       this.users = this.users.data.data.filter(user => user.active == 1)
@@ -269,7 +279,21 @@ export default {
             : 
             'NOT STARTED'
         })
+
+        this.json_data.push({
+          'sr_no': i + 1,
+          'name': this.user_logins[i].name,
+          'login_time': this.user_logins[i].login_time,
+          'logout_time': this.user_logins[i].logout_time,
+          'breaks': (this.user_logins[i].breaks.length ? 
+            this.user_logins[i].breaks.map((br) => {
+              return '<br>' + br.break_type.name + '<br>' + br.start_time + '-' + br.end_time
+            }) : ''),
+          'status': this.user_logins[i].status
+        })
       })
+
+      
       this.loading = false
     },
     async getDuration(startTime,  endTime) {
