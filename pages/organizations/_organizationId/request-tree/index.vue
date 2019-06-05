@@ -1,12 +1,12 @@
 <template>
   <section>
-    <span class="title">Your Sales</span>
+    <span class="title">Manage Req. Tree</span>
     <v-btn
       small
       fab
-      :to="`/sales/create`"
+      :to="`/organizations/${organization.value}/request-tree/create`"
       :color="baseColor"
-      title="Add New Sales"
+      title="Add New Req."
       :dark="darkStatus"
     >
       <v-icon>
@@ -15,20 +15,29 @@
     </v-btn>
     <v-data-table
       :headers="headers"
-      :items="user_sales"
+      :items="reqs"
       :loading="loading"
       class="elevation-1"
+      hide-actions
     >
       <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
       <template slot="items" slot-scope="props">
-        <td>{{ props.item.id }}</td>
-        <td>{{ props.item.date }}</td>
-        <td>{{ props.item.customer_name }}</td>
-        <td>{{ props.item.phone_no }}</td>
-        <td>&#36; {{ props.item.amount }}</td>
+        <td>{{ props.index + 1 }}</td>
+        <td>{{ props.item.name }}</td>
         <td class="text-xs-left">
-          <nuxt-link :to="`/sales/${props.item.id}`">
-            <v-icon>edit</v-icon>
+          <nuxt-link :to="`/organizations/${organization.value}/request-tree/${props.item.id}`">
+            <v-btn
+              :dark="darkStatus"
+              :color="baseColor" fab small>
+              <v-icon>edit</v-icon>
+            </v-btn>
+          </nuxt-link>
+          <nuxt-link :to="`/organizations/${organization.value}/request-tree/${props.item.id}/products`">
+            <v-btn
+              :dark="darkStatus"
+              :color="baseColor" fab small>
+              <v-icon>add</v-icon>
+            </v-btn>
           </nuxt-link>
         </td>
       </template>
@@ -40,23 +49,20 @@
 export default {
   name: 'ManageDesignations',
   async asyncData({$axios, params}) { 
-    let user_sales = await $axios.get(`/user_sales`);
+    let reqs = await $axios.get(`/listings`);
     return {
-      user_sales: user_sales.data.data
+      reqs: reqs.data.data
     }
   },
   data:() =>  ({
     headers: [
       { text: 'Sr No', value: 'sr_no' },
       {
-        text: 'Date',
+        text: 'Req. Name',
         align: 'left',
         sortable: false,
         value: 'name'
       },
-      { text: 'Customer Name', value: 'customer_name' },
-      { text: 'Phone No', value: 'phone_no' },
-      { text: 'Amount', value: 'amount' },
       { text: 'Action', value: '' }
     ],
     loading: true

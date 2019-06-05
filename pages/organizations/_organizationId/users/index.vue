@@ -1,10 +1,10 @@
 <template>
   <section>
-    <span class="title">Manage Employees</span>
+    <span class="title">Manage Users</span>
     <v-btn
       small
       fab
-      :to="`/organizations/${organization.value}/employees/create`"
+      :to="`/organizations/${organization.value}/users/create`"
       :color="baseColor"
       title="Add New Employee"
       :dark="darkStatus"
@@ -29,30 +29,13 @@
       <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
       <template slot="items" slot-scope="props">
         <td>{{ props.index + 1 }}</td>
-        <td>
-          <v-avatar
-            size="60px"
-            v-if="props.item.image_path != null"
-          >
-            <img
-              :src="(mediaUrl + props.item.image_path)"
-              alt="Profile Image"
-            >
-          </v-avatar>
-        </td>
         <td>{{ props.item.name }}</td>
         <td>{{ props.item.email }}<br>{{ props.item.phone }}</td>
-        <td>{{ props.item.doj }}</td>
-        <td>{{ props.item.dob }}</td>
-        <td>{{ props.item.company_designation.name }}</td>
-        <td>{{ props.item.company_state_branch ? props.item.company_state_branch.name : '-' }}</td>
-        <td>{{ props.item.salary }}</td>
-        <td>{{ props.item.supervisors.length ? props.item.supervisors[0].name : '' }}</td>
         <td>{{ props.item.active == 1 ? 'ACTIVE' : 'IN ACTIVE' }}</td>
         <td class="text-xs-left">
           <v-layout row wrap>
             <v-flex xs12 sm3>
-              <nuxt-link :to="`/organizations/${organization.value}/employees/${props.item.id}`">
+              <nuxt-link :to="`/organizations/${organization.value}/users/${props.item.id}`">
                 <v-btn flat icon 
                   :color="baseColor"
                   :dark="darkStatus">
@@ -124,7 +107,6 @@ export default {
   data:() =>  ({
     headers: [
       { text: 'Sr No', value: 'sr_no' },
-      { text: 'Image', value: 'image_path' },
       {
         text: 'Name',
         align: 'left',
@@ -132,12 +114,6 @@ export default {
         value: 'name'
       },
       { text: 'Email/Phone', value: 'phone' },
-      { text: 'DOJ', value: 'doj' },
-      { text: 'DOB', value: 'dob' },
-      { text: 'Designation', value: 'designation' },
-      { text: 'Branch', value: 'branch' },
-      { text: 'Salary', value: 'salary' },
-      { text: 'Supervisor', value: 'supervisor' },
       { text: 'Status', value: 'active' },
       { text: 'Action', value: '' }
     ],

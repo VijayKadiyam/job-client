@@ -1,14 +1,14 @@
 <template>
   <v-container fluid fill-height>
     <back-button 
-      title="Go Back To Leave Types"
-      :link="`/organizations/${organization.value}/leave-types`"
+      title="Go Back To Req. tree"
+      :link="`/organizations/${organization.value}/request-tree`"
     ></back-button>
     <v-layout align-center justify-center>
       <v-flex xs12 sm8 md6>
         <v-card class="elevation-12">
           <v-toolbar :dark="darkStatus" :height="baseHeight" :color="baseColor">
-            <v-toolbar-title>Create Leave Type</v-toolbar-title>
+            <v-toolbar-title>Create Req.</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
             <v-form>
@@ -24,7 +24,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn :dark="darkStatus" @click="store" :color="baseColor">Create Leave Type</v-btn>
+            <v-btn :dark="darkStatus" @click="store" :color="baseColor">Update Req.</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -36,7 +36,13 @@
 import BackButton from '@/components/back-button.vue'
 
 export default {
-  name: 'CreateLeaveType',
+  name: 'UpdateReq',
+  async asyncData({$axios, params}) {
+    let listing = await $axios.get(`listings/${params.id}`)
+    return {
+      form: listing.data.data,
+    }
+  },
   data: () => ({
     form: {
       name: ''
@@ -47,8 +53,8 @@ export default {
   },
   methods: {
     async store() {
-      await this.$axios.post(`leave_types`, this.form)
-      this.$router.push(`/organizations/${this.organization.value}/leave-types`);
+      await this.$axios.patch(`listings/${this.form.id}`, this.form)
+      this.$router.push(`/organizations/${this.organization.value}/request-tree`);
     }
   }
 }

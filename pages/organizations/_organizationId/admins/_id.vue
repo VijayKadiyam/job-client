@@ -36,64 +36,6 @@
                 v-model="form.phone"
                 type="number"
               ></v-text-field>
-              <v-menu
-                ref="dojDateMenu"
-                :close-on-content-click="false"
-                v-model="dojDateMenu"
-                :nudge-right="40"
-                :return-value.sync="form.start_date"
-                lazy
-                transition="scale-transition"
-                offset-y
-                full-width
-                min-width="290px"
-              >
-                <v-text-field
-                  :error-messages="errors.doj"
-                  slot="activator"
-                  v-model="form.doj"
-                  label="Date of Joining"
-                  prepend-icon="event"
-                  readonly
-                ></v-text-field>
-                <v-date-picker v-model="form.doj" no-title scrollable>
-                  <v-spacer></v-spacer>
-                  <v-btn flat color="primary" @click="dojDateMenu = false">Cancel</v-btn>
-                  <v-btn flat color="primary" @click="$refs.dojDateMenu.save(form.doj)">OK</v-btn>
-                </v-date-picker>
-              </v-menu>
-              <v-menu
-                ref="dobDateMenu"
-                :close-on-content-click="false"
-                v-model="dobDateMenu"
-                :nudge-right="40"
-                :return-value.sync="form.start_date"
-                lazy
-                transition="scale-transition"
-                offset-y
-                full-width
-                min-width="290px"
-              >
-                <v-text-field
-                  :error-messages="errors.dob"
-                  slot="activator"
-                  v-model="form.dob"
-                  label="Date of Birth"
-                  prepend-icon="date_range"
-                  readonly
-                ></v-text-field>
-                <v-date-picker v-model="form.dob" no-title scrollable>
-                  <v-spacer></v-spacer>
-                  <v-btn flat color="primary" @click="dobDateMenu = false">Cancel</v-btn>
-                  <v-btn flat color="primary" @click="$refs.dobDateMenu.save(form.dob)">OK</v-btn>
-                </v-date-picker>
-              </v-menu>
-              <v-select
-                :error-messages="errors.company_designation_id"
-                v-model="form.company_designation_id"
-                :items="company_designations"
-                label="Designation"
-              ></v-select>
             </v-form>
           </v-card-text>
           <v-card-actions>
@@ -110,7 +52,7 @@
 import BackButton from '@/components/back-button.vue'
 
 export default {
-  name: 'CreateAdmin',
+  name: 'UpdateAdmin',
   async asyncData({$axios, params}) {
     let admin = await $axios.get(`/users/${params.id}`)
     admin = admin.data.data
@@ -127,7 +69,7 @@ export default {
     }
   },
   mounted() {
-    this.form.role_id = 1;
+    this.form.role_id = 2;
   },
   data: () => ({
     form: {
@@ -136,16 +78,12 @@ export default {
       phone: '',
       role_id: '',
       active: 1,
-      company_designation_id: ''
     },
-    dojDateMenu: false,
-    dobDateMenu: false,
   }),
   components: {
     BackButton
   },
   created() {
-    this.form.company_designation_id = parseInt(this.form.company_designation_id)
     this.form.active = 1
   },
   methods: {

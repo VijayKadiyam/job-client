@@ -1,14 +1,14 @@
 <template>
   <v-container fluid fill-height>
     <back-button 
-      title="Go Back To Allowance Types"
-      :link="`/organizations/${organization.value}/allowance-types`"
+      title="Go Back To Employees"
+      :link="`/organizations/${organization.value}/users`"
     ></back-button>
     <v-layout align-center justify-center>
       <v-flex xs12 sm8 md6>
         <v-card class="elevation-12">
           <v-toolbar :dark="darkStatus" :height="baseHeight" :color="baseColor">
-            <v-toolbar-title>Update Allowance Type</v-toolbar-title>
+            <v-toolbar-title>Create User</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
             <v-form>
@@ -21,18 +21,26 @@
                 type="text"
               ></v-text-field>
               <v-text-field 
-                :error-messages="errors.amount"
-                prepend-icon="money" 
-                name="amount" 
-                label="Amount"
-                v-model="form.amount" 
+                :error-messages="errors.email"
+                prepend-icon="email" 
+                name="email" 
+                label="Email" 
+                v-model="form.email"
                 type="text"
+              ></v-text-field>
+              <v-text-field 
+                :error-messages="errors.phone"
+                prepend-icon="phone" 
+                name="phone" 
+                label="Phone" 
+                v-model="form.phone"
+                type="number"
               ></v-text-field>
             </v-form>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn :dark="darkStatus" @click="store" :color="baseColor">Update Allowance Type</v-btn>
+            <v-btn :dark="darkStatus" @click="store" :color="baseColor">Update User</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -44,16 +52,20 @@
 import BackButton from '@/components/back-button.vue'
 
 export default {
-  name: 'EditBreakType',
+  name: 'CreateUser',
   async asyncData({$axios, params}) {
-    let allowance_type = await $axios.get(`/allowance_types/${params.id}`)
+    let employee = await $axios.get(`users/${params.id}`)
     return {
-      form: allowance_type.data.data
+      form: employee.data.data,
     }
   },
   data: () => ({
     form: {
-      name: ''
+      name: '',
+      email: '',
+      phone: '',
+      active: 1,
+      role_id: 3
     }
   }),
   components: {
@@ -61,9 +73,10 @@ export default {
   },
   methods: {
     async store() {
-      await this.$axios.patch(`/allowance_types/${this.$route.params.id}`, this.form)
-      this.$router.push(`/organizations/${this.organization.value}/allowance-types`);
-    }
+      this.form.active = 1
+      let user = await this.$axios.patch(`/users/${this.form.id}`, this.form)
+      this.$router.push(`/organizations/${this.organization.value}/users`);
+    },
   }
 }
 </script> 

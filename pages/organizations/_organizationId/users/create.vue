@@ -1,20 +1,20 @@
 <template>
   <v-container fluid fill-height>
     <back-button 
-      title="Go Back To Organizations"
-      link="/organizations"
+      title="Go Back To Employees"
+      :link="`/organizations/${organization.value}/users`"
     ></back-button>
     <v-layout align-center justify-center>
-      <v-flex xs12 sm8 md8>
+      <v-flex xs12 sm8 md6>
         <v-card class="elevation-12">
           <v-toolbar :dark="darkStatus" :height="baseHeight" :color="baseColor">
-            <v-toolbar-title>Add admin details of {{ org.name }}</v-toolbar-title>
+            <v-toolbar-title>Create User</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
             <v-form>
               <v-text-field 
                 :error-messages="errors.name"
-                prepend-icon="person" 
+                prepend-icon="public" 
                 name="name" 
                 label="Name"
                 v-model="form.name" 
@@ -40,7 +40,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn :dark="darkStatus" @click="store" :color="baseColor">Create Admin</v-btn>
+            <v-btn :dark="darkStatus" @click="store" :color="baseColor">Create User</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -52,53 +52,36 @@
 import BackButton from '@/components/back-button.vue'
 
 export default {
-  name: 'CreateAdmin',
-  async asyncData({$axios, params}) {
-    let organization = await $axios.get(`/companies/${params.organizationId}`)
-    let company_designations = await $axios.get(`/companies/${params.organizationId}/company_designations`)
-    company_designations = company_designations.data.data.map(role => ({
-      'text': role.name,
-      'value': role.id 
-    }));
-    return {
-      org: organization.data.data,
-      company_designations: company_designations
-    }
-  },
+  name: 'CreateUser',
   data: () => ({
     form: {
       name: '',
       email: '',
       phone: '',
       active: 1,
-      role_id: ''
-    },
-    dojDateMenu: false,
-    dobDateMenu: false,
+      role_id: 3
+    }
   }),
-  mounted() {
-    this.form.role_id = 2;
-  },
   components: {
     BackButton
   },
   methods: {
     async store() {
-      let admin = await this.$axios.post(`/users`, this.form)
-      // Assign Role
-      let role_payload = {
-        user_id: admin.data.data.id,
+      let user = await this.$axios.post(`/users`, this.form)
+      // RoleUser
+      let role_user = {
+        user_id: user.data.data.id,
         role_id: this.form.role_id
       }
-      await this.$axios.post('/role_user', role_payload)
-      // Assign Organization
-      let organization_payload = {
-        user_id: admin.data.data.id,
-        company_id: this.$route.params.organizationId
+      await this.$axios.post('/role_user', role_user)
+      // Company User
+      let company_user = {
+        user_id: user.data.data.id,
+        company_id: this.organization.value
       }
-      await this.$axios.post('/company_user', organization_payload)
-      this.$router.push('/organizations')
-    }
+      await this.$axios.post('/company_user', company_user)
+      this.$router.push(`/organizations/${this.organization.value}/users`);
+    },
   }
 }
-</script>
+</script> 
