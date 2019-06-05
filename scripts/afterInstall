@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /var/www/html/ems/client 
+cd /var/www/html/hyperx/client 
 
 #npm install.
 
