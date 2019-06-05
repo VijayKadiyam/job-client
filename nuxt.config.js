@@ -90,7 +90,7 @@ module.exports = {
   ** Axios module configuration
   */
   axios: {
-    baseURL: 'http://92.42.108.132:8082/api'
+    baseURL: 'http://13.126.249.88:8088/api'
   },
 
   /*
