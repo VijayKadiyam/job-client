@@ -1,12 +1,12 @@
 <template>
   <section>
-    <span class="title">Manage Req. Tree</span>
+    <span class="title">Manage Sub Products of {{ product.name }} </span> [ {{ listing.name }} ]
     <v-btn
       small
       fab
-      :to="`/organizations/${organization.value}/request-tree/create`"
+      :to="`/organizations/${organization.value}/request-tree/${listing.id}/products/${product.id}/sub-products/create`"
       :color="baseColor"
-      title="Add New Req."
+      title="Add New Sub Product"
       :dark="darkStatus"
     >
       <v-icon>
@@ -15,7 +15,7 @@
     </v-btn>
     <v-data-table
       :headers="headers"
-      :items="reqs"
+      :items="sub_products"
       :loading="loading"
       class="elevation-1"
       hide-actions
@@ -24,27 +24,12 @@
       <template slot="items" slot-scope="props">
         <td>{{ props.index + 1 }}</td>
         <td>{{ props.item.name }}</td>
-        <td>
-          <div v-for="(product, p) in props.item.products"
-            :key="`product${p}`"
-          >
-            {{ product.name }} <br>
-          </div>
-        </td>
         <td class="text-xs-left">
-          <nuxt-link :to="`/organizations/${organization.value}/request-tree/${props.item.id}`">
+          <nuxt-link :to="`/organizations/${organization.value}/request-tree/${listing.id}/products/${product.id}/sub-products/${props.item.id}`">
             <v-btn
               :dark="darkStatus"
               :color="baseColor" fab small>
               <v-icon>edit</v-icon>
-            </v-btn>
-          </nuxt-link>
-          <nuxt-link :to="`/organizations/${organization.value}/request-tree/${props.item.id}/products`">
-            <v-btn
-              :dark="darkStatus"
-              :color="baseColor" small>
-              <!-- <v-icon>add</v-icon> -->
-              Manage Products
             </v-btn>
           </nuxt-link>
         </td>
@@ -55,11 +40,15 @@
 
 <script type="text/javascript">
 export default {
-  name: 'ManageDesignations',
+  name: 'ManageSubProducts',
   async asyncData({$axios, params}) { 
-    let reqs = await $axios.get(`/listings`);
+    let listing = await $axios.get(`/listings/${params.requestTreeId}`);
+    let product = await $axios.get(`/listings/${params.requestTreeId}/products/${params.productId}`);
+    let sub_products = await $axios.get(`/products/${params.productId}/sub_products`);
     return {
-      reqs: reqs.data.data
+      sub_products: sub_products.data.data,
+      product: product.data.data,
+      listing: listing.data.data
     }
   },
   data:() =>  ({
@@ -71,7 +60,6 @@ export default {
         sortable: false,
         value: 'name'
       },
-      { text: 'Products', value: 'products' },
       { text: 'Action', value: '' }
     ],
     loading: true
