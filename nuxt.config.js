@@ -95,6 +95,7 @@ module.exports = {
   axios: {
     baseURL: 'http://13.126.249.88:8088/api'
   },
+  
 
   /*
   ** Build configuration
