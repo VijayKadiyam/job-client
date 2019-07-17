@@ -20,6 +20,29 @@
                 v-model="form.name" 
                 type="text"
               ></v-text-field>
+              <v-text-field 
+                :error-messages="errors.email_html"
+                prepend-icon="email" 
+                name="email" 
+                label="Add Email Format"
+                v-model="form.email_html" 
+                type="text"
+              ></v-text-field>
+              <label>{{ form.image1_path }}</label>
+              <br>
+              <label>{{ form.image2_path }}</label>
+              <br>
+              <label>{{ form.image3_path }}</label>
+              <br>
+              <label>{{ form.image4_path }}</label>
+              <input 
+                type="file"
+                id="file"
+                name="file[]" 
+                ref="file" 
+                accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,text/plain, application/pdf, image/*"
+                multiple
+              >
             </v-form>
           </v-card-text>
           <v-card-actions>
@@ -53,7 +76,31 @@ export default {
   methods: {
     async store() {
       await this.$axios.patch(`/products/${this.$route.params.productId}/sub_products/${this.$route.params.id}`, this.form)
+      await this.handleFileUpload()
       this.$router.push(`/organizations/${this.organization.value}/request-tree/${this.listing.id}/products/${this.product.id}/sub-products`);
+    },
+    async handleFileUpload() {
+      this.picture1 = this.$refs.file.files[0]
+      this.picture2 = this.$refs.file.files[1]
+      this.picture3 = this.$refs.file.files[2]
+      this.picture4 = this.$refs.file.files[3]
+      let formData = new FormData();
+      formData.append('id', this.form.id);
+      formData.append('image1', this.picture1);
+      formData.append('image2', this.picture2);
+      await this.$axios.post('upload_attachments', formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      ).then(data => {
+        // this.filePath = data.data
+        console.log(data);
+      })
+      .catch(function(){
+        console.log('FAILURE!!');
+      });
     }
   }
 }

@@ -8,7 +8,7 @@
       <v-flex xs12 sm8 md6>
         <v-card class="elevation-12">
           <v-toolbar :dark="darkStatus" :height="baseHeight" :color="baseColor">
-            <v-toolbar-title>Create Product of {{ listing.name }}</v-toolbar-title>
+            <v-toolbar-title>Edit Product of {{ listing.name }}</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
             <v-form>
