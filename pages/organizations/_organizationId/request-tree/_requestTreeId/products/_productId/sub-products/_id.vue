@@ -21,13 +21,23 @@
                 type="text"
               ></v-text-field>
               <v-text-field 
-                :error-messages="errors.email_html"
-                prepend-icon="email" 
-                name="email" 
-                label="Add Email Format"
-                v-model="form.email_html" 
+                :error-messages="errors.email_subject"
+                prepend-icon="subject" 
+                name="name" 
+                label="Email Subject"
+                v-model="form.email_subject" 
                 type="text"
               ></v-text-field>
+              <no-ssr placeholder="Loading...">
+                <b>HTML EMAIL CONTENT</b>
+                <editor 
+                  :data="form.email_html"
+                  @updateHtml="updateHtml"
+                ></editor>
+              </no-ssr>
+              <br>
+              <b>Attachments:</b>
+              <br>
               <label>{{ form.image1_path }}</label>
               <br>
               <label>{{ form.image2_path }}</label>
@@ -57,6 +67,7 @@
 
 <script type="text/javascript">
 import BackButton from '@/components/back-button.vue'
+import editor from '@/components/editor.vue'
 
 export default {
   name: 'UpdateSubProduct',
@@ -71,9 +82,12 @@ export default {
     }
   },
   components: {
-    BackButton
+    BackButton, editor
   },
   methods: {
+    updateHtml(html) {
+      this.form.email_html = html
+    },
     async store() {
       await this.$axios.patch(`/products/${this.$route.params.productId}/sub_products/${this.$route.params.id}`, this.form)
       await this.handleFileUpload()
