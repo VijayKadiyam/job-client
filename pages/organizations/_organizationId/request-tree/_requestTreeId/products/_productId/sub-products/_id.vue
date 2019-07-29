@@ -28,6 +28,11 @@
                 v-model="form.email_subject" 
                 type="text"
               ></v-text-field>
+              <v-textarea
+                name="description"
+                label="Description"
+                v-model="form.description" 
+              ></v-textarea>
               <no-ssr placeholder="Loading...">
                 <b>HTML EMAIL CONTENT</b>
                 <editor 

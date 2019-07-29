@@ -36,6 +36,13 @@
                 v-model="form.phone"
                 type="number"
               ></v-text-field>
+              <v-select
+                :error-messages="errors.can_send_email"
+                prepend-icon="build" 
+                v-model="form.can_send_email"
+                :items="checks"
+                label="Can Send Emails"
+              ></v-select>
             </v-form>
           </v-card-text>
           <v-card-actions>
@@ -60,7 +67,17 @@ export default {
       phone: '',
       active: 1,
       role_id: 3
-    }
+    },
+    checks: [
+      {
+        text: 'Can Send Email',
+        value: 1
+      },
+      {
+        text: 'Cannot Send Email',
+        value: 0
+      }
+    ]
   }),
   components: {
     BackButton
