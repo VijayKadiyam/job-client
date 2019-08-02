@@ -129,6 +129,7 @@ export default {
     async store() {
       this.form.active = 1
       let user = await this.$axios.patch(`/users/${this.form.id}`, this.form)
+      // await this.forceLogout()
       this.$router.push(`/organizations/${this.organization.value}/users`);
     },
 
@@ -154,7 +155,14 @@ export default {
       this.selectedUser.products.forEach(product => {
         this.selected.push(product.id)
       })
-    }
+    },
+
+    async forceLogout() {
+      let user = {
+        user_id: this.form.id
+      }
+      this.$axios.post('/logout', user)
+    },
   }
 }
 </script> 

@@ -5,7 +5,7 @@
       :link="`/organizations/${organization.value}/request-tree/${listing.id}/products/${product.id}/sub-products`"
     ></back-button>
     <v-layout align-center justify-center>
-      <v-flex xs12 sm8 md6>
+      <v-flex xs12 sm8 md12>
         <v-card class="elevation-12">
           <v-toolbar :dark="darkStatus" :height="baseHeight" :color="baseColor">
             <v-toolbar-title>Edit Sub Product of {{ product.name }} | {{ listing.name }}</v-toolbar-title>
