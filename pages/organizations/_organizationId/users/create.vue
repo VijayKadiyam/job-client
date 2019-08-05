@@ -36,6 +36,14 @@
                 v-model="form.phone"
                 type="number"
               ></v-text-field>
+              <v-text-field 
+                :error-messages="errors.address"
+                prepend-icon="location_on" 
+                name="address" 
+                label="Address" 
+                v-model="form.address"
+                type="text"
+              ></v-text-field>
               <v-select
                 :error-messages="errors.can_send_email"
                 prepend-icon="build" 
