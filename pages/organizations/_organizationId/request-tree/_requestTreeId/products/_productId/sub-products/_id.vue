@@ -50,6 +50,7 @@
               <label>{{ form.image3_path }}</label>
               <br>
               <label>{{ form.image4_path }}</label>
+              <br>
               <input 
                 type="file"
                 id="file"
@@ -107,6 +108,8 @@ export default {
       formData.append('id', this.form.id);
       formData.append('image1', this.picture1);
       formData.append('image2', this.picture2);
+      formData.append('image3', this.picture3);
+      formData.append('image4', this.picture4);
       await this.$axios.post('upload_attachments', formData,
         {
           headers: {
