@@ -93,7 +93,7 @@ module.exports = {
   // },
   axios: {
     // baseURL: 'http://localhost:8080/api'
-    baseURL: 'http://13.126.249.88:8088/api'
+    baseURL: 'http://aaibuzz.com:8088/api'
   },
   
 
