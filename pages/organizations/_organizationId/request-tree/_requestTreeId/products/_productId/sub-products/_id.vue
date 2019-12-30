@@ -41,24 +41,98 @@
                 ></editor>
               </no-ssr>
               <br>
-              <b>Attachments:</b>
-              <br>
-              <label>{{ form.image1_path }}</label>
-              <br>
-              <label>{{ form.image2_path }}</label>
-              <br>
-              <label>{{ form.image3_path }}</label>
-              <br>
-              <label>{{ form.image4_path }}</label>
-              <br>
-              <input 
-                type="file"
-                id="file"
-                name="file[]" 
-                ref="file" 
-                accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,text/plain, application/pdf, image/*"
-                multiple
-              >
+              <!-- <v-btn flat color="blue" @click="removeFile">refresh</v-btn> -->
+              <div>
+                <b>Attachment 1</b>
+                <v-text-field 
+                  :error-messages="errors.image1_description"
+                  prepend-icon="public" 
+                  name="image1_description" 
+                  label="Attachment 1 Description"
+                  v-model="form.image1_description" 
+                  type="text"
+                ></v-text-field>
+                <label>{{ form.image1_path }}</label>
+                <br>
+                <input 
+                  type="file" 
+                  ref="file1"
+                  accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,text/plain, application/pdf, image/*"
+                >
+                <br><br>
+                <hr>
+                <br>
+              </div>
+              <div>
+                <b>Attachment 2</b>
+                <v-text-field 
+                  :error-messages="errors.image2_description"
+                  prepend-icon="public" 
+                  name="image2_description" 
+                  label="Attachment 2 Description"
+                  v-model="form.image2_description" 
+                  type="text"
+                ></v-text-field>
+                <label>{{ form.image2_path }}</label>
+                <br>
+                <input 
+                  type="file" 
+                  ref="file2"
+                  accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,text/plain, application/pdf, image/*"
+                >
+                <br><br>
+                <hr>
+                <br>
+              </div>
+              <div>
+                <b>Attachment 3</b>
+                <v-text-field 
+                  :error-messages="errors.image3_description"
+                  prepend-icon="public" 
+                  name="image3_description" 
+                  label="Attachment 3 Description"
+                  v-model="form.image3_description" 
+                  type="text"
+                ></v-text-field>
+                <label>{{ form.image3_path }}</label>
+                <br>
+                <input 
+                  type="file" 
+                  ref="file3"
+                  accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,text/plain, application/pdf, image/*"
+                >
+                <br><br>
+                <hr>
+                <br>
+              </div>
+              <div>
+                <b>Attachment 4</b>
+                <v-text-field 
+                  :error-messages="errors.image4_description"
+                  prepend-icon="public" 
+                  name="image4_description" 
+                  label="Attachment 4 Description"
+                  v-model="form.image4_description" 
+                  type="text"
+                ></v-text-field>
+                <label>{{ form.image4_path }}</label>
+                <br>
+                <input 
+                  type="file" 
+                  ref="file4"
+                  accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,text/plain, application/pdf, image/*"
+                >
+                <br>
+              </div>
+                
+                <!-- <input 
+                  type="file"
+                  id="file"
+                  name="file[]" 
+                  ref="file" 
+                  accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,text/plain, application/pdf, image/*"
+                  multiple
+                > -->
             </v-form>
           </v-card-text>
           <v-card-actions>
@@ -100,10 +174,10 @@ export default {
       this.$router.push(`/organizations/${this.organization.value}/request-tree/${this.listing.id}/products/${this.product.id}/sub-products`);
     },
     async handleFileUpload() {
-      this.picture1 = this.$refs.file.files[0]
-      this.picture2 = this.$refs.file.files[1]
-      this.picture3 = this.$refs.file.files[2]
-      this.picture4 = this.$refs.file.files[3]
+      this.picture1 = this.$refs.file1 ? this.$refs.file1.files[0] : ''
+      this.picture2 = this.$refs.file2 ? this.$refs.file2.files[0] : ''
+      this.picture3 = this.$refs.file3 ? this.$refs.file3.files[0] : ''
+      this.picture4 = this.$refs.file4 ? this.$refs.file4.files[0] : ''
       let formData = new FormData();
       formData.append('id', this.form.id);
       formData.append('image1', this.picture1);
@@ -123,7 +197,7 @@ export default {
       .catch(function(){
         console.log('FAILURE!!');
       });
-    }
+    },
   }
 }
 </script> 
