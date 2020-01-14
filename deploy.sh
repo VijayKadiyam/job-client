@@ -1,7 +1,6 @@
 #!/bin/bash
 cd ~/public_html/rms-client/
 
-
 npm run build
 
 pm2 delete rms 

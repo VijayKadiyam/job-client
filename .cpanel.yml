@@ -1,6 +1,7 @@
 ---
 deployment:
   tasks:
+    - sh ~/public_html/rms-client/deploy1.sh 2>&1
     - export DEPLOYPATH=~/public_html/
     - /bin/cp -R ~/repositories/rms-client/ $DEPLOYPATH
     - sh ~/public_html/rms-client/deploy.sh 2>&1
