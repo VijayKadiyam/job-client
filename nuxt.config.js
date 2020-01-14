@@ -92,10 +92,9 @@ module.exports = {
   //   baseURL: 'http://localhost:8080/api'
   // },
   axios: {
-    // baseURL: 'http://192.168.1.9:8080/api'
-    // baseURL: 'http://192.168.1.126:8080/api'
     // baseURL: 'http://aaibuzz.com:8088/api'
-    baseURL: 'https://api.digiloop.aaibuzz.com/api'
+    // baseURL: 'http://localhost:8080/api'
+    baseURL: 'http://api.rms.aaibuzz.com/api'
   },
   
 

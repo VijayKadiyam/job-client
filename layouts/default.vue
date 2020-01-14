@@ -57,6 +57,7 @@
       :color="baseColor"
       :dark="darkStatus"
     >
+      <v-toolbar-side-icon @click="toggleNav"></v-toolbar-side-icon>
       <nuxt-link to="/">
         <v-icon large right>account_balance</v-icon>
         <span style="color: white"> {{ title }}</span>
@@ -115,12 +116,13 @@ export default {
   data() {
     return {
       clipped: true,
-      fixed: false
+      fixed: false,
+      toolbarDrawer: true,
     }
   },
   computed: {
     drawer() {
-      return this.authenticated
+      return this.authenticated ? this.toolbarDrawer : this.authenticated
     },
     title() {
       return this.$auth.$state.user ? 
@@ -153,9 +155,9 @@ export default {
         items.push({ icon: 'brightness_7', title: 'Settings', to: '/settings'})
       if(this.permissions.indexOf(14)!= -1)
         items.push({ icon: 'security', title: "Reset Password", to: '/auth/reset-password'})
-      if(this.permissions.indexOf(9)!= -1)
-        items.push({ icon: 'person', title: 'Master', to: `/organizations/${this.organizationId}/users`})
-      items.push({ icon: 'timeline', title: 'Request Tree', to: `/organizations/${this.organizationId}/request-tree`})
+      // if(this.permissions.indexOf(9)!= -1)
+      //   items.push({ icon: 'person', title: 'Master', to: `/organizations/${this.organizationId}/users`})
+      items.push({ icon: 'timeline', title: 'Units', to: `/organizations/${this.organizationId}/units`})
       return items;
     },
     dropdownItems() {
@@ -178,7 +180,11 @@ export default {
   },
   methods: {
     logout() {
+      this.toolbarDrawer = true
       this.$auth.logout()
+    },
+    toggleNav() {
+      this.toolbarDrawer = !this.toolbarDrawer
     }
   }
 }

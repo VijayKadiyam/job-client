@@ -36,21 +36,6 @@
                 v-model="form.phone"
                 type="number"
               ></v-text-field>
-              <v-text-field 
-                :error-messages="errors.address"
-                prepend-icon="location_on" 
-                name="address" 
-                label="Address" 
-                v-model="form.address"
-                type="text"
-              ></v-text-field>
-              <v-select
-                :error-messages="errors.can_send_email"
-                prepend-icon="build" 
-                v-model="form.can_send_email"
-                :items="checks"
-                label="Can Send Emails"
-              ></v-select>
             </v-form>
           </v-card-text>
           <v-card-actions>

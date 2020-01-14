@@ -8,7 +8,7 @@
       <v-flex xs12 sm8 md6>
         <v-card class="elevation-12">
           <v-toolbar :dark="darkStatus" :height="baseHeight" :color="baseColor">
-            <v-toolbar-title>Create User</v-toolbar-title>
+            <v-toolbar-title>Update User</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
             <v-form>
@@ -36,50 +36,6 @@
                 v-model="form.phone"
                 type="number"
               ></v-text-field>
-              <v-text-field 
-                :error-messages="errors.address"
-                prepend-icon="location_on" 
-                name="address" 
-                label="Address" 
-                v-model="form.address"
-                type="text"
-              ></v-text-field>
-              <v-select
-                :error-messages="errors.can_send_email"
-                prepend-icon="build" 
-                v-model="form.can_send_email"
-                :items="checks"
-                label="Can Send Emails"
-              ></v-select>
-
-              Select Products
-              <v-container>
-                <v-layout row wrap>
-                  <v-flex>
-                    <div
-                      v-for="(listing, i) in listings"
-                      :key="i"
-                    >
-                      {{ listing.name }}
-                      <div
-                        v-for="(product, j) in listing.products"
-                        :key="j"
-                      >
-                        <v-checkbox 
-                        :color="baseColor" 
-                        hide-details 
-                        v-model="selected"
-                        :value="product.id"
-                        :label="product.name"
-                        @click="updateProduct(product.id)"
-                      ></v-checkbox>
-                      </div>
-                      <br>
-                      <br>
-                    </div>
-                  </v-flex>
-                </v-layout>
-              </v-container>
             </v-form>
           </v-card-text>
           <v-card-actions>
@@ -100,10 +56,8 @@ export default {
   async asyncData({$axios, params}) {
     let employee = await $axios.get(`users/${params.id}`)
     employee.data.data.can_send_email = parseInt(employee.data.data.can_send_email)
-    let listings = await $axios.get(`listings`);
     return {
       form: employee.data.data,
-      listings: listings.data.data
     }
   },
   data: () => ({
@@ -129,7 +83,6 @@ export default {
   }),
   created() {
     this.selectedUser = this.form
-    this.updateSelected()
   },
   components: {
     BackButton
@@ -158,14 +111,7 @@ export default {
       this.selectedUser = user.data.data
       this.updateSelected()
     },
-
-    updateSelected() {
-      this.selected = []
-      this.selectedUser.products.forEach(product => {
-        this.selected.push(product.id)
-      })
-    },
-
+    
     async forceLogout() {
       let user = {
         user_id: this.form.id

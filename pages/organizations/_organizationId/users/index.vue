@@ -31,8 +31,6 @@
         <td>{{ props.index + 1 }}</td>
         <td>{{ props.item.name }}</td>
         <td>{{ props.item.email }}<br>{{ props.item.phone }}</td>
-        <td>{{ props.item.address }}</td>
-        <td>{{ props.item.can_send_email == 1 ? 'Yes' : 'No' }}</td>
         <td>{{ props.item.active == 1 ? 'ACTIVE' : 'IN ACTIVE' }}</td>
         <td class="text-xs-left">
           <v-layout row wrap>
@@ -116,8 +114,6 @@ export default {
         value: 'name'
       },
       { text: 'Email/Phone', value: 'phone' },
-      { text: 'Address', value: 'address' },
-      { text: 'Can Send Email', value: 'can_send_email' },
       { text: 'Status', value: 'active' },
       { text: 'Action', value: '' }
     ],
