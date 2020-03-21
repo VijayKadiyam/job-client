@@ -156,12 +156,16 @@ export default {
       if(this.permissions.indexOf(14)!= -1)
         items.push({ icon: 'security', title: "Reset Password", to: '/auth/reset-password'})
       // if(this.permissions.indexOf(9)!= -1)
+<<<<<<< HEAD
       //   items.push({ icon: 'person', title: 'Master', to: `/organizations/${this.organizationId}/users`})
       items.push({ icon: 'school', title: 'Branches', to: `/organizations/${this.organizationId}/branches`})
       items.push({ icon: 'school', title: 'OfficeTimings', to: `/organizations/${this.organizationId}/office_timings`})
       items.push({ icon: 'school', title: 'Leave Policies', to: `/organizations/${this.organizationId}/leave_policies`})
       items.push({ icon: 'school', title: 'Jobs', to: `/organizations/${this.organizationId}/jobs`})
       items.push({ icon: 'school', title: 'Users', to: `/organizations/${this.organizationId}/users`})
+=======
+      items.push({ icon: 'person', title: 'User', to: `/organizations/${this.organizationId}/users`})
+>>>>>>> master
       items.push({ icon: 'timeline', title: 'Units', to: `/organizations/${this.organizationId}/units`})
       return items;
     },
