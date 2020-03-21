@@ -1,0 +1,67 @@
+<template>
+  <section>
+    <span class="title">Manage Jobs</span>
+    <v-btn
+      small
+      fab
+      :to="`/organizations/${organization.value}/jobs/create`"
+      :color="baseColor"
+      title="Add New Job"
+      :dark="darkStatus"
+    >
+      <v-icon>
+        add
+      </v-icon>
+    </v-btn>
+    <v-data-table
+      :headers="headers"
+      :items="jobs"
+      :loading="loading"
+      class="elevation-1"
+      hide-actions
+    >
+      <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
+      <template slot="items" slot-scope="props">
+        <td>{{ props.index + 1 }}</td>
+        <td>{{ props.item.title }}</td>
+        <td>{{ props.item.qualification.name }}</td>
+        <td>{{ props.item.user.name }}</td>
+        <td class="text-xs-left">
+          <nuxt-link :to="`/organizations/${organization.value}/jobs/${props.item.id}`">
+            <v-icon>edit</v-icon>
+          </nuxt-link>
+        </td>
+      </template>
+    </v-data-table>
+  </section>
+</template>
+
+<script type="text/javascript">
+export default {
+  name: 'ManageJobs',
+  async asyncData({$axios, params}) { 
+    let jobs = await $axios.get(`/jobs`);
+    return {
+      jobs: jobs.data.data
+    }
+  },
+  data:() =>  ({
+    headers: [
+      { text: 'Sr No', value: 'sr_no' },
+      {
+        text: 'Job Name',
+        align: 'left',
+        sortable: false,
+        value: 'name'
+      },
+      { text: 'Qualification', value: 'qualification' },
+      { text: 'User', value: 'user' },
+      { text: 'Action', value: '' }
+    ],
+    loading: true
+  }),
+  mounted() {
+    this.loading = false
+  }
+}
+</script>
