@@ -156,7 +156,7 @@ export default {
       if(this.permissions.indexOf(14)!= -1)
         items.push({ icon: 'security', title: "Reset Password", to: '/auth/reset-password'})
       // if(this.permissions.indexOf(9)!= -1)
-      //   items.push({ icon: 'person', title: 'Master', to: `/organizations/${this.organizationId}/users`})
+      items.push({ icon: 'person', title: 'User', to: `/organizations/${this.organizationId}/users`})
       items.push({ icon: 'timeline', title: 'Units', to: `/organizations/${this.organizationId}/units`})
       return items;
     },
