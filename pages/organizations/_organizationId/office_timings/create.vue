@@ -1,14 +1,14 @@
 <template>
   <v-container fluid fill-height>
     <back-button 
-      title="Go Back To Office Timings"
+      title="Go Back To OfficeTimings"
       :link="`/organizations/${organization.value}/office_timings`"
     ></back-button>
     <v-layout align-center justify-center>
       <v-flex xs12 sm8 md6>
         <v-card class="elevation-12">
           <v-toolbar :dark="darkStatus" :height="baseHeight" :color="baseColor">
-            <v-toolbar-title>Create Office Timing</v-toolbar-title>
+            <v-toolbar-title>Create OfficeTiming</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
             <v-form>
@@ -48,7 +48,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn :dark="darkStatus" @click="store" :color="baseColor">Create Office Timing</v-btn>
+            <v-btn :dark="darkStatus" @click="store" :color="baseColor">Create OfficeTiming</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>

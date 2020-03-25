@@ -1,7 +1,7 @@
 <template>
   <v-container fluid fill-height>
     <back-button 
-      title="Go Back To Leave Policies"
+      title="Go Back To LeavePolicies"
       :link="`/organizations/${organization.value}/leave_policies`"
     ></back-button>
     <v-layout align-center justify-center>
@@ -72,7 +72,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn :dark="darkStatus" @click="store" :color="baseColor">Update Leave Policy</v-btn>
+            <v-btn :dark="darkStatus" @click="store" :color="baseColor">Update LeavePolicy</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>

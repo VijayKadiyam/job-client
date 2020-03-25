@@ -170,10 +170,10 @@ export default {
     BackButton
   },
   
-    mounted() {
-      this.form.user_id = parseInt(this.form.user_id)
-      this.form.qualification_id = parseInt(this.form.qualification_id)
-    },
+  mounted() {
+    this.form.user_id = parseInt(this.form.user_id)
+    this.form.qualification_id = parseInt(this.form.qualification_id)
+  },
 
   methods: {
      async store() {
