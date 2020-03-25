@@ -186,8 +186,6 @@ export default {
         
       }
       await this.$axios.post('/job_practice', practice_payload)
-
-    
       this.$router.push(`/organizations/${this.organization.value}/jobs`);
   }
 }

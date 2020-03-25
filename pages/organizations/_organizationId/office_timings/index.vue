@@ -1,6 +1,6 @@
 <template>
   <section>
-    <span class="title">Manage Office Timings</span>
+    <span class="title">Manage OfficeTimings</span>
     <v-btn
       small
       fab

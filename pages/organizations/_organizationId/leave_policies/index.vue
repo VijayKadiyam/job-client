@@ -1,6 +1,6 @@
 <template>
   <section>
-    <span class="title">Manage Leave Policies</span>
+    <span class="title">Manage LeavePolicies</span>
     <v-btn
       small
       fab

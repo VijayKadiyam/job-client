@@ -12,6 +12,44 @@
           </v-toolbar>
           <v-card-text>
             <v-form>
+              <v-select
+                :error-messages="errors.qualification_id"
+                v-model="form.qualification_id"
+                :items="qualifications"
+                attach
+                label="Qualification"
+                :color="baseColor"
+              ></v-select>
+              <v-select
+                :error-messages="errors.practice_ids"
+                v-model="form.practice_ids"
+                :items="practices"
+                attach
+                chips
+                label="Practice"
+                multiple
+                :color="baseColor"
+              ></v-select>
+              <v-select
+                :error-messages="errors.day_ids"
+                v-model="form.day_ids"
+                :items="days"
+                attach
+                chips
+                label="Day"
+                multiple
+                :color="baseColor"
+              ></v-select>
+              <v-select
+                :error-messages="errors.affiliation_ids"
+                v-model="form.affiliation_ids"
+                :items="affiliations"
+                attach
+                chips
+                label="Affiliation"
+                multiple
+                :color="baseColor"
+              ></v-select>
               <v-text-field 
                 :error-messages="errors.name"
                 prepend-icon="public" 
@@ -318,6 +356,34 @@ import BackButton from '@/components/back-button.vue'
 
 export default {
   name: 'CreateUser',
+   async asyncData({$axios}) {
+    let qualifications = await $axios.get('/qualifications');
+    qualifications = qualifications.data.data.map(qualification => ({
+      'text': qualification.name,
+      'value': qualification.id 
+    }));
+    let days = await $axios.get('/days');
+    days = days.data.data.map(day => ({
+      'text': day.name,
+      'value': day.id 
+    }));
+    let affiliations = await $axios.get('/affiliations');
+    affiliations = affiliations.data.data.map(affiliation => ({
+      'text': affiliation.name,
+      'value': affiliation.id 
+    }));
+    let practices = await $axios.get('/practices');
+    practices = practices.data.data.map(practice => ({
+      'text': practice.name,
+      'value': practice.id 
+    }));
+    return {
+      qualifications:qualifications,
+      practices:practices,
+      days: days,
+      affiliations:affiliations,
+    } 
+  },
   data: () => ({
     form: {
       name: '',
@@ -356,6 +422,10 @@ export default {
       other_training_details: '',
       outstation_travel: '',
       gender: '',
+      qualification_id: '',
+      day_ids: [],
+      affiliation_ids: [],
+      practice_ids: [],
       active: 1,
       role_id: 3
     },
@@ -367,6 +437,25 @@ export default {
   methods: {
     async store() {
       let user = await this.$axios.post(`/users`, this.form)
+
+      // Assign PracticeUser
+      let practice_payload = {
+        user_id: user.data.data.id,
+        practice_ids: this.form.practice_ids
+      }
+      await this.$axios.post('/user_practice', practice_payload)
+      // Assign DayUser
+      let day_payload = {
+        user_id: user.data.data.id,
+        day_ids: this.form.day_ids
+      }
+      await this.$axios.post('/user_day', day_payload)
+      // Assign AffiliationUser
+      let affiliation_payload = {
+        user_id: user.data.data.id,
+        affiliation_ids: this.form.affiliation_ids
+      }
+      await this.$axios.post('/affiliation_user', affiliation_payload)
       // RoleUser
       let role_user = {
         user_id: user.data.data.id,

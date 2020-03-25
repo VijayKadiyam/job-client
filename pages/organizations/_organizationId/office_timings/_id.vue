@@ -48,7 +48,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn :dark="darkStatus" @click="store" :color="baseColor">Update Office Timing</v-btn>
+            <v-btn :dark="darkStatus" @click="store" :color="baseColor">Update OfficeTiming</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
