@@ -26,6 +26,12 @@
         <td>{{ props.item.title }}</td>
         <td>{{ props.item.qualification.name }}</td>
         <td>{{ props.item.user.name }}</td>
+        <td>{{ props.item.title }}</td>
+        <td>{{ props.item.highlight }}</td>
+        <td>{{ props.item.no_of_openings }}</td>
+        <td>{{ props.item.user.experience }}</td>
+        <td>{{ props.item.user.department }}</td>
+        <td>{{ props.item.user.max_attempts_in_ca_exam }}</td>
         <td class="text-xs-left">
           <nuxt-link :to="`/organizations/${organization.value}/jobs/${props.item.id}`">
             <v-icon>edit</v-icon>
@@ -56,6 +62,12 @@ export default {
       },
       { text: 'Qualification', value: 'qualification' },
       { text: 'User', value: 'user' },
+      { text: ' Job Title', value: 'title' },
+      { text: 'Highlight', value: 'highlight' },
+      { text: 'No Of Openings', value: 'no_of_openings' },
+      { text: 'Experience', value: 'experience' },
+      { text: 'Department', value: 'department' },
+      { text: 'Max Attempts In Ca Exam', value: 'max_attempts_in_ca_exam' },
       { text: 'Action', value: '' }
     ],
     loading: true

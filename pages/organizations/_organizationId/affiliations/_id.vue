@@ -38,9 +38,9 @@ import BackButton from '@/components/back-button.vue'
 export default {
   name: 'UpdateAffiliation',
   async asyncData({$axios, params}) {
-    let category = await $axios.get(`/affiliations/${params.id}`)
+    let affiliation = await $axios.get(`/affiliations/${params.id}`)
     return {
-      form: category.data.data
+      form: affiliation.data.data
     }
   },
   components: {

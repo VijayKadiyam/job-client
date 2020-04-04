@@ -8,13 +8,13 @@
       <v-flex xs12 sm8 md6>
         <v-card class="elevation-12">
           <v-toolbar :dark="darkStatus" :height="baseHeight" :color="baseColor">
-            <v-toolbar-title>Create OfficeTiming</v-toolbar-title>
+            <v-toolbar-title>Create Office Timing</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
             <v-form>
               <v-text-field 
                 :error-messages="errors.from"
-                prepend-icon="public" 
+                prepend-icon="event" 
                 name="from" 
                 label="From"
                 v-model="form.from" 
@@ -22,7 +22,7 @@
               ></v-text-field>
               <v-text-field 
                 :error-messages="errors.from_am_pm"
-                prepend-icon="public" 
+                prepend-icon="access_time" 
                 name="from_am_pm" 
                 label="From AM PM"
                 v-model="form.from_am_pm" 
@@ -30,7 +30,7 @@
               ></v-text-field>
               <v-text-field 
                 :error-messages="errors.to"
-                prepend-icon="public" 
+                prepend-icon="event" 
                 name="to" 
                 label="To"
                 v-model="form.to" 
@@ -38,7 +38,7 @@
               ></v-text-field>
               <v-text-field 
                 :error-messages="errors.to_am_pm"
-                prepend-icon="public" 
+                prepend-icon="access_time" 
                 name="to_am_pm" 
                 label="To AM PM"
                 v-model="form.to_am_pm" 
@@ -48,7 +48,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn :dark="darkStatus" @click="store" :color="baseColor">Create OfficeTiming</v-btn>
+            <v-btn :dark="darkStatus" @click="store" :color="baseColor">Create Office Timing</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>

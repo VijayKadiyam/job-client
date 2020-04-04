@@ -14,6 +14,7 @@
             <v-form>
                <v-select
                 :error-messages="errors.user_id"
+                prepend-icon="person"
                 v-model="form.user_id"
                 :items="users"
                 attach
@@ -22,6 +23,7 @@
               ></v-select>
                <v-select
                 :error-messages="errors.qualification_id"
+                prepend-icon="school"
                 v-model="form.qualification_id"
                 :items="qualifications"
                 attach
@@ -30,6 +32,7 @@
               ></v-select>
               <v-select
                 :error-messages="errors.practice_ids"
+                prepend-icon="low_priority"
                 v-model="form.practice_ids"
                 :items="practices"
                 attach
@@ -40,7 +43,7 @@
               ></v-select>
               <v-text-field 
                 :error-messages="errors.title"
-                prepend-icon="public" 
+                prepend-icon="short_text" 
                 name="title" 
                 label="Title"
                 v-model="form.title" 
@@ -48,7 +51,7 @@
               ></v-text-field>
               <v-text-field 
                 :error-messages="errors.highlight"
-                prepend-icon="public" 
+                prepend-icon="star" 
                 name="highlight" 
                 label="Highlight"
                 v-model="form.highlight" 
@@ -56,7 +59,7 @@
               ></v-text-field>
               <v-text-field 
                 :error-messages="errors.no_of_openings"
-                prepend-icon="public" 
+                prepend-icon="add" 
                 name="no_of_openings" 
                 label="No Of Openings"
                 v-model="form.no_of_openings" 
@@ -64,7 +67,7 @@
               ></v-text-field>
               <v-text-field 
                 :error-messages="errors.experience"
-                prepend-icon="public" 
+                prepend-icon="create" 
                 name="experience" 
                 label="Experience"
                 v-model="form.experience" 
@@ -72,7 +75,7 @@
               ></v-text-field>
               <v-text-field 
                 :error-messages="errors.address"
-                prepend-icon="public" 
+                prepend-icon="room" 
                 name="address" 
                 label="Address"
                 v-model="form.address" 
@@ -80,7 +83,7 @@
               ></v-text-field>
               <v-text-field 
                 :error-messages="errors.stipend_start"
-                prepend-icon="public" 
+                prepend-icon="rotate_right" 
                 name="stipend_start" 
                 label="Stipend Start"
                 v-model="form.stipend_start" 
@@ -88,14 +91,14 @@
               ></v-text-field>
               <v-text-field 
                 :error-messages="errors.stipend_end"
-                prepend-icon="public" 
+                prepend-icon="rotate_left" 
                 name="stipend_end" 
                 label="Stipend End"
                 v-model="form.stipend_end" 
               ></v-text-field>
               <v-text-field 
                 :error-messages="errors.department"
-                prepend-icon="public" 
+                prepend-icon="view_compact" 
                 name="department" 
                 label="Department"
                 v-model="form.department" 
@@ -103,7 +106,7 @@
               ></v-text-field>
               <v-text-field 
                 :error-messages="errors.max_attempts_in_ca_exam"
-                prepend-icon="public" 
+                prepend-icon="assignment" 
                 name="max_attempts_in_ca_exam" 
                 label="Max Attempts In CA Exam"
                 v-model="form.max_attempts_in_ca_exam" 
