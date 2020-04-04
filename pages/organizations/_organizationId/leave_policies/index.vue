@@ -24,6 +24,12 @@
       <template slot="items" slot-scope="props">
         <td>{{ props.index + 1 }}</td>
         <td>{{ props.item.exam }}</td>
+        <td>{{ props.item.ipcc_group_1 }}</td>
+        <td>{{ props.item.ipcc_group_2 }}</td>
+        <td>{{ props.item.ca_final_group_1 }}</td>
+        <td>{{ props.item.ca_final_group_2 }}</td>
+        <td>{{ props.item.ipcc_both_groups }}</td>
+        <td>{{ props.item.ca_final_both_groups }}</td>
         <td class="text-xs-left">
           <nuxt-link :to="`/organizations/${organization.value}/leave_policies/${props.item.id}`">
             <v-icon>edit</v-icon>
@@ -46,6 +52,12 @@ export default {
         sortable: false,
         value: 'name'
       },
+      { text: 'Ipcc Group 1', value: 'ipcc_group_1' },
+      { text: 'IPCC Group 2', value: 'ipcc_group_2' },
+      { text: 'CA Final Group_1', value: 'ca_final_group_1' },
+      { text: 'CA Final Group_2', value: 'ca_final_group_2' },
+      { text: 'IPCC Both Groups', value: 'ipcc_both_groups' },
+      { text: 'CA Final Both Groups', value: 'ca_final_both_groups' },
       { text: 'Action', value: '' }
     ],
     loading: true,

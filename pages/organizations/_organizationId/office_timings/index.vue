@@ -24,6 +24,9 @@
       <template slot="items" slot-scope="props">
         <td>{{ props.index + 1 }}</td>
         <td>{{ props.item.from }}</td>
+        <td>{{ props.item.from_am_pm }}</td>
+        <td>{{ props.item.to }}</td>
+        <td>{{ props.item.to_am_pm }}</td>
         <td class="text-xs-left">
           <nuxt-link :to="`/organizations/${organization.value}/office_timings/${props.item.id}`">
             <v-icon>edit</v-icon>
@@ -41,11 +44,14 @@ export default {
     headers: [
       { text: 'Sr No', value: 'sr_no' },
       {
-        text: 'Office Timing',
+        text: 'Office Timing From',
         align: 'left',
         sortable: false,
-        value: 'name'
+        value: 'from'
       },
+      { text: 'From AM PM', value: 'from_am_pm' },
+      { text: 'To', value: 'to' },
+      { text: 'To AM PM', value: 'to_am_pm' },
       { text: 'Action', value: '' }
     ],
     loading: true,

@@ -14,7 +14,7 @@
             <v-form>
               <v-text-field 
                 :error-messages="errors.exam"
-                prepend-icon="public" 
+                prepend-icon="assignment_turned_in" 
                 name="exam" 
                 label="Exam"
                 v-model="form.exam" 
@@ -22,7 +22,7 @@
               ></v-text-field>
               <v-text-field 
                 :error-messages="errors.ipcc_group_1"
-                prepend-icon="public" 
+                prepend-icon="group" 
                 name="ipcc_group_1" 
                 label="Ipcc Group 1"
                 v-model="form.ipcc_group_1" 
@@ -30,7 +30,7 @@
               ></v-text-field>
               <v-text-field 
                 :error-messages="errors.ipcc_group_2"
-                prepend-icon="public" 
+                prepend-icon="group" 
                 name="ipcc_group_2" 
                 label="Ipcc Group 2"
                 v-model="form.ipcc_group_2" 
@@ -38,7 +38,7 @@
               ></v-text-field>
               <v-text-field 
                 :error-messages="errors.ca_final_group_1"
-                prepend-icon="public" 
+                prepend-icon="group" 
                 name="ca_final_group_1" 
                 label="Ca Final Group 1"
                 v-model="form.ca_final_group_1" 
@@ -46,7 +46,7 @@
               ></v-text-field>
               <v-text-field 
                 :error-messages="errors.ca_final_group_2"
-                prepend-icon="public" 
+                prepend-icon="group" 
                 name="ca_final_group_2" 
                 label="Ca Final Group 2"
                 v-model="form.ca_final_group_2" 
@@ -54,7 +54,7 @@
               ></v-text-field>
               <v-text-field 
                 :error-messages="errors.ipcc_both_groups"
-                prepend-icon="public" 
+                prepend-icon="group" 
                 name="ipcc_both_groups" 
                 label="Ipcc Both Groups"
                 v-model="form.ipcc_both_groups" 
@@ -62,7 +62,7 @@
               ></v-text-field>
               <v-text-field 
                 :error-messages="errors.ca_final_both_groups"
-                prepend-icon="public" 
+                prepend-icon="group" 
                 name="ca_final_both_groups" 
                 label="Ca Final Both Groups"
                 v-model="form.ca_final_both_groups" 
