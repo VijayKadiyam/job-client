@@ -13,12 +13,21 @@
         add
       </v-icon>
     </v-btn>
+   <v-text-field
+      v-model="search"
+      append-icon="search"
+      label="Search"
+      single-line
+      @keydown.enter="searchDay"
+    ></v-text-field>
+    <br>
     <v-data-table
       :headers="headers"
       :items="days"
+      :pagination.sync="pagination"
+      :total-items="totalCount"
       :loading="loading"
       class="elevation-1"
-      hide-actions
     >
       <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
       <template slot="items" slot-scope="props">
@@ -54,10 +63,40 @@ export default {
       },
       { text: 'Action', value: '' }
     ],
-    loading: true
+    loading: true,
+    search: '',
+    pagination: {
+      rowsPerPage: 5
+    },
+    totalCount: 0,
   }),
-  mounted() {
-    this.loading = false
+  watch: {
+    pagination: {
+      async handler () {
+        if(this.search == "") {
+          this.loading = true
+          let days = await this.$axios.get(`/days?page=${this.pagination.page}&rowsPerPage=${this.pagination.rowsPerPage}`);
+          this.days = days.data.data
+          this.totalCount = days.data.count
+          this.pagination.totalItems = days.data.count
+          this.loading = false
+        }
+      },
+      deep: true
+    }
+  },
+  methods: {
+    async searchDay() {
+      if(this.search != "")
+      {
+        this.loading = true
+        let days = await this.$axios.get(`/days?search=${this.search}`);
+        this.days = days.data.data
+        this.totalCount = days.data.count
+        this.pagination.totalItems = days.data.count
+        this.loading = false
+      }
+    }
   }
 }
 </script>

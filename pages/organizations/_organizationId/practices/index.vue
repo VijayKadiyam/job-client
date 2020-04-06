@@ -13,12 +13,21 @@
         add
       </v-icon>
     </v-btn>
+    <v-text-field
+      v-model="search"
+      append-icon="search"
+      label="Search"
+      single-line
+      @keydown.enter="searchPractice"
+    ></v-text-field>
+    <br>
     <v-data-table
       :headers="headers"
       :items="practices"
+      :pagination.sync="pagination"
+      :total-items="totalCount"
       :loading="loading"
       class="elevation-1"
-      hide-actions
     >
       <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
       <template slot="items" slot-scope="props">
@@ -54,10 +63,40 @@ export default {
       },
       { text: 'Action', value: '' }
     ],
-    loading: true
+    loading: true,
+    search: '',
+    pagination: {
+      rowsPerPage: 5
+    },
+    totalCount: 0,
   }),
-  mounted() {
-    this.loading = false
+  watch: {
+    pagination: {
+      async handler () {
+        if(this.search == "") {
+          this.loading = true
+          let practices = await this.$axios.get(`/practices?page=${this.pagination.page}&rowsPerPage=${this.pagination.rowsPerPage}`);
+          this.practices = practices.data.data
+          this.totalCount = practices.data.count
+          this.pagination.totalItems = practices.data.count
+          this.loading = false
+        }
+      },
+      deep: true
+    }
+  },
+  methods: {
+    async searchPractice() {
+      if(this.search != "")
+      {
+        this.loading = true
+        let practices = await this.$axios.get(`/practices?search=${this.search}`);
+        this.practices = practices.data.data
+        this.totalCount = practices.data.count
+        this.pagination.totalItems = practices.data.count
+        this.loading = false
+      }
+    }
   }
 }
 </script>
