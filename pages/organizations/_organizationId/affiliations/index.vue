@@ -13,12 +13,21 @@
         add
       </v-icon>
     </v-btn>
+    <v-text-field
+      v-model="search"
+      append-icon="search"
+      label="Search"
+      single-line
+      @keydown.enter="searchAffiliation"
+    ></v-text-field>
+    <br>
     <v-data-table
       :headers="headers"
       :items="affiliations"
+      :pagination.sync="pagination"
+      :total-items="totalCount"
       :loading="loading"
       class="elevation-1"
-      hide-actions
     >
       <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
       <template slot="items" slot-scope="props">
@@ -54,10 +63,40 @@ export default {
       },
       { text: 'Action', value: '' }
     ],
-    loading: true
+    loading: true,
+    search: '',
+    pagination: {
+      rowsPerPage: 5
+    },
+    totalCount: 0,
   }),
-  mounted() {
-    this.loading = false
+  watch: {
+    pagination: {
+      async handler () {
+        if(this.search == "") {
+          this.loading = true
+          let affiliations = await this.$axios.get(`/affiliations?page=${this.pagination.page}&rowsPerPage=${this.pagination.rowsPerPage}`);
+          this.affiliations = affiliations.data.data
+          this.totalCount = affiliations.data.count
+          this.pagination.totalItems = affiliations.data.count
+          this.loading = false
+        }
+      },
+      deep: true
+    }
+  },
+  methods: {
+    async searchAffiliation() {
+      if(this.search != "")
+      {
+        this.loading = true
+        let affiliations = await this.$axios.get(`/affiliations?search=${this.search}`);
+        this.affiliations = affiliations.data.data
+        this.totalCount = affiliations.data.count
+        this.pagination.totalItems = affiliations.data.count
+        this.loading = false
+      }
+    }
   }
 }
 </script>

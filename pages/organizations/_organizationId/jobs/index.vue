@@ -13,12 +13,21 @@
         add
       </v-icon>
     </v-btn>
+    <v-text-field
+      v-model="search"
+      append-icon="search"
+      label="Search"
+      single-line
+      @keydown.enter="searchLeadJob"
+    ></v-text-field>
+    <br>
     <v-data-table
       :headers="headers"
       :items="jobs"
+      :pagination.sync="pagination"
+      :total-items="totalCount"
       :loading="loading"
       class="elevation-1"
-      hide-actions
     >
       <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
       <template slot="items" slot-scope="props">
@@ -55,10 +64,10 @@ export default {
     headers: [
       { text: 'Sr No', value: 'sr_no' },
       {
-        text: 'Job Name',
+        text: 'Job Title',
         align: 'left',
         sortable: false,
-        value: 'name'
+        value: 'title'
       },
       { text: 'Qualification', value: 'qualification' },
       { text: 'User', value: 'user' },
@@ -70,10 +79,40 @@ export default {
       { text: 'Max Attempts In Ca Exam', value: 'max_attempts_in_ca_exam' },
       { text: 'Action', value: '' }
     ],
-    loading: true
+ loading: true,
+    search: '',
+    pagination: {
+      rowsPerPage: 5
+    },
+    totalCount: 0,
   }),
-  mounted() {
-    this.loading = false
+  watch: {
+    pagination: {
+      async handler () {
+        if(this.search == "") {
+          this.loading = true
+          let jobs = await this.$axios.get(`/jobs?page=${this.pagination.page}&rowsPerPage=${this.pagination.rowsPerPage}`);
+          this.jobs = jobs.data.data
+          this.totalCount = jobs.data.count
+          this.pagination.totalItems = jobs.data.count
+          this.loading = false
+        }
+      },
+      deep: true
+    }
+  },
+  methods: {
+    async searchLeadJob() {
+      if(this.search != "")
+      {
+        this.loading = true
+        let jobs = await this.$axios.get(`/jobs?search=${this.search}`);
+        this.jobs = jobs.data.data
+        this.totalCount = jobs.data.count
+        this.pagination.totalItems = jobs.data.count
+        this.loading = false
+      }
+    }
   }
 }
 </script>

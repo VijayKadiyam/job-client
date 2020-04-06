@@ -13,12 +13,21 @@
         add
       </v-icon>
     </v-btn>
+ <v-text-field
+      v-model="search"
+      append-icon="search"
+      label="Search"
+      single-line
+      @keydown.enter="searchQualification"
+    ></v-text-field>
+    <br>
     <v-data-table
       :headers="headers"
       :items="qualifications"
+      :pagination.sync="pagination"
+      :total-items="totalCount"
       :loading="loading"
       class="elevation-1"
-      hide-actions
     >
       <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
       <template slot="items" slot-scope="props">
@@ -54,10 +63,40 @@ export default {
       },
       { text: 'Action', value: '' }
     ],
-    loading: true
+    loading: true,
+    search: '',
+    pagination: {
+      rowsPerPage: 5
+    },
+    totalCount: 0,
   }),
-  mounted() {
-    this.loading = false
+  watch: {
+    pagination: {
+      async handler () {
+        if(this.search == "") {
+          this.loading = true
+          let qualifications = await this.$axios.get(`/qualifications?page=${this.pagination.page}&rowsPerPage=${this.pagination.rowsPerPage}`);
+          this.qualifications = qualifications.data.data
+          this.totalCount = qualifications.data.count
+          this.pagination.totalItems = qualifications.data.count
+          this.loading = false
+        }
+      },
+      deep: true
+    }
+  },
+  methods: {
+    async searchQualification() {
+      if(this.search != "")
+      {
+        this.loading = true
+        let qualifications = await this.$axios.get(`/qualifications?search=${this.search}`);
+        this.qualifications = qualifications.data.data
+        this.totalCount = qualifications.data.count
+        this.pagination.totalItems = qualifications.data.count
+        this.loading = false
+      }
+    }
   }
 }
 </script>
