@@ -19,7 +19,7 @@
     "ckeditor5-math-preview": "^1.0.3",
     "cross-env": "^5.2.0",
     "moment": "^2.24.0",
-    "moment-timezone": "^0.5.23",
+    "moment-timezone": "^0.5.35",
     "nuxt": "^2.0.0",
     "vue-google-charts": "^0.3.2",
     "vue-json-excel": "^0.2.98",
